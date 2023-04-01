@@ -1,0 +1,2 @@
+export const SUPPORTED_NETWORKS = [1, 56, 61, 199, 820, 137];
+export const SUPPORTED_SWAP_NETWORKS = [820, 61, 199];

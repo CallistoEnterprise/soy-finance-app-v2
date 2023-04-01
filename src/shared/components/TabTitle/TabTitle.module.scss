@@ -1,0 +1,49 @@
+@use "../../../styles/typography";
+@import "../../../styles/colors.module";
+
+.listItem {
+  flex: 1;
+}
+
+.tabButton {
+  background: $basic-filling-secondary;
+  height: 50px;
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+  color: $basic-text-secondary;
+  @include typography.t-body-16;
+
+  &.active {
+    background: $basic-filling-primary;
+  }
+}
+
+.separateViewTitle {
+  background: #fff;
+  height: 40px;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #6DA316;
+  color: #122110;
+  min-width: 120px;
+  padding: 0 23px;
+  @include typography.t-body-16;
+
+  &.active {
+    background: #6DA316;
+    color: #fff;
+  }
+}
+
+.buttonViewTitle {
+  background: transparent;
+  height: 38px;
+  width: 100%;
+  color: $basic-text-secondary;
+  border-radius: 8px;
+  @include typography.t-body-16;
+
+  &.active {
+    border: 1px solid $border-4;
+  }
+}

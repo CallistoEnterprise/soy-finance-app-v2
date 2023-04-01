@@ -1,0 +1,110 @@
+@use "media";
+
+@mixin t-h1 {
+
+}
+
+@mixin t-h2 {
+  font-size: 42px;
+  line-height: 50px;
+
+  @include media.for-laptop {
+    font-size: 22px;
+    line-height: 34px;
+  }
+}
+
+@mixin t-h3 {
+  font-size: 32px;
+  line-height: 38px;
+}
+
+@mixin t-h4 {
+  font-size: 22px;
+  line-height: 26px;
+}
+
+@mixin main-h1 {
+  font-size: 74px;
+  line-height: 78px;
+
+  @include media.for-laptop {
+    font-size: 38px;
+    line-height: 46px;
+  }
+
+  @include media.for-mobile {
+    font-size: 38px;
+    line-height: 46px;
+  }
+}
+
+@mixin main-h2 {
+  font-size: 60px;
+  line-height: 60px;
+
+  @include media.for-laptop {
+    font-size: 28px;
+    line-height: 42px;
+  }
+
+  @include media.for-mobile {
+    font-size: 28px;
+    line-height: 42px;
+  }
+}
+
+@mixin main-h3 {
+  font-size: 28px;
+  line-height: 42px;
+
+  @include media.for-laptop {
+    font-size: 22px;
+    line-height: 26px;
+  }
+
+  @include media.for-tablet {
+    font-size: 21px;
+    line-height: 26px;
+  }
+
+  @include media.for-mobile {
+    font-size: 22px;
+    line-height: 26px;
+  }
+}
+
+@mixin t-body-12 {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+@mixin t-body-14 {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+@mixin t-body-16 {
+  font-size: 16px;
+  line-height: 22px;
+}
+
+@mixin t-body-18 {
+  font-size: 18px;
+  line-height: 28px;
+}
+
+@mixin t-body-20 {
+  font-size: 20px;
+  line-height: 26px;
+}
+
+@mixin t-body-22 {
+  font-size: 22px;
+  line-height: 26px;
+}
+
+@mixin t-body-24 {
+  font-size: 24px;
+  line-height: 30px;
+}

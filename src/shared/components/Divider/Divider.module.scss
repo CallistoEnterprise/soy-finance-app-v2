@@ -1,0 +1,13 @@
+@import "../../../styles/colors.module";
+
+.divider {
+  height: 1px;
+  background: #D4DDD8;
+  position: relative;
+  width: 100%;
+
+  &.vertical {
+    height: 100%;
+    width: 1px;
+  }
+}

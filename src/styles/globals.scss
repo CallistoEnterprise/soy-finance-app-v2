@@ -1,0 +1,131 @@
+@import "scrollbar.min";
+@import "colors.module";
+@import "vars.module";
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body,
+#dialog-root {
+  background: linear-gradient(311.09deg, #F5F3FC 0%, #F8FAFF 52.68%, #F6FDEF 99%);
+}
+
+html,
+body,
+#__next {
+  min-height: 100vh;
+  overflow: auto;
+  height: 100%;
+}
+
+#__next {
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  transition-duration: 0.1s;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  font-family: inherit;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  white-space: nowrap;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  padding: 0;
+  list-style: none;
+}
+
+h1 {
+  font-weight: bold;
+  font-size: 32px;
+  line-height: 42px;
+  color: #2E2E2E;
+}
+
+h2 {
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 38px;
+}
+
+h3 {
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 24px;
+  color: #1D1D1D;
+}
+
+.hidden {
+  display: none;
+}
+
+.inline-visible {
+  display: inline;
+}
+
+input {
+  font-size: inherit;
+}
+
+svg, svg path {
+  //transition-duration: inherit;
+}
+
+#select-root .simplebar-track.simplebar-vertical {
+  width: 10px;
+  background: $basic-filling-secondary;
+}
+
+#select-root .simplebar-track.simplebar-vertical .simplebar-scrollbar:before {
+  background: $basic-border-input;
+  width: 6px;
+}
+
+.simplebar-track.simplebar-vertical .simplebar-scrollbar:before {
+  background: #353535;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+::selection {
+  background-color: $selection-bg;
+}
+
+.newYearSvg {
+  transition-duration: 0.2s;
+}
+
+.greenNewYear {
+  fill: #B1B1B1;
+}
+
+.redNewYear {
+  fill: #636363;
+}

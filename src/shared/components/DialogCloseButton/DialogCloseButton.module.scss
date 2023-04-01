@@ -1,0 +1,18 @@
+@use "../../../styles/media";
+
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4B564B;
+
+  @include media.for-mobile {
+    right: 2px;
+    top: 2px;
+  }
+}

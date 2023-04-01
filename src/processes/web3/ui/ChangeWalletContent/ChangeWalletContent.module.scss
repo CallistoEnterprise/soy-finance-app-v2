@@ -1,0 +1,145 @@
+@use "../../../../styles/media";
+@use "../../../../styles/typography";
+@import "../../../../styles/colors.module";
+
+.modalWrapper {
+  position: relative;
+  border-radius: 20px;
+  background: #fff;
+  padding: 40px;
+  width: 454px;
+  @include media.for-mobile {
+    padding: 26px 16px 16px;
+  }
+}
+
+.step1 {
+  width: 430px;
+  padding: 32px 20px 20px;
+
+  @include media.for-mobile {
+    width: 325px;
+    padding: 27px 15px 15px;
+  }
+}
+
+.heading {
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 32px;
+  text-align: center;
+  color: #122110;
+  margin-bottom: 35px;
+}
+
+
+.step2 {
+  width: 336px;
+  padding: 21px 20px 20px;
+
+  &.walletConnect:not(.mobileDevice) {
+    height: 612px;
+    width: 396px;
+    padding-bottom: 0;
+  }
+
+  &.walletConnect.mobileDevice {
+    height: 549px;
+  }
+}
+
+.backButton {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+
+  @include media.for-mobile {
+    left: 2px;
+    top: 2px;
+  }
+}
+
+.walletsWrapper {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 10px;
+  background: #fff;
+  margin-bottom: 20px;
+  @include media.for-mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.copyText {
+  margin: 0 auto;
+}
+
+.wcDesktopWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 20px;
+  overflow: scroll;
+  height: 452px;
+}
+
+.wcLink {
+  width: 100%;
+  min-height: 60px;
+  padding: 0 14px 0 20px;
+  gap: 2px;
+  border-radius: 8px;
+  border: 1px solid $basic-border-button;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  transition-duration: 0.2s;
+
+  &:hover {
+    border-color: #6DA316;
+  }
+
+  font-size: 16px;
+  line-height: 20px;
+  color: #122110;
+
+
+}
+
+.wcLinkContent {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.wcLinkImage {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.mobileButtonWrapper {
+  min-height: 410px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 24px;
+  line-height: 32px;
+  text-align: center;
+  color: #122110;
+  margin-bottom: 20px;
+}
+
+.qrWrapper {
+  text-align: center;
+  padding: 20px;
+  border: 1px solid #D4DDD8;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}

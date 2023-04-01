@@ -1,0 +1,45 @@
+@use "../../../../styles/media";
+
+.headerContent {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  border: 1px solid #D4DDD8;
+  border-radius: 100px;
+  margin-top: 20px;
+}
+
+.container {
+  max-width: 1448px;
+  padding-left: 24px;
+  padding-right: 24px;
+  margin: 0 auto;
+  width: 100%;
+
+  @include media.for-tablet {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+.headerMenu {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.headerSettings {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.loading {
+  background: #F1F1F1;
+  border-radius: 8px;
+  height: 40px;
+  width: 171px;
+}

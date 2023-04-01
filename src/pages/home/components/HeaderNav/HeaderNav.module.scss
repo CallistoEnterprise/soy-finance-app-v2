@@ -1,0 +1,13 @@
+.menu {
+  display: flex;
+  gap: 6px;
+}
+
+.navLink {
+  color: #122110;
+  padding: 7px;
+
+  &:hover {
+    color: #6DA316;
+  }
+}

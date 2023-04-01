@@ -1,0 +1,179 @@
+:root {
+  --selection-bg: #5977A3;
+
+  --text-20: #F0CF9C;
+  --text-21: #FDC46C;
+
+  --bg-6: #353535;
+  --bg-7: #353535;
+  --bg-8: #F5F5F5;
+
+  --border-4: #FDC46C;
+
+  --hover-1: #F5F5F5;
+  --hover-2: #353535;
+  --hover-3: #131416;
+  --hover-4: #FDA723;
+
+  --hover-button: #2D3035;
+
+  --hover-button-filling: rgba(255, 255, 255, 0.1);
+
+  --partners-gradient: linear-gradient(90deg, #131416 22.92%, rgba(19, 20, 22, 0) 100%);
+
+  --footer-icon: #F5F5F5;
+
+  --shadow-1: linear-gradient(0deg, #1F1F1F 17.5%, rgba(31, 31, 31, 0.75) 62.62%, rgba(31, 31, 31, 0) 100%);
+
+
+  --basic-text-main: #F5F5F5;
+  --basic-text-secondary: #92959B;
+  --basic-text-disabled: #636363;
+  --basic-text-menu: #F0CF9C;
+
+  --basic-filling-primary: #1F1F1F;
+  --basic-filling-secondary: #2C2C2C;
+  --basic-filling-tertiary: #3E3E3E;
+  --basic-filling-header: #000000;
+  --basic-filling-background: #131416;
+  --basic-filling-backdrop: rgba(0, 0, 0, 0.8);
+
+  --basic-border-input: #636363;
+  --basic-border-active: #F5F5F5;
+  --basic-border-button: #F5F5F5;
+  --basic-border-popup: #404040;
+  --basic-border-disabled: #2F2F2F;
+
+  --basic-hover-select: #353535;
+
+  --palette-orange: #FDC46C;
+  --palette-carrot: #FFA37B;
+  --palette-blue: #5590FF;
+  --palette-green: #3BC57C;
+  --palette-purple: #9B75CC;
+  --palette-red: #FF4F47;
+  --palette-olive: #D7E06A;
+
+
+  --snackbar-red: #472727;
+  --snackbar-orange: #352F27;
+  --snackbar-blue: #212835;
+  --snackbar-green: #25312B;
+  --snackbar-purple: #2D2834;
+  --snackbar-olive: #313226;
+  --snackbar-carrot: #352C28;
+
+
+  --landing-cards-bg-green: #81F9AA;
+  --landing-cards-bg-orange: #FFA37B;
+  --landing-cards-bg-aqua: #77DAFF;
+  --landing-cards-bg-pink: #F19CFF;
+  --landing-cards-bg-olive: #D7E06A;
+  --landing-cards-bg-purple: #A798FF;
+  --landing-cards-bg-red: #FF8686;
+
+  --landing-cards-text-green: #81F9AA;
+  --landing-cards-text-orange: #FFA37B;
+  --landing-cards-text-aqua: #77DAFF;
+  --landing-cards-text-pink: #F19CFF;
+  --landing-cards-text-olive: #D7E06A;
+  --landing-cards-text-purple: #A798FF;
+  --landing-cards-text-red: #FF8686;
+
+  --new-year-dark-red-inactive: #2D3035;
+  --new-year-red-inactive: #636363;
+  --new-year-green-inactive: #B1B1B1;
+
+  --new-year-header-bg: #000000;
+  --new-year-dashboard-content-bg: #131416;
+
+  [data-color-theme="light"] {
+    --selection-bg: #B3D4FD;
+
+    --text-20: #FC7F57;
+    --text-21: #131416;
+
+    --bg-6: #FBFBFD;
+    --bg-7: #FFFAF2;
+    --bg-8: #ffffff;
+
+    --border-4: #FDA723;
+
+    --hover-1: #636363;
+    --hover-2: #f5f5f5;
+    --hover-4: #FFA00D;
+
+    --partners-gradient: linear-gradient(90deg, #FFFFFF 22.92%, rgba(255, 255, 255, 0) 100%);
+
+    --footer-icon: #949494;
+
+    --shadow-1: linear-gradient(0deg, #FBFBFD 17.5%, rgba(251, 251, 253, 0.75) 62.62%, rgba(251, 251, 253, 0) 100%);
+
+    --basic-text-main: #2D3035;
+    --basic-text-secondary: #878D95;
+    --basic-text-disabled: #E0E0E0;
+    --basic-text-menu: #FC7F57;
+
+    --basic-filling-primary: #FFFFFF;
+    --basic-filling-secondary: #F4F7FA;
+    --basic-filling-tertiary: #EAEDED;
+    --basic-filling-header: #E9EBF1;
+    --basic-filling-background: #F5F7F9;
+    --basic-filling-backdrop: rgba(99, 99, 99, 0.8);
+
+    --basic-border-input: #8F959C;
+    --basic-border-active: #636363;
+    --basic-border-button: #878D95;
+    --basic-border-popup: #9FA1A7;
+    --basic-border-disabled: #E0E0E0;
+
+    --basic-hover-select: #F5F5F5;
+
+    --palette-orange: #FDA723;
+    --palette-carrot: #FFA37B;
+    --palette-blue: #5590FF;
+    --palette-green: #3BC57C;
+    --palette-purple: #9C53FA;
+    --palette-red: #FF4F47;
+    --palette-olive: #CBCE1A;
+
+
+    --snackbar-red: #F8ECE7;
+    --snackbar-orange: #F8F1E7;
+    --snackbar-blue: #EAF0FD;
+    --snackbar-green: #D9F1E7;
+    --snackbar-purple: #F1EAFD;
+    --snackbar-olive: #EDEFCC;
+    --snackbar-carrot: #FFF5F0;
+
+
+    --landing-cards-bg-green: #E7FFEF;
+    --landing-cards-bg-orange: #FFF4F2;
+    --landing-cards-bg-aqua: #DDF6FF;
+    --landing-cards-bg-pink: #FCF1FF;
+    --landing-cards-bg-olive: #FDFFDF;
+    --landing-cards-bg-purple: #F0ECFF;
+    --landing-cards-bg-red: #FFEEEE;
+
+    --landing-cards-text-green: #44CA95;
+    --landing-cards-text-orange: #FC7F57;
+    --landing-cards-text-aqua: #4FC0EA;
+    --landing-cards-text-pink: #DA60EE;
+    --landing-cards-text-olive: #CBCE1A;
+    --landing-cards-text-purple: #7B67EB;
+    --landing-cards-text-red: #E76565;
+
+    --new-year-dark-red-inactive: #E0E3E9;
+    --new-year-red-inactive: #C9CED5;
+    --new-year-green-inactive: #E0E3E9;
+
+    --new-year-header-bg: #F4F7FA;
+    --new-year-dashboard-content-bg: #E3E8EE;
+  }
+}
+
+
+
+
+
+

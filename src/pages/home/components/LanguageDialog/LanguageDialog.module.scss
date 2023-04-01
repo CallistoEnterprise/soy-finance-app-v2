@@ -1,0 +1,45 @@
+
+.langPickerWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.langHeading {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 32px;
+  color: #122110;
+  text-align: center;
+  margin-bottom: 28px;
+
+}
+
+.langButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 21px 0 20px;
+  width: 160px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  gap: 10px;
+  font-size: 16px;
+  line-height: 20px;
+  color: #122110;
+  &:hover:not(.active) {
+    border: 1px solid #6DA316;
+  }
+
+  &.active {
+    background: rgba(109, 163, 22, 0.1);
+    border: 1px solid #6DA316;
+  }
+}
+
+.langDialog {
+  padding: 40px;
+  border: 1px solid #D4DDD8;
+  border-radius: 20px;
+}

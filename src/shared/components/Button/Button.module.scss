@@ -1,0 +1,100 @@
+@use "../../../styles/typography";
+@import "../../../styles/colors.module";
+
+.button {
+  border-radius: 8px;
+  font-size: 16px;
+  height: 40px;
+  transition-duration: 0.2s;
+  padding: 0 16px;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &[disabled] {
+    pointer-events: none;
+  }
+
+  &.fullWidth {
+    width: 100%;
+  }
+}
+
+.small {
+  height: 38px;
+  min-width: 100px;
+  padding: 0 20px;
+  border-radius: 4px;
+}
+
+.extra-small {
+  height: 26px;
+  min-width: 66px;
+  padding: 0 12px;
+  border-radius: 4px;
+
+  @include typography.t-body-12;
+}
+
+.primary {
+  @extend .button;
+  background: #6DA316;
+
+  padding: 0 24px;
+  border-radius: 70px;
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  color: #fff;
+  position: relative;
+
+  span {
+    position: relative;
+    z-index: 3;
+  }
+
+  &:hover {
+    background-color: #588D00;
+  }
+
+  &[disabled] {
+    opacity: 0.5;
+  }
+}
+
+.secondary {
+  @extend .button;
+  background: #F1F1F1;
+  border-radius: 8px;
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  color: #122110;
+  position: relative;
+
+  &:hover {
+    background: #E2E2E2;
+  }
+
+  span {
+    position: relative;
+    z-index: 3;
+  }
+
+  &[disabled] {
+    opacity: 0.5;
+  }
+}
+
+.outline {
+  @extend .button;
+  border: 1px solid $basic-border-button;
+  color: $basic-text-main;
+  &:hover {
+    border-color: $basic-border-active;
+    background-color: $hover-button-filling;
+  }
+
+  &[disabled] {
+    opacity: 0.5;
+  }
+}

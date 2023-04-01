@@ -1,0 +1,16 @@
+@import "../../../styles/colors.module";
+
+.separateViewTabsList,
+.mergedViewTabsList {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 31px;
+}
+
+.buttonViewTabsList {
+  display: flex;
+  background: $basic-filling-primary;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  height: 38px;
+}
