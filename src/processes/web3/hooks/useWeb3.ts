@@ -1,4 +1,4 @@
-import { useEvent, useStore } from "effector-react";
+import {useEvent, useStore} from "effector-react";
 import {
   $account,
   $chainId, $connectionURI,
@@ -20,12 +20,13 @@ import {
 
 import networks from "../constants/networks.json";
 
-import { useCallback, useEffect, useRef } from "react";
+import {useCallback, useEffect, useRef} from "react";
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import {EthereumProvider} from "@walletconnect/ethereum-provider";
 import {BrowserProvider, ethers} from "ethers";
 
-import { SUPPORTED_NETWORKS, SUPPORTED_SWAP_NETWORKS } from "../constants/supportedNetworks";
-import { WalletType } from "../types";
+import {SUPPORTED_NETWORKS, SUPPORTED_SWAP_NETWORKS} from "../constants/supportedNetworks";
+import {WalletType} from "../types";
 
 export function useWeb3() {
   const chainId = useStore($chainId);
@@ -63,7 +64,7 @@ export function useWeb3() {
     (wallet: WalletType) => {
       const currentConnection = localStorage.getItem("walletconnect");
 
-      if(!currentConnection) {
+      if (!currentConnection) {
         return;
       }
 
@@ -106,7 +107,7 @@ export function useWeb3() {
   );
 
   const connect = useCallback(
-    (wallet: WalletType) => {
+    async (wallet: WalletType) => {
       try {
         setChangingWalletFn(true);
 
@@ -170,125 +171,148 @@ export function useWeb3() {
 
         }
 
-        (async () => {
-          try {
-            if(p.enable) {
-              const accounts = await p.enable();
-              setAccountFn(accounts[0]);
-            } else {
-              const accounts = await p.request({
-                method: "eth_requestAccounts"
-              });
-
-              console.log(accounts);
-
-              setAccountFn(accounts[0]);
+        if (wallet === "walletConnectV2") {
+          p = await EthereumProvider.init({
+            projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID,
+            chains: [1, 199, 56, 820, 61, 137],
+            showQrModal: false,
+            rpcMap: {
+              1: "https://mainnet.infura.io/v3/d819f1add1a34a60adab4df578e0e741",
+              199: "https://rpc.bt.io/",
+              56: "https://bsc-dataseed.binance.org/",
+              820: "https://rpc.callisto.network/",
+              61: "https://etc.etcdesktop.com/",
+              137: "https://polygon-rpc.com"
             }
-          } catch (e) {
-            console.log(e);
-            // setChangingWalletFn(false); ????
+          });
+
+          p.on(
+            "display_uri",
+            (uri: string) => {
+              if(uri) {
+                setConnectionURIFn(uri);
+              }
+            }
+          );
+        }
+
+        try {
+          if (p.enable) {
+            const accounts = await p.enable();
+            setAccountFn(accounts[0]);
+          } else {
+            const accounts = await p.request({
+              method: "eth_requestAccounts"
+            });
+
+            console.log(accounts);
+
+            setAccountFn(accounts[0]);
           }
-          const web3Provider = new BrowserProvider(
-            p,
-            "any"
-          );
+        } catch (e) {
+          console.log(e);
+          // setChangingWalletFn(false); ????
+        }
+        const web3Provider = new BrowserProvider(
+          p,
+          "any"
+        );
 
-          p.on(
-            "disconnect",
-            () => {
-              console.log("Fired disconnect");
-              // metamask sometimes fire disconnect event when user switching chains
-              // also metamask has no implementation for disconnect event
-              // so we can safely disable this listener for metamask to avoid unexpected disconnections
-              if (wallet === "metamask") {
-                return;
-              }
-
-              if (wallet === "aw") {
-                localStorage.removeItem("walletconnect_aw");
-              }
-
-              if (wallet === "walletConnect") {
-                localStorage.removeItem("walletconnect_wc");
-              }
-
-              if (wallet === walletNameRef.current) {
-                setIsActiveFn(false);
-                setWalletNameFn(null);
-                setProviderFn(null);
-                setWeb3ProviderFn(null);
-              }
+        p.on(
+          "disconnect",
+          () => {
+            console.log("Fired disconnect");
+            // metamask sometimes fire disconnect event when user switching chains
+            // also metamask has no implementation for disconnect event
+            // so we can safely disable this listener for metamask to avoid unexpected disconnections
+            if (wallet === "metamask") {
+              return;
             }
-          );
 
-          p.on(
-            "accountsChanged",
-            (accounts: any) => {
-              if (!accounts.length) {
-                setIsActiveFn(false);
-                setWalletNameFn(null);
-                setProviderFn(null);
-                setWeb3ProviderFn(null);
-              } else {
-                setAccountFn(accounts[0]);
-              }
+            if (wallet === "aw") {
+              localStorage.removeItem("walletconnect_aw");
             }
-          );
 
-          p.on(
-            "chainChanged",
-            (cId: number) => {
-              let cid = cId;
+            if (wallet === "walletConnect") {
+              localStorage.removeItem("walletconnect_wc");
+            }
 
-              if (ethers.isHexString(cId)) {
-                cid = parseInt(
-                  cId,
-                  16
+            if (wallet === walletNameRef.current) {
+              setIsActiveFn(false);
+              setWalletNameFn(null);
+              setProviderFn(null);
+              setWeb3ProviderFn(null);
+            }
+          }
+        );
+
+        p.on(
+          "accountsChanged",
+          (accounts: any) => {
+            if (!accounts.length) {
+              setIsActiveFn(false);
+              setWalletNameFn(null);
+              setProviderFn(null);
+              setWeb3ProviderFn(null);
+            } else {
+              setAccountFn(accounts[0]);
+            }
+          }
+        );
+
+        p.on(
+          "chainChanged",
+          (cId: number) => {
+            let cid = cId;
+
+            if (ethers.isHexString(cId)) {
+              cid = parseInt(
+                cId,
+                16
+              );
+            }
+
+            if (wallet === "aw") {
+              const currentAwConnection = localStorage.getItem("walletconnect_aw");
+              if (currentAwConnection) {
+                const withChainId = JSON.stringify({
+                  ...JSON.parse(currentAwConnection),
+                  chainId: cid
+                });
+                localStorage.setItem(
+                  "walletconnect_aw",
+                  withChainId
                 );
               }
-
-              if (wallet === "aw") {
-                const currentAwConnection = localStorage.getItem("walletconnect_aw");
-                if (currentAwConnection) {
-                  const withChainId = JSON.stringify({
-                    ...JSON.parse(currentAwConnection),
-                    chainId: cid
-                  });
-                  localStorage.setItem(
-                    "walletconnect_aw",
-                    withChainId
-                  );
-                }
-              }
-
-              try {
-                if (!SUPPORTED_SWAP_NETWORKS.includes(cid)) {
-                  setIsSupportedSwapNetworkFn(false);
-                }
-
-                if (!SUPPORTED_NETWORKS.includes(cid)) {
-                  setIsSupportedNetworkFn(false);
-                }
-
-                return setChainIdFn(cid);
-              } catch (e) {
-                console.log(e);
-              }
-
             }
-          );
 
-          syncLocalStorageConnection(wallet);
+            try {
+              if (!SUPPORTED_SWAP_NETWORKS.includes(cid)) {
+                setIsSupportedSwapNetworkFn(false);
+              }
 
-          setWeb3ProviderFn(web3Provider);
-          setChainIdFn(Number((await web3Provider.getNetwork()).chainId));
-          setProviderFn(p);
-          setWalletNameFn(wallet);
-          setWalletNameValue(wallet);
-          setIsActiveFn(true);
-          setWalletChangeModalOpenFn(false);
-          setChangingWalletFn(false);
-        })();
+              if (!SUPPORTED_NETWORKS.includes(cid)) {
+                setIsSupportedNetworkFn(false);
+              }
+
+              return setChainIdFn(cid);
+            } catch (e) {
+              console.log(e);
+            }
+
+          }
+        );
+
+        syncLocalStorageConnection(wallet);
+
+        setWeb3ProviderFn(web3Provider);
+        setChainIdFn(Number((await web3Provider.getNetwork()).chainId));
+        setProviderFn(p);
+        setWalletNameFn(wallet);
+        setWalletNameValue(wallet);
+        setIsActiveFn(true);
+        setWalletChangeModalOpenFn(false);
+        setChangingWalletFn(false);
       } catch (e) {
         console.error(e);
       }
@@ -317,7 +341,7 @@ export function useWeb3() {
         setChangingNetworkFn(true);
         await provider.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: ethers.toQuantity(cid) }]
+          params: [{chainId: ethers.toQuantity(cid)}]
         });
         setChainIdFn(cid);
         setChangingNetworkFn(false);

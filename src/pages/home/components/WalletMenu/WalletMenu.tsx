@@ -21,7 +21,7 @@ export default function WalletMenu() {
 
   const walletRef = useRef<HTMLDivElement | null>(null);
   const [isWalletMenuOpened, setWalletMenuOpened] = useState(false);
-  const { account, disconnect, isActive } = useWeb3();
+  const { account, disconnect } = useWeb3();
 
 
 

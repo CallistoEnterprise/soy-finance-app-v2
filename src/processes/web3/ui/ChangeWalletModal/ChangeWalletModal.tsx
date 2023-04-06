@@ -5,13 +5,12 @@ import {useEvent, useStore} from "effector-react";
 import {$isWalletChangeModalOpened} from "../../models/stores";
 import {setWalletChangeModalOpen} from "../../models";
 import dynamic from "next/dynamic";
-import CircularProgress from "../../../../shared/components/CircularProgress";
+import Preloader from "../../../../shared/components/Preloader/Preloader";
 
 const DynamicChangeWalletContent = dynamic(() => import("../ChangeWalletContent"), {
   loading: () => {
-    console.log("Loading started");
     return <div className={styles.loading}>
-      <CircularProgress size={40} />
+      <Preloader size={40} />
     </div>
   }
 })

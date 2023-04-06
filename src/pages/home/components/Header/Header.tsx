@@ -12,6 +12,7 @@ import useTranslation from "next-translate/useTranslation";
 import Portal from "../../../../shared/components/Portal";
 import Dialog from "../../../../shared/components/Dialog";
 import ChangeWalletModal from "../../../../processes/web3/ui/ChangeWalletModal";
+import ConnectWalletButton from "../../../../processes/web3/ui/ConnectWalletButton";
 
 const DynamicHeaderNetwork = dynamic(() => import("../HeaderNetwork"), {
   ssr: false,
@@ -23,34 +24,21 @@ const DynamicWalletMenu = dynamic(() => import("../WalletMenu"), {
   loading: () => <div className={styles.loading} />
 });
 
-const DynamicChangeWalletModal = dynamic(() => import("../../../../processes/web3/ui/ChangeWalletModal"), {
-  ssr: false,
-  loading: () => <Portal root="dialog-root" onClose={() => {}} isOpen={true}>
-    <Dialog isOpen={true} onClose={() => {}}>
-      <div>
-        Loading...
-      </div>
-    </Dialog>
-  </Portal>
-})
-
 export default function Header() {
-  const { t } = useTranslation('common');
-
   const isActive = useStore($isActive);
-  const setIsOpened = useEvent(setWalletChangeModalOpen);
+  console.log("Rerenders");
 
   return <header className={styles.container}>
     <div className={styles.headerContent}>
       <div className={styles.headerMenu}>
-        <Image width={132} height={46} src="/Logo.svg" alt="Soy finance" />
+        <Image placeholder="blur" blurDataURL="/Logo.svg" width={132} height={46} src="/Logo.svg" alt="Soy finance" />
         <HeaderNav />
       </div>
       <div className={styles.headerSettings}>
         <SwitchLanguage />
-        {/*{isActive && <DynamicHeaderNetwork />}*/}
+        {isActive && <DynamicHeaderNetwork />}
         {!isActive ? <>
-          <Button onClick={() => setIsOpened(true)}>{t("connect_wallet")}</Button>
+          <ConnectWalletButton />
           <ChangeWalletModal />
         </> : <DynamicWalletMenu />}
       </div>

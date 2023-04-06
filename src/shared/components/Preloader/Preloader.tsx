@@ -1,12 +1,13 @@
 import React from "react";
-import styles from "./CircularProgress.module.scss";
+import styles from "./Preloader.module.scss";
 
 interface Props {
   size?: number,
-  color?: string
+  color?: string,
+  type?: "circular" | "linear"
 }
 
-export default function CircularProgress({ size = 25, color = "#6DA316" }: Props) {
+export default function Preloader({ size = 25, color = "#6DA316", type = "circular" }: Props) {
   return <div className={styles.MuiCircularProgressIndeterminate} role="progressbar" style={{
     width: size,
     height: size

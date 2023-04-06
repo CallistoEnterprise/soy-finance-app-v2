@@ -6,7 +6,7 @@
   background: #fff;
   padding: 40px;
   width: 454px;
-  height: 407px;
+  min-height: 407px;
   @include media.for-mobile {
     padding: 26px 16px 16px;
   }

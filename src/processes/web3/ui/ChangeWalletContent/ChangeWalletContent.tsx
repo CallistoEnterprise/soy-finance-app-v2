@@ -12,6 +12,7 @@ import QRCode from "react-qr-code";
 export async function copyToClipboard(text: string) {
   await navigator.clipboard.writeText(text);
 }
+
 import Image from "next/image";
 import IconButton from "../../../../shared/components/IconButton";
 import Tab from "../../../../shared/components/Tab";
@@ -19,6 +20,7 @@ import Tabs from "../../../../shared/components/Tabs";
 import useTranslation from "next-translate/useTranslation";
 import {useEvent} from "effector-react";
 import {setWalletChangeModalOpen} from "../../models";
+import WalletConnectV2Card from "../WalletConnectV2Card";
 
 const wcImagesPath = "/images/wallets/wc";
 
@@ -158,8 +160,6 @@ export default function ChangeWalletContent() {
     }
   }
 
-  console.log("Fired32");
-
   return <>
       {step === 2 && <IconButton className={styles.backButton} transparent onClick={() => {
         setStep(1);
@@ -188,6 +188,10 @@ export default function ChangeWalletContent() {
           <AbsoluteWalletCard active={currentWallet === "aw"} onClick={() => {
             setCurrentWallet("aw");
           }} />
+
+          <WalletConnectV2Card active={currentWallet === "walletConnectV2"} onClick={() => {
+            setCurrentWallet("walletConnectV2");
+          }} />
         </div>
         <Button fullWidth onClick={async () => {
           if (!currentWallet) {
@@ -213,74 +217,118 @@ export default function ChangeWalletContent() {
           }
         }}>{t("connect")}</Button>
       </>}
-      {step === 2 && <>
-        {currentWallet === "walletConnect" && <>
-          <div className={styles.title}>
-            <Image alt={wallets[currentWallet].name} src={wallets[currentWallet].image} width={24} height={24} />
-            <span>{wallets[currentWallet].name}</span>
-          </div>
-          <Tabs view="separate">
-            <Tab title="QR code">
-              <div className={styles.qrWrapper}>
-                <div style={{ background: "#fff",
-                  margin: "20px auto",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 8 }}>
-                  <QRCode size={294} value={connectionURI || ""} />
-                </div>
-                Scan QR code with a compatible wallet
+    {step === 2 && <>
+      {currentWallet === "walletConnect" && <>
+        <div className={styles.title}>
+          <Image alt={wallets[currentWallet].name} src={wallets[currentWallet].image} width={24} height={24} />
+          <span>{wallets[currentWallet].name}</span>
+        </div>
+        <Tabs view="separate">
+          <Tab title="QR code">
+            <div className={styles.qrWrapper}>
+              <div style={{ background: "#fff",
+                margin: "20px auto",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 8 }}>
+                <QRCode size={294} value={connectionURI || ""} />
               </div>
-              <Button fullWidth onClick={async () => {
-                await copyToClipboard(connectionURI || "");
-                console.log("Successfully copied!");
-              }} size="small">
-                Copy to clipboard
-              </Button>
-            </Tab>
-            <Tab title="Desktop">
-              <div className={styles.wcDesktopWrapper}>
-                {desktopWalletConnectLinks.map(link => {
-                  return <a key={link.name} target="_blank" className={styles.wcLink} href={link.getUrl(connectionURI || "")} rel="noreferrer">
-                    <div className={styles.wcLinkContent}>
-                      <div className={styles.wcLinkImage}>
-                        <Image alt="Wallet Connect" src={`${wcImagesPath}/${link.image}`} width={32} height={32} />
-                      </div>
-                      {link.name}
-                    </div>
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12.0072 11.2199L17.1805 16.3932L12.0072 21.5666C11.4872 22.0866 11.4872 22.9266 12.0072 23.4466C12.5272 23.9666 13.3672 23.9666 13.8872 23.4466L20.0072 17.3266C20.5272 16.8066 20.5272 15.9666 20.0072 15.4466L13.8872 9.32658C13.3672 8.80658 12.5272 8.80658 12.0072 9.32658C11.5005 9.84658 11.4872 10.6999 12.0072 11.2199Z" fill="#4B564B"/>
-                    </svg>
-                  </a>;
-                })}
-              </div>
-            </Tab>
-          </Tabs>
-        </>}
-        {currentWallet === "aw" && <>
-          <div className={styles.title}>
-            <Image alt={wallets[currentWallet].name} src={wallets[currentWallet].image} width={24} height={24} />
-            <span>{wallets[currentWallet].name}</span>
-          </div>
-          <div className={styles.qrWrapper}>
-            <div style={{ background: "#fff",
-              margin: "20px auto",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 8 }}>
-              <QRCode size={294} value={connectionURI || ""} />
+              Scan QR code with a compatible wallet
             </div>
-            Scan QR code with a compatible wallet
-          </div>
-          <Button fullWidth onClick={async () => {
-            await copyToClipboard(connectionURI || "");
-            console.log("Successfully copied!");
-          }} size="small">
-            Copy to clipboard
-          </Button>
-        </>}
+            <Button fullWidth onClick={async () => {
+              await copyToClipboard(connectionURI || "");
+              console.log("Successfully copied!");
+            }} size="small">
+              Copy to clipboard
+            </Button>
+          </Tab>
+          <Tab title="Desktop">
+            <div className={styles.wcDesktopWrapper}>
+              {desktopWalletConnectLinks.map(link => {
+                return <a key={link.name} target="_blank" className={styles.wcLink} href={link.getUrl(connectionURI || "")} rel="noreferrer">
+                  <div className={styles.wcLinkContent}>
+                    <div className={styles.wcLinkImage}>
+                      <Image alt="Wallet Connect" src={`${wcImagesPath}/${link.image}`} width={32} height={32} />
+                    </div>
+                    {link.name}
+                  </div>
+                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.0072 11.2199L17.1805 16.3932L12.0072 21.5666C11.4872 22.0866 11.4872 22.9266 12.0072 23.4466C12.5272 23.9666 13.3672 23.9666 13.8872 23.4466L20.0072 17.3266C20.5272 16.8066 20.5272 15.9666 20.0072 15.4466L13.8872 9.32658C13.3672 8.80658 12.5272 8.80658 12.0072 9.32658C11.5005 9.84658 11.4872 10.6999 12.0072 11.2199Z" fill="#4B564B"/>
+                  </svg>
+                </a>;
+              })}
+            </div>
+          </Tab>
+        </Tabs>
       </>}
-    </>
+      {currentWallet === "walletConnectV2" && <>
+        <div className={styles.title}>
+          <Image alt={wallets[currentWallet].name} src={wallets[currentWallet].image} width={24} height={24} />
+          <span>{wallets[currentWallet].name}</span>
+        </div>
+        <Tabs view="separate">
+          <Tab title="QR code">
+            <div className={styles.qrWrapper}>
+              <div style={{ background: "#fff",
+                margin: "20px auto",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 8 }}>
+                <QRCode size={294} value={connectionURI || ""} />
+              </div>
+              Scan QR code with a compatible wallet
+            </div>
+            <Button fullWidth onClick={async () => {
+              await copyToClipboard(connectionURI || "");
+              console.log("Successfully copied!");
+            }} size="small">
+              Copy to clipboard
+            </Button>
+          </Tab>
+          <Tab title="Desktop">
+            <div className={styles.wcDesktopWrapper}>
+              {desktopWalletConnectLinks.map(link => {
+                return <a key={link.name} target="_blank" className={styles.wcLink} href={link.getUrl(connectionURI || "")} rel="noreferrer">
+                  <div className={styles.wcLinkContent}>
+                    <div className={styles.wcLinkImage}>
+                      <Image alt="Wallet Connect" src={`${wcImagesPath}/${link.image}`} width={32} height={32} />
+                    </div>
+                    {link.name}
+                  </div>
+                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.0072 11.2199L17.1805 16.3932L12.0072 21.5666C11.4872 22.0866 11.4872 22.9266 12.0072 23.4466C12.5272 23.9666 13.3672 23.9666 13.8872 23.4466L20.0072 17.3266C20.5272 16.8066 20.5272 15.9666 20.0072 15.4466L13.8872 9.32658C13.3672 8.80658 12.5272 8.80658 12.0072 9.32658C11.5005 9.84658 11.4872 10.6999 12.0072 11.2199Z" fill="#4B564B"/>
+                  </svg>
+                </a>;
+              })}
+            </div>
+          </Tab>
+        </Tabs>
+      </>}
+      {currentWallet === "aw" && <>
+        <div className={styles.title}>
+          <Image alt={wallets[currentWallet].name} src={wallets[currentWallet].image} width={24} height={24} />
+          <span>{wallets[currentWallet].name}</span>
+        </div>
+        <div className={styles.qrWrapper}>
+          <div style={{ background: "#fff",
+            margin: "20px auto",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 8 }}>
+            <QRCode size={294} value={connectionURI || ""} />
+          </div>
+          Scan QR code with a compatible wallet
+        </div>
+        <Button fullWidth onClick={async () => {
+          await copyToClipboard(connectionURI || "");
+          console.log("Successfully copied!");
+        }} size="small">
+          Copy to clipboard
+        </Button>
+      </>}
+    </>}
+  </>
 }
