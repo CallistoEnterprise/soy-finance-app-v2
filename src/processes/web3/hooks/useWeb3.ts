@@ -130,8 +130,6 @@ export function useWeb3() {
         try {
           if (wallet === "walletConnect") {
             const accounts = await newProvider.enable();
-            console.log(newProvider);
-            console.log(accounts);
             setAccountFn(accounts[0]);
           }
 
@@ -139,8 +137,6 @@ export function useWeb3() {
             const accounts = await newProvider.request({
               method: "eth_requestAccounts"
             });
-
-            console.log(accounts);
 
             setAccountFn(accounts[0]);
           }
@@ -215,9 +211,6 @@ export function useWeb3() {
 
           }
         );
-
-        console.log("_>>>>>> NEW PROVIDER");
-        console.log(newProvider);
 
         setWeb3ProviderFn(web3Provider);
         setChainIdFn(Number((await web3Provider.getNetwork()).chainId));

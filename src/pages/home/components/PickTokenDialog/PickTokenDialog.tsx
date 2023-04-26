@@ -7,14 +7,22 @@ import clsx from "clsx";
 import Dialog from "../../../../shared/components/Dialog";
 import useNetworkSectionBalance from "../../../../shared/hooks/useNetworkSectionBalance";
 import {formatBalance, isNativeToken} from "../../../../shared/utils";
+import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 
-export default function PickTokenDialog({isOpened, handleClose, pickToken}) {
+interface Props {
+  isOpened: boolean,
+  handleClose: any,
+  pickToken: any
+}
+
+export default function PickTokenDialog({isOpened, handleClose, pickToken}: Props) {
   const [favoriteTokensToPick, setFavoriteTokensToPick] = useState<string[]>([]);
+  const {chainId} = useWeb3();
+  const {isLoading, contracts, network} = useNetworkSectionBalance({chainId});
 
-
-
-  const {isLoading, contracts, network} = useNetworkSectionBalance({chainId: 820});
-
+  if(!chainId) {
+    return;
+  }
 
   return <Dialog isOpen={isOpened} onClose={handleClose}>
     <div className={styles.pickTokenDialog}>
@@ -72,13 +80,13 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}) {
         <Tab title="All">
           <div className={styles.tokensList}>
             <ul>
-              {swapTokensList.map(token => {
-                return <li className={styles.pickTokenListItem} key={token["820"].token_address}>
-                  <button className={clsx(styles.favButton, favoriteTokensToPick.includes(token["820"].token_address) && styles.active)} onClick={() => {
-                    if(favoriteTokensToPick.includes(token["820"].token_address)) {
-                      setFavoriteTokensToPick(favoriteTokensToPick.filter(v => v !== token["820"].token_address));
+              {swapTokensList.filter(token => Boolean(token[chainId])).map(token => {
+                return <li className={styles.pickTokenListItem} key={token[chainId].token_address}>
+                  <button className={clsx(styles.favButton, favoriteTokensToPick.includes(token[chainId].token_address) && styles.active)} onClick={() => {
+                    if(favoriteTokensToPick.includes(token[chainId].token_address)) {
+                      setFavoriteTokensToPick(favoriteTokensToPick.filter(v => v !== token[chainId].token_address));
                     } else {
-                      setFavoriteTokensToPick([...favoriteTokensToPick, token["820"].token_address]);
+                      setFavoriteTokensToPick([...favoriteTokensToPick, token[chainId].token_address]);
                     }
                   }}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -86,18 +94,18 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}) {
                     </svg>
                   </button>
                   <button className={styles.pickTokenButton} onClick={() => {
-                    pickToken(token["820"]);
+                    pickToken(token[chainId]);
                     handleClose();
                   }}>
                     <div className={styles.tokenButtonInfo}>
-                      <img height={40} width={40} src={token["820"].imgUri} alt={token["820"].original_name} />
-                      {token["820"].original_name}
+                      <img height={40} width={40} src={token[chainId].imgUri} alt={token[chainId].original_name} />
+                      {token[chainId].original_name}
                     </div>
 
                     <span className={styles.tokenBalance}>
-                      {isNativeToken(token["820"].token_address) ?
+                      {isNativeToken(token[chainId].token_address) ?
                         formatBalance(network?.balance) :
-                        formatBalance(contracts?.find(c => c.symbol === token["820"].original_name)?.balance) || "0.0"
+                        formatBalance(contracts?.find(c => c.symbol === token[chainId].original_name)?.balance) || "0.0"
                       }
                     </span>
                   </button>
@@ -109,28 +117,28 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}) {
         </Tab>
         <Tab title="My list">
           <div className={styles.tokensList}>
-            {!!swapTokensList.filter(t => favoriteTokensToPick.includes(t["820"].token_address)).length ? <ul>
-              {swapTokensList.filter(t => favoriteTokensToPick.includes(t["820"].token_address)).map(token => {
-                return <li key={token["820"].token_address} className={styles.pickTokenListItem}>
-                  <button className={clsx(styles.favButton, favoriteTokensToPick.includes(token["820"].token_address) && styles.active)} onClick={() => {
-                    setFavoriteTokensToPick(favoriteTokensToPick.filter(v => v !== token["820"].token_address));
+            {!!swapTokensList.filter(t => Boolean(t[chainId]) && favoriteTokensToPick.includes(t[chainId].token_address)).length ? <ul>
+              {swapTokensList.filter(t => favoriteTokensToPick.includes(t[chainId].token_address)).map(token => {
+                return <li key={token[chainId].token_address} className={styles.pickTokenListItem}>
+                  <button className={clsx(styles.favButton, favoriteTokensToPick.includes(token[chainId].token_address) && styles.active)} onClick={() => {
+                    setFavoriteTokensToPick(favoriteTokensToPick.filter(v => v !== token[chainId].token_address));
                   }}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M12.0003 17.2698L16.1503 19.7798C16.9103 20.2398 17.8403 19.5598 17.6403 18.6998L16.5403 13.9798L20.2103 10.7998C20.8803 10.2198 20.5203 9.11977 19.6403 9.04977L14.8103 8.63977L12.9203 4.17977C12.5803 3.36977 11.4203 3.36977 11.0803 4.17977L9.19032 8.62977L4.36032 9.03977C3.48032 9.10977 3.12032 10.2098 3.79032 10.7898L7.46032 13.9698L6.36032 18.6898C6.16032 19.5498 7.09032 20.2298 7.85032 19.7698L12.0003 17.2698Z" fill="currentColor"/>
                     </svg>
                   </button>
                   <button className={styles.pickTokenButton} onClick={() => {
-                    pickToken(token["820"]);
+                    pickToken(token[chainId]);
                     handleClose();
                   }}>
                     <div className={styles.tokenButtonInfo}>
-                      <img height={40} width={40} src={token["820"].imgUri} alt={token["820"].original_name} />
-                      {token["820"].original_name}
+                      <img height={40} width={40} src={token[chainId].imgUri} alt={token[chainId].original_name} />
+                      {token[chainId].original_name}
                     </div>
 
-                    <span className={styles.tokenBalance}>{isNativeToken(token["820"].token_address) ?
+                    <span className={styles.tokenBalance}>{isNativeToken(token[chainId].token_address) ?
                       formatBalance(network?.balance) :
-                      formatBalance(contracts?.find(c => c.symbol === token["820"].original_name)?.balance) || "0.0"
+                      formatBalance(contracts?.find(c => c.symbol === token[chainId].original_name)?.balance) || "0.0"
                     }</span>
                   </button>
                 </li>

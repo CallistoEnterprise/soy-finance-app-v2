@@ -5,7 +5,9 @@ interface SnackbarContextInterface {
   showMessage: (message: string, severity?: "success" | "error" | "info" | "warning", duration?: number) => void
 }
 
-const SnackbarContext = createContext<SnackbarContextInterface | null>(null);
+const SnackbarContext = createContext<SnackbarContextInterface>({
+  showMessage: () => {}
+});
 
 export const SnackbarProvider = ({ children }) => {
   const [open, setOpen] = useState(false);

@@ -1,9 +1,17 @@
-import {$isTradeInLoading, $isTradeOutLoading, $swapInputData, $swapRoute, $swapTokens, $trade} from "./stores";
 import {
-  changeOrder,
+  $isTradeInLoading,
+  $isTradeOutLoading,
+  $swapInputData,
+  $swapRoute,
+  $swapTokens,
+  $tokenSpendApproved, $tokenSpendEnabling, $tokenSpendRequesting,
+  $trade
+} from "./stores";
+import {
+  changeOrder, resetInputData,
   setAmountIn,
   setAmountOut, setRoute,
-  setTokenFrom,
+  setTokenFrom, setTokenSpendApproved, setTokenSpendEnabling, setTokenSpendRequesting,
   setTokenTo, setTrade,
   setTradeInLoading,
   setTradeOutLoading
@@ -43,6 +51,7 @@ $isTradeOutLoading.on(
   }
 );
 
+$swapInputData.reset(resetInputData);
 
 $swapInputData.on(
   setTokenFrom,
@@ -111,3 +120,24 @@ $swapRoute.on(
     return data;
   }
 )
+
+$tokenSpendApproved.on(
+  setTokenSpendApproved,
+  (_, data) => {
+    return data;
+  }
+);
+
+$tokenSpendEnabling.on(
+  setTokenSpendEnabling,
+  (_, data) => {
+    return data;
+  }
+);
+
+$tokenSpendRequesting.on(
+  setTokenSpendRequesting,
+  (_, data) => {
+    return data;
+  }
+);

@@ -7,7 +7,10 @@ interface ThemeContextInterface {
   mode: ColorModeType
 }
 
-const ThemeContext = createContext<ThemeContextInterface | null>(null);
+const ThemeContext = createContext<ThemeContextInterface>({
+  mode: "light",
+  toggleTheme: () => {}
+});
 
 const ThemeProvider = ({ children }) => {
   const [mode, setMode] = useState<ColorModeType>(document.body.dataset.colorTheme as ColorModeType);

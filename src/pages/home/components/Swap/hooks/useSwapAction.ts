@@ -1,13 +1,14 @@
 import {useCallback, useMemo} from "react";
 import {useSnackbar} from "../../../../../shared/providers/SnackbarProvider";
-import {parseUnits} from "ethers";
+import {Contract, ErrorCode, EthersError, parseUnits} from "ethers";
 import routerABI from "../../../../../shared/abis/router.json";
 import {useWeb3} from "../../../../../processes/web3/hooks/useWeb3";
 import {useStore} from "effector-react";
 import {$swapInputData, $trade} from "../models/stores";
 import {BigNumber} from "@ethersproject/bignumber";
-import {Contract} from "@ethersproject/contracts";
-
+import useTransactionDeadline from "./useTransactionDeadline";
+import {isNativeToken} from "../../../../../shared/utils";
+import {err} from "pino-std-serializers";
 
 export function calculateSlippageAmount(value: BigInt, slippage: number): BigNumber {
   return BigNumber.from(value).mul(995).div(1000);
@@ -29,25 +30,35 @@ const contracts = {
   }
 };
 
-
 export function useSwapAction() {
-  const {chainId, web3Provider, account, provider} = useWeb3();
+  const {chainId, web3Provider, account} = useWeb3();
   const {showMessage} = useSnackbar();
 
   const bridgeAddress = useMemo(
     () => contracts.router[chainId],
     [chainId]
   );
-  const deadline = 1682473091;
-
+  const deadline = useTransactionDeadline(20);
 
   const swapInputData = useStore($swapInputData)
 
   const trade = useStore($trade);
 
+  const functionName = useMemo(() => {
+    if(swapInputData.tokenFrom && isNativeToken(swapInputData.tokenFrom?.token_address)) {
+      return "swapExactCLOForTokens";
+    }
+
+    if(swapInputData.tokenTo && isNativeToken(swapInputData.tokenTo?.token_address)) {
+      return "swapExactTokensForCLO";
+    }
+
+    return "swapExactTokensForTokens";
+  }, [swapInputData.tokenTo, swapInputData.tokenFrom, swapInputData.amountIn]);
+
   const handleSwap = useCallback(
     async () => {
-      if(!account || !web3Provider || !trade) {
+      if(!account || !web3Provider || !trade || !swapInputData.tokenFrom || !swapInputData.tokenTo) {
         return;
       }
 
@@ -72,9 +83,6 @@ export function useSwapAction() {
           _path
         );
 
-        console.log("AMOUNT OUT");
-        console.log( _amountOut[_amountOut.length - 1]);
-
         const _amountOutWithSlippage = calculateSlippageAmount(
           _amountOut[_amountOut.length - 1],
           0.5
@@ -87,25 +95,24 @@ export function useSwapAction() {
           deadline
         ];
 
-        args.unshift(BigNumber.from(_parsedAmountIn)._hex);
-        args.push({
-          from: account,
-          value: 0
-        });
+        if (!isNativeToken(swapInputData.tokenFrom.token_address)) {
+          args.unshift(BigNumber.from(_parsedAmountIn)._hex);
+          args.push({
+            from: account,
+            value: 0
+          });
+        } else {
+          args.push({
+            from: account,
+            value: _parsedAmountIn
+          });
+        }
 
-        console.log(1);
-        console.log(args);
-        // const _args = [...args];
-        //
-        console.log(2);
-        const _estimatedGas = await contract["estimateGas"]["swapExactTokensForTokens"](...args);
+        const _estimatedGas = await contract[functionName]["estimateGas"](...args);
 
-        console.log(3);
-        console.log(_estimatedGas);
         args[args.length - 1]["gasLimit"] = BigNumber.from(_estimatedGas)._hex;
-        console.log("Staaart");
-        const tx = await contract["swapExactTokensForTokens"](...args);
-        console.log("END D:");
+
+        const tx = await contract[functionName](...args);
 
         // saveSwapTransaction({
         //   from: swapTokens.input.original_name,
@@ -116,13 +123,18 @@ export function useSwapAction() {
         //   setRecentTransactionsToState: setRecentSwapTransactionsFn
         // });
 
-        console.log(tx);
-
         return tx;
-      } catch (e) {
-        if (e.message) {
+      } catch (error: EthersError) {
+
+        if(error.code === "ACTION_REJECTED") {
           showMessage(
-            e.message,
+            "Action was rejected",
+            "error"
+          );
+        } else {
+          console.log(error);
+          showMessage(
+            "Something went wrong, please try again later",
             "error"
           );
         }

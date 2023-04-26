@@ -16,7 +16,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   startIcon?: IconName,
   endIcon?: IconName,
   fullWidth?:boolean,
-  mode: "default" | "error"
+  mode?: "default" | "error"
 }
 
 function Ripple({top, left, size}) {
@@ -67,13 +67,13 @@ export default function Button({
       const height = elem.clientHeight;
       const width = elem.clientWidth;
       const diameter = Math.max(width, height);
-      setRipples([...ripples, <Ripple top={top - diameter / 2} left={left - diameter / 2} size={Math.max(width, height)}/>]);
+      setRipples([...ripples, <Ripple key={ripples.length} top={top - diameter / 2} left={left - diameter / 2} size={Math.max(width, height)}/>]);
     }
 
 
     onClick && onClick(e);
   }} {...props}>
-    <div>{ripples.map(r => r)}</div>
+    <div>{ripples.map((r, index) => <React.Fragment key={index}>r</React.Fragment>)}</div>
 
     <span className={styles.content}>
       {startIcon && <Svg iconName={startIcon} />}

@@ -1,5 +1,15 @@
-import {useCallback, useEffect, useState} from "react";
-import {ChainId, Currency, ETHERS, Pair, Token, TokenAmount, Trade, WETH} from "@callisto-enterprise/soy-sdk";
+import {useCallback, useEffect, useRef} from "react";
+import {
+  ChainId,
+  Currency,
+  ETHERS,
+  Pair,
+  Token,
+  TokenAmount,
+  Trade,
+  TradeType,
+  WETH
+} from "@callisto-enterprise/soy-sdk";
 import {Contract, parseUnits} from "ethers";
 import MULTICALL_ABI from "../../../../../shared/abis/multicall.json";
 import {isNativeToken} from "../../../../../shared/utils";
@@ -7,10 +17,10 @@ import {FunctionFragment, Interface} from "@ethersproject/abi";
 import IUniswapV2PairABI from "../../../../../shared/abis/IUniswapV2Pair.json";
 import {useEvent, useStore} from "effector-react";
 import {$swapInputData, $trade} from "../models/stores";
-import {SwapVariant} from "../models/types";
 import {useWeb3} from "../../../../../processes/web3/hooks/useWeb3";
 import {useBlockNumber} from "../../../../../shared/hooks/useBlockNumber";
 import {setAmountIn, setAmountOut, setRoute, setTrade} from "../models";
+import {useSnackbar} from "../../../../../shared/providers/SnackbarProvider";
 
 type ExtensionValue = string | number | boolean | null | undefined;
 
@@ -69,20 +79,14 @@ export class WrappedTokenInfo extends Token {
   }
 }
 
-const CLO = {
-  "token_address":"0x0000000000000000000000000000000000000001",
-  "original_name":"CLO",
-  "decimal_token":18,
-  "imgUri":"https://s2.coinmarketcap.com/static/img/coins/64x64/2757.png"
-};
 export const WCLO_ADDRESS = "0xF5AD6F6EDeC824C7fD54A66d241a227F6503aD3a";
+export const WETC_ADDRESS = "0x35e9A89e43e45904684325970B2E2d258463e072";
+export const WBTT_ADDRESS = "0x33e85f0e26600a6644b6c910639B0bc7a99fd34e";
 
-
-const BTT = {
-  "token_address":"0xCc99C6635Fae4DAcF967a3fc2913ab9fa2b349C3",
-  "original_name":"ccBTT",
-  "decimal_token":18,
-  "imgUri":"https://s2.coinmarketcap.com/static/img/coins/64x64/16086.png"
+const addresses = {
+  199: WBTT_ADDRESS,
+  820: WCLO_ADDRESS,
+  61: WETC_ADDRESS
 }
 
 enum PairState {
@@ -123,9 +127,9 @@ function wrappedCurrency(currency: Currency | undefined, chainId: ChainId | unde
 }
 
 
-function getAddress(address) {
-  if(isNativeToken(address)) {
-    return WCLO_ADDRESS;
+function getAddress(address, chainId) {
+  if(isNativeToken(address) && addresses[chainId]) {
+      return addresses[chainId];
   }
 
   return address;
@@ -300,13 +304,24 @@ function toCallState(
   };
 }
 
+export const MULTICALL_NETWORKS: { [chainId in ChainId]: string } = {
+  [ChainId.MAINNET]: "0x8bA3D23241c7044bE703afAF2A728FdBc16f5F6f",
+  [ChainId.CLOTESTNET]: "0xDd2742Ba146A57F1F6e8F47235024ba1bd0cf568",
+  [ChainId.ETHEREUM]: "",
+  [ChainId.RINKEBY]: "",
+  [ChainId.KOVAN]: "",
+  [ChainId.BSC]: "0xfF6FD90A470Aaa0c1B8A54681746b07AcdFedc9B",
+  [ChainId.BSCTESTNET]: "",
+  [ChainId.ETCCLASSICMAINNET]: "0x98194aaA67638498547Df929DF4926C7D0DCD135",
+  [ChainId.BTTMAINNET]: "0x8dFbdEEeF41eefd92A663a34331db867CA6581AE"
+};
+
 const PAIR_INTERFACE = new Interface(IUniswapV2PairABI);
 const methodName = "getReserves";
 const fragment = PAIR_INTERFACE.getFunction(methodName);
 
-export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blockNumber) {
-
-  const common = BASES_TO_CHECK_TRADES_AGAINST["820"] ?? [];
+export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blockNumber, chainId) {
+  const common: [Token, Token] = BASES_TO_CHECK_TRADES_AGAINST[chainId] ?? [];
 
   const basePairs: [Token, Token][] = common.flatMap(
     (base): [Token, Token][] => common.map((otherBase) => [base, otherBase])
@@ -314,11 +329,13 @@ export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blo
 
   const [tokenA, tokenB] = [wrappedCurrency(
     currencyIn,
-    820
+    chainId
   ), wrappedCurrency(
     currencyOut,
-    820
+    chainId
   )];
+
+  if (!chainId) return [];
 
   const swapPairCombinations = tokenA && tokenB ? [
     // the direct pair
@@ -334,7 +351,7 @@ export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blo
     .filter(([t0, t1]) => t0.address !== t1.address)
     .filter(([tokenA_, tokenB_]) => {
 
-      const customBases = CUSTOM_BASES["820"];
+      const customBases = CUSTOM_BASES[chainId];
 
       const customBasesA: Token[] | undefined = customBases?.[tokenA_.address];
       const customBasesB: Token[] | undefined = customBases?.[tokenB_.address];
@@ -347,19 +364,16 @@ export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blo
       return true;
     }) : [];
 
-  console.log("FOUR");
-
   const tokens = swapPairCombinations.map(([currencyA, currencyB]) => [
     wrappedCurrency(
       currencyA,
-      ChainId.MAINNET
+      chainId
     ),
     wrappedCurrency(
       currencyB,
-      ChainId.MAINNET
+      chainId
     ),
   ]);
-
 
   const swapPairAddresses = tokens.map(([tokenA, tokenB]) => {
     return tokenA && tokenB ? Pair.getAddress(
@@ -381,11 +395,8 @@ export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blo
     })
     : [];
 
-  console.log("FIVE");
-
-
   const multicallContract: any = new Contract(
-    "0x8bA3D23241c7044bE703afAF2A728FdBc16f5F6f",
+    MULTICALL_NETWORKS[chainId],
     MULTICALL_ABI,
     web3Provider
   );
@@ -393,9 +404,6 @@ export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blo
   const [block, returnData] = await multicallContract.aggregate(calls.map((obj) => {
     return [obj.address, obj.callData];
   }));
-
-  console.log(returnData);
-
 
   const swapCallResults = returnData.map((value) => {
     return {
@@ -405,16 +413,12 @@ export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blo
     };
   });
 
-  console.log(swapCallResults);
-
   const swapReserveResults = swapCallResults.map((result) => toCallState(
     result,
     PAIR_INTERFACE,
     fragment,
     blockNumber
   ));
-
-  console.log(swapReserveResults);
 
   const pairs = swapReserveResults.map((result, i) => {
     const { result: reserves, loading } = result;
@@ -448,8 +452,6 @@ export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blo
     ];
   });
 
-  console.log(pairs);
-
   const allowedPairs: Pair[] = Object.values(pairs
     // filter out invalid pairs
     .filter((result): result is [PairState.EXISTS, Pair] => Boolean(result[0] === PairState.EXISTS && result[1]))
@@ -465,10 +467,10 @@ export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blo
   return allowedPairs;
 }
 
-function toCurrency(token) {
+function toCurrency(token, chainId) {
   return new WrappedTokenInfo({
-      chainId: ChainId.MAINNET,
-      address: getAddress(token.token_address),
+      chainId,
+      address: getAddress(token.token_address, chainId),
       decimals: token.decimal_token,
       symbol: token.original_name,
       name: token.original_name,
@@ -484,24 +486,55 @@ function toTokenAmount(currency, value) {
 }
 
 export function useTrade() {
-  const { web3Provider } = useWeb3();
+  const { web3Provider, chainId } = useWeb3();
   const blockNumber = useBlockNumber();
   const swapInputData = useStore($swapInputData);
 
   const setAmountInFn = useEvent(setAmountIn);
   const setAmountOutFn = useEvent(setAmountOut);
 
+  const trade = useStore($trade);
+
   const setTradeFn = useEvent(setTrade);
   const setRouteFn = useEvent(setRoute);
-  console.log(swapInputData);
-  console.log(web3Provider);
-  console.log(blockNumber);
 
+  const tradeRef = useRef(trade);
+  const swapInputDataRef = useRef(swapInputData);
+
+  const {showMessage} = useSnackbar();
+
+  useEffect(() => {
+    tradeRef.current = trade;
+  }, [trade]);
+
+  useEffect(() => {
+    swapInputDataRef.current = swapInputData;
+  }, [swapInputData]);
+
+  useEffect(() => {
+    if(tradeRef.current) {
+
+      (async () => {
+        if(tradeRef.current?.tradeType === TradeType.EXACT_INPUT) {
+          console.log("RECALCULATING TRADE CAUSED BY BLOCK CHANGE");
+          await recalculateTradeIn(swapInputDataRef.current.amountIn, swapInputDataRef.current.tokenFrom);
+          showMessage("Recalculated exactIn trade due to new block");
+        }
+
+        if(tradeRef.current?.tradeType === TradeType.EXACT_OUTPUT) {
+          console.log("RECALCULATING TRADE CAUSED BY BLOCK CHANGE");
+          await recalculateTradeOut(swapInputDataRef.current.amountOut, swapInputDataRef.current.tokenTo);
+          showMessage("Recalculated exactOut trade due to new block");
+        }
+      })();
+    }
+  }, [blockNumber]);
 
   const recalculateTradeIn = useCallback(async (amount, token, tokenB = null) => {
     const tokenTo = tokenB || swapInputData.tokenTo;
 
     if(!amount) {
+      setTradeFn(null);
       setAmountOutFn("");
       return;
     }
@@ -510,8 +543,8 @@ export function useTrade() {
       return null;
     }
 
-      const currencyIn = toCurrency(token);
-      const currencyOut = toCurrency(tokenTo);
+      const currencyIn = toCurrency(token, chainId);
+      const currencyOut = toCurrency(tokenTo, chainId);
 
 
       const typedValueParsed = parseUnits(
@@ -521,7 +554,7 @@ export function useTrade() {
 
       const currencyAmountIn = toTokenAmount(currencyIn, typedValueParsed);
 
-      const allowedPairs = await getAllowedPairs(currencyIn, currencyOut, web3Provider, blockNumber);
+      const allowedPairs = await getAllowedPairs(currencyIn, currencyOut, web3Provider, blockNumber, chainId);
 
       const trade1 = Trade.bestTradeExactIn(
         allowedPairs,
@@ -548,6 +581,7 @@ export function useTrade() {
     const tokenFrom = tokenB || swapInputData.tokenFrom;
 
     if(!amount) {
+      setTradeFn(null);
       setAmountInFn("");
       return;
     }
@@ -556,8 +590,8 @@ export function useTrade() {
       return null;
     }
 
-    const currencyIn = toCurrency(tokenFrom);
-    const currencyOut = toCurrency(token);
+    const currencyIn = toCurrency(tokenFrom, chainId);
+    const currencyOut = toCurrency(token, chainId);
 
     const typedValueParsed = parseUnits(
       amount,
@@ -566,7 +600,7 @@ export function useTrade() {
 
     const currencyAmountOut = toTokenAmount(currencyOut, typedValueParsed);
 
-    const allowedPairs = await getAllowedPairs(currencyIn, currencyOut, web3Provider, blockNumber);
+    const allowedPairs = await getAllowedPairs(currencyIn, currencyOut, web3Provider, blockNumber, chainId);
 
     const trade1 = Trade.bestTradeExactOut(
       allowedPairs,
@@ -577,7 +611,6 @@ export function useTrade() {
       }
     );
 
-    console.log(trade1);
     if(trade1[0]) {
       setAmountInFn(trade1[0].inputAmount.toSignificant());
       setTradeFn(trade1[0]);

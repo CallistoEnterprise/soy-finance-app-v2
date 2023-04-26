@@ -27,4 +27,7 @@ export const $swapRoute = createStore<Route | null>(null, { sid: "swapRoute" });
 export const $isTradeOutLoading = createStore<boolean>(false, { sid: "isTradeOutLoading" });
 export const $isTradeInLoading = createStore<boolean>(false, { sid: "isTradeInLoading" });
 
+export const $tokenSpendApproved = createStore<boolean>(true);
+export const $tokenSpendEnabling = createStore<boolean>(false);
+export const $tokenSpendRequesting = createStore<boolean>(false);
 

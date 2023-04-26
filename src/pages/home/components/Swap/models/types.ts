@@ -6,8 +6,8 @@ export type SwapToken = {
 }
 
 export enum SwapVariant {
-  "exactIn",
-  "exactOut"
+  "exactIn" = "EXACT_IN",
+  "exactOut" = "EXACT_OUT"
 }
 
 export type SwapInputData = {

@@ -5,18 +5,26 @@ import Svg from "../../../../shared/components/Svg/Svg";
 import {formatBalance, isNativeToken} from "../../../../shared/utils";
 import PickTokenDialog from "../PickTokenDialog";
 import useNetworkSectionBalance from "../../../../shared/hooks/useNetworkSectionBalance";
+import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
+import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
 
 export default function SwapTokenCard({setDialogOpened, isDialogOpened, pickedToken, inputValue, setToken, handleInputChange, recalculateTrade}) {
-  const {network, contracts} = useNetworkSectionBalance({chainId: 820})
+  const {chainId} = useWeb3();
+  const {network, contracts} = useNetworkSectionBalance({chainId})
+  const { showMessage } = useSnackbar();
+
+  function showComingSoon() {
+    showMessage("Coming soon", "info");
+  }
 
   return <div className={styles.swapCard}>
     <div className={styles.swapCardHeader}>
       <h3 className="font-14 bold">From</h3>
       <div className={styles.partButtons}>
-        <Button variant="outlined" size="small">25%</Button>
-        <Button variant="outlined" size="small">50%</Button>
-        <Button variant="outlined" size="small">75%</Button>
-        <Button variant="outlined" size="small">Max</Button>
+        <Button onClick={showComingSoon} variant="outlined" size="small">25%</Button>
+        <Button onClick={showComingSoon} variant="outlined" size="small">50%</Button>
+        <Button onClick={showComingSoon} variant="outlined" size="small">75%</Button>
+        <Button onClick={showComingSoon} variant="outlined" size="small">Max</Button>
       </div>
     </div>
     <div>
@@ -45,6 +53,7 @@ export default function SwapTokenCard({setDialogOpened, isDialogOpened, pickedTo
             ~0.08 USD
           </span>
         <span>Balance:
+          {" "}
           {isNativeToken(pickedToken?.token_address) ?
             formatBalance(network?.balance) :
             formatBalance(contracts?.find(c => c.symbol === pickedToken?.original_name)?.balance) || "0.0"
