@@ -6,7 +6,7 @@ export default function Document() {
       if(window.localStorage.getItem('color-theme')) {
         return window.localStorage.getItem('color-theme')
       }
-      return 'dark'
+      return 'light'
     }
     document.body.dataset.colorTheme = getUserPreference();
   `;
