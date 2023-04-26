@@ -73,7 +73,7 @@ export default function Button({
 
     onClick && onClick(e);
   }} {...props}>
-    <div>{ripples.map((r, index) => <React.Fragment key={index}>r</React.Fragment>)}</div>
+    <div>{ripples.map((r, index) => <React.Fragment key={index}>{r}</React.Fragment>)}</div>
 
     <span className={styles.content}>
       {startIcon && <Svg iconName={startIcon} />}
