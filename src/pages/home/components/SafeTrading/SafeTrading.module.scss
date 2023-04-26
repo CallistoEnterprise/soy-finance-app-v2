@@ -1,0 +1,106 @@
+@use "src/styles/colors.module";
+@use "sass:math";
+
+.progressContainer {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  border-radius: 20px;
+  overflow: hidden;
+  background-color: colors.$background-secondary;
+}
+
+.progressBar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  &.green {
+    background-color: colors.$palette-green;
+  }
+
+  &.purple {
+    background-color: colors.$palette-violet;
+  }
+
+  &.pink {
+    background-color: colors.$palette-pink;
+  }
+}
+
+.progressNumbers {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  align-items: center;
+}
+
+.bar {
+  stroke-linecap: round;
+  cx: 160px;
+  cy: 160px;
+  r: 155px;
+  fill: transparent;
+  stroke-width: 10px;
+  stroke: colors.$palette-green;
+  stroke-dasharray: 488px;
+  stroke-dashoffset: 488px;
+}
+
+.bar1 {
+  stroke-linecap: round;
+  cx: 160px;
+  cy: 160px;
+  r: 155px;
+  fill: transparent;
+  stroke-width: 10px;
+  stroke: grey;
+  stroke-dasharray: math.$pi * 2 * 160px;
+}
+
+.semiProgressContainer {
+  width: 320px;
+  height: 320px;
+  border: 10px solid colors.$background-secondary;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.barWrapper {
+  overflow: hidden;
+}
+
+.progressText {
+  position: absolute;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  top: 30px;
+  width: 260px;
+  height: 130px;
+  padding-top: 50px;
+
+  &:before {
+    content: url("data:image/svg+xml,%3Csvg width='263' height='132' viewBox='0 0 263 132' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M261.5 131C261.5 96.5219 247.804 63.4559 223.424 39.0761C199.044 14.6964 165.978 1 131.5 1C97.0219 0.999997 63.9559 14.6964 39.5761 39.0761C15.1964 63.4558 1.50001 96.5218 1.5 131' stroke='%23D4DDD8' stroke-linecap='square' stroke-linejoin='round' stroke-dasharray='2 20'/%3E%3C/svg%3E%0A");
+    position: absolute;
+    top: 0;
+
+  }
+}
+
+.semiCircleProgressContainer {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.pointsText {
+  color: colors.$palette-green;
+}

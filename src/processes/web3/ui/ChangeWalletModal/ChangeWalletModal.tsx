@@ -10,7 +10,7 @@ import Preloader from "../../../../shared/components/Preloader/Preloader";
 const DynamicChangeWalletContent = dynamic(() => import("../ChangeWalletContent"), {
   loading: () => {
     return <div className={styles.loading}>
-      <Preloader size={40} />
+      <Preloader size={100} />
     </div>
   }
 })
@@ -22,7 +22,6 @@ export default function ChangeWalletModal() {
 
   const handleClose = () => setWalletChangeModalOpenFn(false);
 
-  console.log("REnder c");
   return <Dialog
     isOpen={isOpened}
     onClose={() => {

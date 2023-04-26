@@ -1,15 +1,16 @@
-import React, { ReactElement, useState } from "react";
+import React, {Children, ReactElement, useState} from "react";
 import TabTitle from "../TabTitle";
 import styles from "./Tabs.module.scss";
 import clsx from "clsx";
 
 interface Props {
   children: ReactElement[],
-  view?: "separate" | "merged" | "button",
+  view?: "separate" | "merged",
+  size?: "default" | "small",
   className?: string
 }
 
-function Tabs({ children, view = "merged", className = "" }: Props) {
+function Tabs({ children, view = "merged", className = "", size = "default" }: Props) {
   const [selectedTab, setSelectedTab] = useState(0);
 
   return (
@@ -25,9 +26,18 @@ function Tabs({ children, view = "merged", className = "" }: Props) {
             index={index}
             setSelectedTab={setSelectedTab}
             view={view}
+            size={size}
           />
         ))}
+
       </ul>
+      {view === "merged" && <><div
+        style={{width: `calc(100% / ${Children.toArray(children).length})`, transform: `translateX(calc(100% * ${selectedTab}))`}}
+        className={styles.indicator}
+      />
+        <div className={styles.spacer} />
+        </>
+      }
       {children[selectedTab]}
     </div>
   );

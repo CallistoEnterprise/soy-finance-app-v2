@@ -4,15 +4,31 @@ import {useScope} from "../shared/models/useScope";
 import "/src/shared/models/init";
 import { Provider } from "effector-react";
 import { robotoFlex } from "../shared/fonts";
+import { SnackbarProvider } from "../shared/providers/SnackbarProvider";
+import dynamic from "next/dynamic";
+import {useInit} from "../processes/web3/hooks/useInit";
 
+const ThemeProvider = dynamic(
+  () => import("../shared/providers/ThemeProvider"),
+  {
+    ssr: false,
+  }
+);
 
 export default function App({ Component, pageProps }: AppProps) {
   const scope = useScope(pageProps.initialState);
 
-  return <Provider value={scope}>
-    <main className={robotoFlex.className}>
-      <Component {...pageProps} />
-    </main>
+  useInit();
 
-  </Provider>
+  return <ThemeProvider>
+    <SnackbarProvider>
+      <Provider value={scope}>
+        <main className={robotoFlex.className}>
+          <Component {...pageProps} />
+        </main>
+      </Provider>
+    </SnackbarProvider>
+  </ThemeProvider>
+
+
 }

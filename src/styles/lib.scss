@@ -1,0 +1,50 @@
+@use "colors.module";
+
+.flex {
+  display: flex;
+}
+
+.border {
+  border: 1px solid colors.$border-primary;
+}
+
+.p-20 {
+  padding: 20px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.rounded-8 {
+  border-radius: 8px;
+}
+
+.rounded-20 {
+  border-radius: 20px;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paper {
+  @extend .rounded-20;
+  @extend .p-20;
+  @extend .border;
+  background-color: colors.$background-primary;
+}

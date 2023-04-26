@@ -5,7 +5,7 @@ export const headersNetworks = [
     image: "/images/tokens/ethereum-46.png"
   },
   {
-    chainId:820,
+    chainId: 820,
     name: "Callisto Network",
     image: "/images/tokens/callisto-46.png"
   },

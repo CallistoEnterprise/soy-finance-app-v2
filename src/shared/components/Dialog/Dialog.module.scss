@@ -1,22 +1,21 @@
-@import "../../../styles/colors.module";
+@use "../../../styles/colors.module";
 
 .dialogContainer {
   --transition-speed: 0.3s;
 }
 
 .dialog {
-  background: #fff;
+  background: colors.$background-primary;
   border-radius: 8px;
   overflow: auto;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
   opacity: 0;
   transition: opacity var(--transition-speed) ease;
   z-index: 1000;
-  border: 1px solid $basic-border-popup;
+  border: 1px solid colors.$border-primary;
 }
 
 .backdrop {

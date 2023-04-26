@@ -4,22 +4,14 @@ import clsx from "clsx";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: any,
-  small?: boolean,
-  large?: boolean,
-  className?: string | undefined,
-  withBorder?: boolean,
-  transparent?: boolean
+  variant?: "menu" | "action" | "social" | "default"
 }
 
-export default function IconButton({ children, small = false, className, withBorder = false, large = false, transparent, ...props }: Props) {
+export default function IconButton({ children, variant = "default", ...props }: Props) {
   return <button className={
     clsx(
       styles.icon,
-      transparent && styles.transparent,
-      withBorder && styles.withBorder,
-      small && styles.smallIcon,
-      large && styles.large,
-      className
+      styles[variant]
     )} {...props}>
     {children}
   </button>;

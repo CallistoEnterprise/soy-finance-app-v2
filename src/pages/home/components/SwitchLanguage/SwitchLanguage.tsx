@@ -11,7 +11,7 @@ export default function SwitchLanguage() {
   const [langOpened, setLangOpened] = useState(false);
 
   return <>
-    <IconButton onClick={() => {
+    <IconButton variant="menu" onClick={() => {
       setLangOpened(true);
     }}>
       <Svg iconName="earth" />

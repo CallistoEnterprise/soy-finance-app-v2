@@ -1,28 +1,33 @@
-@use "typography";
-@import "colors.module";
-
-@mixin inputBasicStyle {
-  outline: none;
-  color: $basic-text-main;
-  width: 100%;
-  height: 50px;
-  @include typography.t-body-16;
-  padding: 0 20px;
-
-  &::placeholder {
-    color: $basic-text-secondary;
-  }
-
-  &:-webkit-autofill,
-  &:-webkit-autofill:hover,
-  &:-webkit-autofill:focus {
-    border: 1px solid $basic-border-input;
-    -webkit-text-fill-color: $basic-text-main;
-    -webkit-box-shadow: 0 0 0 1000px $basic-filling-primary inset;
-    transition: background-color 5000s ease-in-out 0s;
-  }
-}
-
 @function withOpacity($color, $opacity: 0.1) {
   @return rgba($color, $opacity);
+}
+
+@mixin t-body-12 {
+  font-size: 12px;
+  line-height: 14px;
+}
+
+@mixin t-body-14 {
+  font-size: 14px;
+  line-height: 18px;
+}
+
+@mixin t-body-16 {
+  font-size: 16px;
+  line-height: 20px;
+}
+
+@mixin t-body-20 {
+  font-size: 20px;
+  line-height: 36px;
+}
+
+@mixin t-body-24 {
+  font-size: 24px;
+  line-height: 32px;
+}
+
+@mixin t-body-32 {
+  font-size: 32px;
+  line-height: 32px;
 }

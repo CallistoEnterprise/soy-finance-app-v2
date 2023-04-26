@@ -1,3 +1,4 @@
+@use "src/styles/colors.module";
 
 .langPickerWrapper {
   display: grid;
@@ -10,7 +11,7 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 32px;
-  color: #122110;
+  color: colors.$text-primary;
   text-align: center;
   margin-bottom: 28px;
 
@@ -27,19 +28,18 @@
   gap: 10px;
   font-size: 16px;
   line-height: 20px;
-  color: #122110;
+  color: colors.$text-primary;
   &:hover:not(.active) {
-    border: 1px solid #6DA316;
+    border: 1px solid colors.$palette-green;
   }
 
   &.active {
-    background: rgba(109, 163, 22, 0.1);
-    border: 1px solid #6DA316;
+    background: colors.$transparent-primary;
+    border: 1px solid colors.$palette-green;
   }
 }
 
 .langDialog {
   padding: 40px;
-  border: 1px solid #D4DDD8;
-  border-radius: 20px;
+  border: 1px solid colors.$border-primary;
 }

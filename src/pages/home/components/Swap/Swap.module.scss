@@ -1,0 +1,61 @@
+@use "src/styles/colors.module";
+@use "src/styles/mixins";
+
+.swapHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.changeOrder {
+  display: flex;
+  justify-content: center;
+
+  > button {
+    transform: rotate(90deg);
+  }
+}
+
+.infoRow {
+  @include mixins.t-body-14;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: colors.$text-secondary;
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+
+.bottomInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid colors.$border-primary;
+  margin-top: 20px;
+}
+
+.priceContent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.route {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

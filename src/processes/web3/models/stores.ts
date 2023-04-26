@@ -54,3 +54,7 @@ export const $isWalletChangeModalOpened = createStore<boolean | null>(false, {
   sid: "isWalletChangeModalOpened"
 });
 
+export const $wc2blockchains = createStore<number[]>([], {
+  sid: "wc2blockchains"
+});
+

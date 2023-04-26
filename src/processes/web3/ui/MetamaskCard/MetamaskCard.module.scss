@@ -1,3 +1,5 @@
+@use "src/styles/colors.module";
+
 .metamaskImageWrapper {
   border-radius: 50%;
   background: #F5F7F9;
@@ -11,20 +13,20 @@
 .cardWrapper {
   display: flex;
   justify-content: space-between;
-  border: 1px solid #D4DDD8;
+  border: 1px solid colors.$border-primary;
   border-radius: 8px;
   align-items: center;
   padding: 0 10px 0 20px;
   height: 60px;
-
+  color: colors.$text-primary;
 
   &:hover {
-    border: 1px solid #6DA316;
+    border: 1px solid colors.$palette-green;
   }
 
   &.active {
-    border: 1px solid #6DA316;
-    background: rgba(109, 163, 22, 0.1);
+    border: 1px solid colors.$palette-green;
+    background: colors.$transparent-primary;
   }
 }
 

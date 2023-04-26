@@ -23,8 +23,6 @@ export default function WalletMenu() {
   const [isWalletMenuOpened, setWalletMenuOpened] = useState(false);
   const { account, disconnect } = useWeb3();
 
-
-
   const [walletPositions, setWalletPositions] = useState({
     top: 0,
     right: 0
@@ -46,16 +44,21 @@ export default function WalletMenu() {
 
   return <>
     <div ref={walletRef}>
-      <Button onClick={() => setWalletMenuOpened(true)} color="secondary">
+      <button className={styles.dropdownButton} onClick={() => setWalletMenuOpened(true)} color="secondary">
                 <span className={styles.buttonContent}>
-                  <Svg iconName="wallet" />
+                  <span className={styles.walletIcon}>
+                    <Svg iconName="wallet" />
+                  </span>
+
                   {formatAddress(account)}
                   <span className={clsx(
                     styles.expandArrow,
                     isWalletMenuOpened && styles.opened)
-                  }><Svg iconName="expand-arrow" /></span>
+                  }>
+                    <Svg size={16} iconName="expand-arrow" />
+                  </span>
                 </span>
-      </Button>
+      </button>
       <Portal root="dropdown-root" isOpen={isWalletMenuOpened} onClose={() => setWalletMenuOpened(false)} isTransitioningClassName={styles.in} className={clsx(
         styles.dialogContainer,
         isWalletMenuOpened && styles.open
@@ -65,7 +68,7 @@ export default function WalletMenu() {
             <ul className={styles.walletMenuList}>
               <li>
                 <div className={styles.walletMenuItem} role="button">
-                  <Svg iconName="wallet" />
+                  <span className={styles.iconWrapper}><Svg iconName="wallet" /></span>
                   <span>{t("wallet")}</span>
                 </div>
               </li>

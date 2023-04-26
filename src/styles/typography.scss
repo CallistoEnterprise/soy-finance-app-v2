@@ -1,110 +1,42 @@
-@use "media";
+@use "mixins";
+@use "colors.module";
 
-@mixin t-h1 {
-
+.font-12 {
+  @include mixins.t-body-12;
 }
 
-@mixin t-h2 {
-  font-size: 42px;
-  line-height: 50px;
-
-  @include media.for-laptop {
-    font-size: 22px;
-    line-height: 34px;
-  }
+.font-14 {
+  @include mixins.t-body-14;
 }
 
-@mixin t-h3 {
-  font-size: 32px;
-  line-height: 38px;
+.font-16 {
+  @include mixins.t-body-16;
 }
 
-@mixin t-h4 {
-  font-size: 22px;
-  line-height: 26px;
+.font-20 {
+  @include mixins.t-body-20;
 }
 
-@mixin main-h1 {
-  font-size: 74px;
-  line-height: 78px;
-
-  @include media.for-laptop {
-    font-size: 38px;
-    line-height: 46px;
-  }
-
-  @include media.for-mobile {
-    font-size: 38px;
-    line-height: 46px;
-  }
+.font-24 {
+  @include mixins.t-body-24;
 }
 
-@mixin main-h2 {
-  font-size: 60px;
-  line-height: 60px;
-
-  @include media.for-laptop {
-    font-size: 28px;
-    line-height: 42px;
-  }
-
-  @include media.for-mobile {
-    font-size: 28px;
-    line-height: 42px;
-  }
+.font-32 {
+  @include mixins.t-body-32;
 }
 
-@mixin main-h3 {
-  font-size: 28px;
-  line-height: 42px;
-
-  @include media.for-laptop {
-    font-size: 22px;
-    line-height: 26px;
-  }
-
-  @include media.for-tablet {
-    font-size: 21px;
-    line-height: 26px;
-  }
-
-  @include media.for-mobile {
-    font-size: 22px;
-    line-height: 26px;
-  }
+.font-primary {
+  color: colors.$text-primary;
 }
 
-@mixin t-body-12 {
-  font-size: 12px;
-  line-height: 16px;
+.font-secondary {
+  color: colors.$text-secondary;
 }
 
-@mixin t-body-14 {
-  font-size: 14px;
-  line-height: 20px;
+.font-300 {
+  font-weight: 300;
 }
 
-@mixin t-body-16 {
-  font-size: 16px;
-  line-height: 22px;
-}
-
-@mixin t-body-18 {
-  font-size: 18px;
-  line-height: 28px;
-}
-
-@mixin t-body-20 {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-@mixin t-body-22 {
-  font-size: 22px;
-  line-height: 26px;
-}
-
-@mixin t-body-24 {
-  font-size: 24px;
-  line-height: 30px;
+.font-400 {
+  font-weight: 400;
 }

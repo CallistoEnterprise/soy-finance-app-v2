@@ -1,6 +1,9 @@
-@import "scrollbar.min";
-@import "colors.module";
-@import "vars.module";
+@use "scrollbar.min";
+@use "colors.module";
+@use "media";
+@use "vars.module";
+@use "lib";
+@use "typography";
 
 html,
 body {
@@ -8,9 +11,8 @@ body {
   margin: 0;
 }
 
-body,
-#dialog-root {
-  background: linear-gradient(311.09deg, #F5F3FC 0%, #F8FAFF 52.68%, #F6FDEF 99%);
+body {
+  background: colors.$background-global;
 }
 
 html,
@@ -96,36 +98,34 @@ svg, svg path {
   //transition-duration: inherit;
 }
 
-#select-root .simplebar-track.simplebar-vertical {
-  width: 10px;
-  background: $basic-filling-secondary;
+//
+//#select-root .simplebar-track.simplebar-vertical {
+//  width: 10px;
+//  background: $basic-filling-secondary;
+//}
+//
+//#select-root .simplebar-track.simplebar-vertical .simplebar-scrollbar:before {
+//  background: $basic-border-input;
+//  width: 6px;
+//}
+
+//.simplebar-track.simplebar-vertical .simplebar-scrollbar:before {
+//  background: #353535;
+//}
+
+.container {
+  max-width: 1448px;
+  padding-left: 24px;
+  padding-right: 24px;
+  margin: 0 auto;
+  width: 100%;
+
+  @include media.for-tablet {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
 }
 
-#select-root .simplebar-track.simplebar-vertical .simplebar-scrollbar:before {
-  background: $basic-border-input;
-  width: 6px;
-}
-
-.simplebar-track.simplebar-vertical .simplebar-scrollbar:before {
-  background: #353535;
-}
-
-.bold {
-  font-weight: 700;
-}
-
-::selection {
-  background-color: $selection-bg;
-}
-
-.newYearSvg {
-  transition-duration: 0.2s;
-}
-
-.greenNewYear {
-  fill: #B1B1B1;
-}
-
-.redNewYear {
-  fill: #636363;
-}
+//::selection {
+//  background-color: $selection-bg;
+//}

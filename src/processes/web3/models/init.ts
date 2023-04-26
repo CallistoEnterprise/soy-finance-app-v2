@@ -5,16 +5,18 @@ import {
   $isActive,
   $isChangingNetwork, $isChangingWallet, $isSupportedNetwork, $isSupportedSwapNetwork, $isWalletChangeModalOpened,
   $provider,
-  $walletName,
+  $walletName, $wc2blockchains,
   $web3Provider
 } from "./stores";
 import {
+  disableWc2Blockchain,
+  enableWc2Blockchain,
   setAccount, setBlockNumber,
   setChainId,
   setChangingNetwork, setChangingWallet, setConnectionURI,
   setIsActive, setIsSupportedNetwork, setIsSupportedSwapNetwork,
   setProvider, setWalletChangeModalOpen,
-  setWalletName,
+  setWalletName, setWc2Blockchains,
   setWeb3Provider
 } from "./index";
 
@@ -86,3 +88,27 @@ $isWalletChangeModalOpened.on(
   setWalletChangeModalOpen,
   (_, data) => data
 );
+
+$wc2blockchains.on(
+  enableWc2Blockchain,
+  (_, data) => {
+    localStorage.setItem("wcChainList", JSON.stringify([..._, data]));
+    return [..._, data];
+  }
+)
+
+$wc2blockchains.on(
+  disableWc2Blockchain,
+  (_, data) => {
+    const result = _.filter(v => v !== data);
+    localStorage.setItem("wcChainList", JSON.stringify(result))
+    return result;
+  }
+)
+
+$wc2blockchains.on(
+  setWc2Blockchains,
+  (_, data) => {
+    return data;
+  }
+)

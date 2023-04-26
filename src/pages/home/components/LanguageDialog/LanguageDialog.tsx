@@ -7,6 +7,7 @@ import Image from "next/image";
 import Dialog from "../../../../shared/components/Dialog";
 import useTranslation from "next-translate/useTranslation";
 import {useRouter} from "next/router";
+import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
 
 interface Props {
   langOpened: boolean,
@@ -16,6 +17,9 @@ interface Props {
 export default function LanguageDialog({ langOpened, setLangOpened }: Props) {
   const { t } = useTranslation("common");
   const { locale } = useRouter();
+
+  const { showMessage } = useSnackbar();
+
 
   return <Dialog isOpen={langOpened} onClose={() => setLangOpened(false)}>
     <DialogCloseButton handleClose={() => setLangOpened(false)} />
@@ -40,7 +44,8 @@ export default function LanguageDialog({ langOpened, setLangOpened }: Props) {
           }
         ].map(lan => {
           return <Link onClick={() => {
-            setLangOpened(false)
+            setLangOpened(false);
+            showMessage("Language changed");
           }} href="/" locale={lan.lang} key={lan.lang}  className={clsx(
             styles.langButton,
             locale === lan.lang && styles.active
@@ -50,7 +55,7 @@ export default function LanguageDialog({ langOpened, setLangOpened }: Props) {
                  </span>
             <span>
                   {lan.label}
-                 </span>
+           </span>
           </Link>
         })}
       </div>

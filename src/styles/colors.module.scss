@@ -1,175 +1,201 @@
-//text buttons
-$primary-2: #F0CF9C;
-$primary-3: #FDA723;
+////text buttons
+//$primary-2: #F0CF9C;
+//$primary-3: #FDA723;
+//
+//// hovers colors
+//$grey-2: #7E7E7E;
+//$grey-4: #353535;
+//
+////stepper colors
+//$text-20: var(--text-20);
+//$text-21: var(--text-21);
+//$bg-7: var(--bg-7);
+//$border-4: var(--border-4);
+//
+//// radiobutton active
+//$bg-6: var(--bg-6);
+//
+//// coins backhround
+//$bg-8: var(--bg-8);
+//
+//$hover-1: var(--hover-1);
+//$hover-2: var(--hover-2);
+//$hover-3: var(--hover-3);
+//$hover-4: var(--hover-4);
+//$hover-button: var(--hover-button);
+//$hover-button-filling: var(--hover-button-filling);
+//
+//$footer-icon: var(--footer-icon);
+////---------------------------------------------------------
+//
+//$shadow-1: var(--shadow-1);
+//
+//$selection-bg: var(--selection-bg);
+//
+//$basic-text-main: var(--basic-text-main);
+//$basic-text-secondary: var(--basic-text-secondary);
+//$basic-text-disabled: var(--basic-text-disabled);
+//
+//
+//$basic-filling-primary: var(--basic-filling-primary);
+//$basic-filling-secondary: var(--basic-filling-secondary);
+//$basic-filling-tertiary: var(--basic-filling-tertiary);
+//$basic-filling-header: var(--basic-filling-header);
+//$basic-filling-background: var(--basic-filling-background);
+//$basic-filling-backdrop: var(--basic-filling-backdrop);
+//
+//
+//$basic-border-input: var(--basic-border-input);
+//$basic-border-active: var(--basic-border-active);
+//$basic-border-button: var(--basic-border-button);
+//$basic-border-popup: var(--basic-border-popup);
+//$basic-border-disabled: var(--basic-border-disabled);
+//
+//$basic-hover-select: var(--basic-hover-select);
+//
+//$palette-orange: var(--palette-orange);
+//$palette-carrot: var(--palette-carrot);
+//$palette-blue: var(--palette-blue);
+//$palette-green: var(--palette-green);
+//$palette-purple: var(--palette-purple);
+//$palette-red: var(--palette-red);
+//$palette-olive: var(--palette-olive);
+//
+//
+//$snackbar-red: var(--snackbar-red);
+//$snackbar-orange: var(--snackbar-orange);
+//$snackbar-blue: var(--snackbar-blue);
+//$snackbar-green: var(--snackbar-green);
+//$snackbar-purple: var(--snackbar-purple);
+//$snackbar-olive: var(--snackbar-olive);
+//$snackbar-carrot: var(--snackbar-carrot);
+//
+//
+//$landing-cards-bg-green: var(--landing-cards-bg-green);
+//$landing-cards-bg-orange: var(--landing-cards-bg-orange);
+//$landing-cards-bg-aqua: var(--landing-cards-bg-aqua);
+//$landing-cards-bg-pink: var(--landing-cards-bg-pink);
+//$landing-cards-bg-olive: var(--landing-cards-bg-olive);
+//$landing-cards-bg-purple: var(--landing-cards-bg-purple);
+//$landing-cards-bg-red: var(--landing-cards-bg-red);
+//
+//$landing-cards-text-green: var(--landing-cards-text-green);
+//$landing-cards-text-orange: var(--landing-cards-text-orange);
+//$landing-cards-text-aqua: var(--landing-cards-text-aqua);
+//$landing-cards-text-pink: var(--landing-cards-text-pink);
+//$landing-cards-text-olive: var(--landing-cards-text-olive);
+//$landing-cards-text-purple: var(--landing-cards-text-purple);
+//$landing-cards-text-red: var(--landing-cards-text-red);
+//
+//$partnersGradient: var(--partners-gradient);
+//$primary-gradient-2: linear-gradient(93.16deg, #FA977B 19.2%, #FD77D4 53.12%, #FDC46C 102%);
+//$primary-gradient-3: linear-gradient(143.5deg, #FD77D4 21.26%, #FDC46C 79.81%);
+//
+//:export {
+//  primary2: $primary-2;
+//  primary3: $primary-3;
+//  grey2: $grey-2;
+//  grey4: $grey-4;
+//
+//  text20: $text-20;
+//
+//  bg6: $bg-6;
+//  bg7: $bg-7;
+//  bg8: $bg-8;
+//
+//  border4: $border-4;
+//
+//  hover1: $hover-1;
+//  hover2: $hover-2;
+//  hover3: $hover-3;
+//
+//  basicTextMain: $basic-text-main;
+//  basicTextSecondary: $basic-text-secondary;
+//
+//  basicFillingBlock: $basic-filling-primary;
+//  basicFillingUnderBlock: $basic-filling-secondary;
+//  basicFillingHeader: $basic-filling-header;
+//  basicFillingBackground: $basic-filling-background;
+//
+//  basicBorderInput: $basic-border-input;
+//
+//  basicFillingPrimary: $basic-filling-primary;
+//  basicFillingSecondary: $basic-filling-secondary;
+//  basicFillingTertiary: $basic-filling-tertiary;
+//
+//  paletteOrange: $palette-orange;
+//  paletteCarrot: $palette-carrot;
+//  paletteBlue: $palette-blue;
+//  paletteGreen: $palette-green;
+//  palettePurple: $palette-purple;
+//  paletteRed: $palette-red;
+//  paletteOlive: $palette-olive;
+//
+//  landingCardsBgGreen: $landing-cards-bg-green;
+//  landingCardsBgOrange: $landing-cards-bg-orange;
+//  landingCardsBgAqua: $landing-cards-bg-aqua;
+//  landingCardsBgPink: $landing-cards-bg-pink;
+//  landingCardsBgOlive: $landing-cards-bg-olive;
+//  landingCardsBgPurple: $landing-cards-bg-purple;
+//  landingCardsBgRed: $landing-cards-bg-red;
+//
+//  landingCardsTextGreen: $landing-cards-text-green;
+//  landingCardsTextOrange: $landing-cards-text-orange;
+//  landingCardsTextAqua: $landing-cards-text-aqua;
+//  landingCardsTextPink: $landing-cards-text-pink;
+//  landingCardsTextOlive: $landing-cards-text-olive;
+//  landingCardsTextPurple: $landing-cards-text-purple;
+//  landingCardsTextRed: $landing-cards-text-red;
+//}
+//
+//$palette-colors-map: "green" $palette-green,
+//                     "blue" $palette-blue,
+//                     "orange" $palette-orange,
+//                     "purple" $palette-purple,
+//                     "red" $palette-red,
+//                     "olive" $palette-olive,
+//                     "carrot" $palette-carrot;
+//
+//$palette-snackbar-map: "green" $snackbar-green,
+//                       "blue" $snackbar-blue,
+//                       "orange" $snackbar-orange,
+//                       "purple" $snackbar-purple,
+//                       "red" $snackbar-red,
+//                       "olive" $snackbar-olive,
+//                       "carrot" $snackbar-carrot;
+//
+//$palette-common-map: "green" $palette-green $snackbar-green,
+//                     "blue" $palette-blue $snackbar-blue,
+//                     "orange" $palette-orange $snackbar-orange,
+//                     "purple" $palette-purple $snackbar-purple,
+//                     "red" $palette-red $snackbar-red,
+//                     "olive" $palette-olive $snackbar-olive,
+//                     "carrot" $palette-carrot $snackbar-carrot;
+//
+//
 
-// hovers colors
-$grey-2: #7E7E7E;
-$grey-4: #353535;
+$background-global: var(--background-global);
+$background-primary: var(--background-primary);
+$background-secondary: var(--background-secondary);
 
-//stepper colors
-$text-20: var(--text-20);
-$text-21: var(--text-21);
-$bg-7: var(--bg-7);
-$border-4: var(--border-4);
+$text-primary: var(--text-primary);
+$text-secondary: var(--text-secondary);
 
-// radiobutton active
-$bg-6: var(--bg-6);
+$border-primary: var(--border-primary);
 
-// coins backhround
-$bg-8: var(--bg-8);
+$hover-primary: var(--hover-primary);
+$hover-secondary: var(--hover-secondary);
 
-$hover-1: var(--hover-1);
-$hover-2: var(--hover-2);
-$hover-3: var(--hover-3);
-$hover-4: var(--hover-4);
-$hover-button: var(--hover-button);
-$hover-button-filling: var(--hover-button-filling);
-
-$footer-icon: var(--footer-icon);
-//---------------------------------------------------------
-
-$shadow-1: var(--shadow-1);
-
-$selection-bg: var(--selection-bg);
-
-$basic-text-main: var(--basic-text-main);
-$basic-text-secondary: var(--basic-text-secondary);
-$basic-text-disabled: var(--basic-text-disabled);
-
-
-$basic-filling-primary: var(--basic-filling-primary);
-$basic-filling-secondary: var(--basic-filling-secondary);
-$basic-filling-tertiary: var(--basic-filling-tertiary);
-$basic-filling-header: var(--basic-filling-header);
-$basic-filling-background: var(--basic-filling-background);
-$basic-filling-backdrop: var(--basic-filling-backdrop);
-
-
-$basic-border-input: var(--basic-border-input);
-$basic-border-active: var(--basic-border-active);
-$basic-border-button: var(--basic-border-button);
-$basic-border-popup: var(--basic-border-popup);
-$basic-border-disabled: var(--basic-border-disabled);
-
-$basic-hover-select: var(--basic-hover-select);
-
-$palette-orange: var(--palette-orange);
-$palette-carrot: var(--palette-carrot);
-$palette-blue: var(--palette-blue);
 $palette-green: var(--palette-green);
-$palette-purple: var(--palette-purple);
+$palette-green-saturated: var(--palette-green-saturated);
+$palette-violet: var(--palette-violet);
+$palette-pink: var(--palette-pink);
 $palette-red: var(--palette-red);
-$palette-olive: var(--palette-olive);
+$palette-orange: var(--palette-orange);
+$palette-blue: var(--palette-blue);
+$palette-white: var(--palette-white);
+$palette-grey-light: var(--palette-grey-light);
 
-
-$snackbar-red: var(--snackbar-red);
-$snackbar-orange: var(--snackbar-orange);
-$snackbar-blue: var(--snackbar-blue);
-$snackbar-green: var(--snackbar-green);
-$snackbar-purple: var(--snackbar-purple);
-$snackbar-olive: var(--snackbar-olive);
-$snackbar-carrot: var(--snackbar-carrot);
-
-
-$landing-cards-bg-green: var(--landing-cards-bg-green);
-$landing-cards-bg-orange: var(--landing-cards-bg-orange);
-$landing-cards-bg-aqua: var(--landing-cards-bg-aqua);
-$landing-cards-bg-pink: var(--landing-cards-bg-pink);
-$landing-cards-bg-olive: var(--landing-cards-bg-olive);
-$landing-cards-bg-purple: var(--landing-cards-bg-purple);
-$landing-cards-bg-red: var(--landing-cards-bg-red);
-
-$landing-cards-text-green: var(--landing-cards-text-green);
-$landing-cards-text-orange: var(--landing-cards-text-orange);
-$landing-cards-text-aqua: var(--landing-cards-text-aqua);
-$landing-cards-text-pink: var(--landing-cards-text-pink);
-$landing-cards-text-olive: var(--landing-cards-text-olive);
-$landing-cards-text-purple: var(--landing-cards-text-purple);
-$landing-cards-text-red: var(--landing-cards-text-red);
-
-$partnersGradient: var(--partners-gradient);
-$primary-gradient-2: linear-gradient(93.16deg, #FA977B 19.2%, #FD77D4 53.12%, #FDC46C 102%);
-$primary-gradient-3: linear-gradient(143.5deg, #FD77D4 21.26%, #FDC46C 79.81%);
-
-:export {
-  primary2: $primary-2;
-  primary3: $primary-3;
-  grey2: $grey-2;
-  grey4: $grey-4;
-
-  text20: $text-20;
-
-  bg6: $bg-6;
-  bg7: $bg-7;
-  bg8: $bg-8;
-
-  border4: $border-4;
-
-  hover1: $hover-1;
-  hover2: $hover-2;
-  hover3: $hover-3;
-
-  basicTextMain: $basic-text-main;
-  basicTextSecondary: $basic-text-secondary;
-
-  basicFillingBlock: $basic-filling-primary;
-  basicFillingUnderBlock: $basic-filling-secondary;
-  basicFillingHeader: $basic-filling-header;
-  basicFillingBackground: $basic-filling-background;
-
-  basicBorderInput: $basic-border-input;
-
-  basicFillingPrimary: $basic-filling-primary;
-  basicFillingSecondary: $basic-filling-secondary;
-  basicFillingTertiary: $basic-filling-tertiary;
-
-  paletteOrange: $palette-orange;
-  paletteCarrot: $palette-carrot;
-  paletteBlue: $palette-blue;
-  paletteGreen: $palette-green;
-  palettePurple: $palette-purple;
-  paletteRed: $palette-red;
-  paletteOlive: $palette-olive;
-
-  landingCardsBgGreen: $landing-cards-bg-green;
-  landingCardsBgOrange: $landing-cards-bg-orange;
-  landingCardsBgAqua: $landing-cards-bg-aqua;
-  landingCardsBgPink: $landing-cards-bg-pink;
-  landingCardsBgOlive: $landing-cards-bg-olive;
-  landingCardsBgPurple: $landing-cards-bg-purple;
-  landingCardsBgRed: $landing-cards-bg-red;
-
-  landingCardsTextGreen: $landing-cards-text-green;
-  landingCardsTextOrange: $landing-cards-text-orange;
-  landingCardsTextAqua: $landing-cards-text-aqua;
-  landingCardsTextPink: $landing-cards-text-pink;
-  landingCardsTextOlive: $landing-cards-text-olive;
-  landingCardsTextPurple: $landing-cards-text-purple;
-  landingCardsTextRed: $landing-cards-text-red;
-}
-
-$palette-colors-map: "green" $palette-green,
-                     "blue" $palette-blue,
-                     "orange" $palette-orange,
-                     "purple" $palette-purple,
-                     "red" $palette-red,
-                     "olive" $palette-olive,
-                     "carrot" $palette-carrot;
-
-$palette-snackbar-map: "green" $snackbar-green,
-                       "blue" $snackbar-blue,
-                       "orange" $snackbar-orange,
-                       "purple" $snackbar-purple,
-                       "red" $snackbar-red,
-                       "olive" $snackbar-olive,
-                       "carrot" $snackbar-carrot;
-
-$palette-common-map: "green" $palette-green $snackbar-green,
-                     "blue" $palette-blue $snackbar-blue,
-                     "orange" $palette-orange $snackbar-orange,
-                     "purple" $palette-purple $snackbar-purple,
-                     "red" $palette-red $snackbar-red,
-                     "olive" $palette-olive $snackbar-olive,
-                     "carrot" $palette-carrot $snackbar-carrot;
+$transparent-primary: var(--transparent-primary);
 
 

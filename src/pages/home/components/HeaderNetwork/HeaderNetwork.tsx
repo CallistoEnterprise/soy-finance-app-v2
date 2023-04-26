@@ -1,24 +1,19 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import styles from "./HeaderNetwork.module.scss";
-import Button from "../../../../shared/components/Button";
 import Image from "next/image";
 import clsx from "clsx";
 import Svg from "../../../../shared/components/Svg/Svg";
 import Portal from "../../../../shared/components/Portal";
 import {headersNetworks} from "../../constants/networks";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
-
-function formatAddress(address: string | null) {
-  if(!address) {
-    return "";
-  }
-
-  return `${address.substring(0,4)}...${address.slice(-4)}`;
-}
+import {useStore} from "effector-react";
+import {$wc2blockchains} from "../../../../processes/web3/models/stores";
 
 export default function HeaderNetwork() {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isNetworksDropdownOpened, setNetworksDropdownOpened] = useState(false);
+
+  const networks = useStore($wc2blockchains);
 
   const { chainId, changeNetwork } = useWeb3();
 
@@ -27,7 +22,6 @@ export default function HeaderNetwork() {
     left: 0
   });
 
-  console.log(positions);
   useEffect(
     () => {
       if (ref.current) {
@@ -54,16 +48,16 @@ export default function HeaderNetwork() {
 
   return <>{currentNetwork &&
   <div ref={ref} className={styles.dropdownWrapper}>
-    <Button className={styles.dropdownButton} color="secondary" onClick={() => setNetworksDropdownOpened(true)}>
+    <button className={styles.dropdownButton} color="secondary" onClick={() => setNetworksDropdownOpened(true)}>
                 <span className={styles.buttonContent}>
                   <Image width={24} height={24} src={currentNetwork.image} alt="Currently picked network"/>
                   <span className={styles.pickedNetworkName}>{currentNetwork.name}</span>
                   <span className={clsx(
                     styles.expandArrow,
                     isNetworksDropdownOpened && styles.opened)
-                  }><Svg iconName="expand-arrow"/></span>
+                  }><Svg size={16} iconName="expand-arrow"/></span>
                 </span>
-    </Button>
+    </button>
     <Portal root="dropdown-root" isOpen={isNetworksDropdownOpened} onClose={() => setNetworksDropdownOpened(false)}
             isTransitioningClassName={styles.in} className={clsx(
       styles.dialogContainer,
@@ -72,11 +66,14 @@ export default function HeaderNetwork() {
       <div style={{top: positions.top, left: positions.left}} className={styles.networksDropdown}>
         <nav>
           <ul className={styles.networksList}>
-            {headersNetworks.map(n => <li key={n.chainId}>
+            {headersNetworks.filter(n => networks.includes(n.chainId)).map(n => <li key={n.chainId}>
               <div role="button" onClick={async () => {
                 await changeNetwork(n.chainId);
                 setNetworksDropdownOpened(false);
-              }} className={styles.networkItem}>
+              }} className={clsx(
+                styles.networkItem,
+                n.chainId === chainId && styles.active
+              )}>
                 <Image width={24} height={24} src={n.image} alt="Currently picked network"/> {n.name}
               </div>
             </li>)}

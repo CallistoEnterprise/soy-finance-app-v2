@@ -5,7 +5,7 @@ import {
   $isActive,
   $isChangingNetwork, $isChangingWallet, $isSupportedNetwork, $isSupportedSwapNetwork,
   $provider,
-  $walletName,
+  $walletName, $wc2blockchains,
   $web3Provider
 } from "../models/stores";
 import {
@@ -21,12 +21,27 @@ import {
 import networks from "../constants/networks.json";
 
 import {useCallback, useEffect, useRef} from "react";
-import WalletConnectProvider from "@walletconnect/web3-provider";
 import {EthereumProvider} from "@walletconnect/ethereum-provider";
 import {BrowserProvider, ethers} from "ethers";
 
 import {SUPPORTED_NETWORKS, SUPPORTED_SWAP_NETWORKS} from "../constants/supportedNetworks";
 import {WalletType} from "../types";
+
+function getRPCMap(chains: number[]) {
+  const result = {};
+  for(const chain of chains) {
+    result[chain] = {
+      1: "https://mainnet.infura.io/v3/d819f1add1a34a60adab4df578e0e741",
+      199: "https://rpc.bt.io/",
+      56: "https://bsc-dataseed.binance.org/",
+      820: "https://rpc.callisto.network/",
+      61: "https://etc.etcdesktop.com/",
+      137: "https://polygon-rpc.com"
+    }[chain];
+  }
+
+  return result;
+}
 
 export function useWeb3() {
   const chainId = useStore($chainId);
@@ -54,36 +69,13 @@ export function useWeb3() {
   const setIsSupportedNetworkFn = useEvent(setIsSupportedNetwork);
   const setIsSupportedSwapNetworkFn = useEvent(setIsSupportedSwapNetwork);
 
+  const wc2Blockchains = useStore($wc2blockchains);
+
   const walletNameRef = useRef(walletName);
 
   const setWalletNameValue = (data: WalletType) => {
     walletNameRef.current = data;
   };
-
-  const syncLocalStorageConnection = useCallback(
-    (wallet: WalletType) => {
-      const currentConnection = localStorage.getItem("walletconnect");
-
-      if (!currentConnection) {
-        return;
-      }
-
-      if (wallet === "aw") {
-        localStorage.setItem(
-          "walletconnect_aw",
-          currentConnection
-        );
-      }
-
-      if (wallet === "walletConnect") {
-        localStorage.setItem(
-          "walletconnect_wc",
-          currentConnection
-        );
-      }
-    },
-    []
-  );
 
   useEffect(
     () => {
@@ -111,82 +103,21 @@ export function useWeb3() {
       try {
         setChangingWalletFn(true);
 
-        let p;
+        let newProvider;
         if (wallet === "metamask") {
-          p = (window as any).ethereum;
-        }
-        if (wallet === "walletConnect" || wallet === "aw") {
-
-          if (wallet === "walletConnect") {
-
-            console.log(2);
-            const wcConnection = localStorage.getItem("walletconnect_wc");
-            localStorage.removeItem("walletconnect");
-
-            if (wcConnection) {
-              localStorage.setItem(
-                "walletconnect",
-                wcConnection
-              );
-            }
-          }
-
-          if (wallet === "aw") {
-            const awConnection = localStorage.getItem("walletconnect_aw");
-            localStorage.removeItem("walletconnect");
-
-            if (awConnection) {
-              localStorage.setItem(
-                "walletconnect",
-                awConnection
-              );
-            }
-          }
-
-          p = new WalletConnectProvider({
-            qrcode: false,
-            rpc: {
-              1: "https://mainnet.infura.io/v3/d819f1add1a34a60adab4df578e0e741",
-              199: "https://rpc.bt.io/",
-              56: "https://bsc-dataseed.binance.org/",
-              820: "https://rpc.callisto.network/",
-              61: "https://etc.etcdesktop.com/",
-              137: "https://polygon-rpc.com"
-            },
-          });
-
-
-          console.log("Provider created");
-
-          p.connector.on(
-            "display_uri",
-            (err, payload) => {
-              console.log(err);
-              const uri = payload.params[0];
-              console.log("Wow");
-              console.log(uri);
-              setConnectionURIFn(uri);
-            }
-          );
-
+          newProvider = (window as any).ethereum;
         }
 
-        if (wallet === "walletConnectV2") {
-          p = await EthereumProvider.init({
+        if (wallet === "walletConnect") {
+
+          newProvider = await EthereumProvider.init({
             projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID,
-            chains: [1, 199, 56, 820, 61, 137],
+            chains: wc2Blockchains,
             showQrModal: false,
-            rpcMap: {
-              1: "https://mainnet.infura.io/v3/d819f1add1a34a60adab4df578e0e741",
-              199: "https://rpc.bt.io/",
-              56: "https://bsc-dataseed.binance.org/",
-              820: "https://rpc.callisto.network/",
-              61: "https://etc.etcdesktop.com/",
-              137: "https://polygon-rpc.com"
-            }
+            rpcMap: getRPCMap(wc2Blockchains)
           });
 
-          p.on(
+          newProvider.on(
             "display_uri",
             (uri: string) => {
               if(uri) {
@@ -197,11 +128,15 @@ export function useWeb3() {
         }
 
         try {
-          if (p.enable) {
-            const accounts = await p.enable();
+          if (wallet === "walletConnect") {
+            const accounts = await newProvider.enable();
+            console.log(newProvider);
+            console.log(accounts);
             setAccountFn(accounts[0]);
-          } else {
-            const accounts = await p.request({
+          }
+
+          if(wallet === "metamask") {
+            const accounts = await newProvider.request({
               method: "eth_requestAccounts"
             });
 
@@ -214,11 +149,11 @@ export function useWeb3() {
           // setChangingWalletFn(false); ????
         }
         const web3Provider = new BrowserProvider(
-          p,
+          newProvider,
           "any"
         );
 
-        p.on(
+        newProvider.on(
           "disconnect",
           () => {
             console.log("Fired disconnect");
@@ -227,14 +162,6 @@ export function useWeb3() {
             // so we can safely disable this listener for metamask to avoid unexpected disconnections
             if (wallet === "metamask") {
               return;
-            }
-
-            if (wallet === "aw") {
-              localStorage.removeItem("walletconnect_aw");
-            }
-
-            if (wallet === "walletConnect") {
-              localStorage.removeItem("walletconnect_wc");
             }
 
             if (wallet === walletNameRef.current) {
@@ -246,7 +173,7 @@ export function useWeb3() {
           }
         );
 
-        p.on(
+        newProvider.on(
           "accountsChanged",
           (accounts: any) => {
             if (!accounts.length) {
@@ -260,7 +187,7 @@ export function useWeb3() {
           }
         );
 
-        p.on(
+        newProvider.on(
           "chainChanged",
           (cId: number) => {
             let cid = cId;
@@ -270,20 +197,6 @@ export function useWeb3() {
                 cId,
                 16
               );
-            }
-
-            if (wallet === "aw") {
-              const currentAwConnection = localStorage.getItem("walletconnect_aw");
-              if (currentAwConnection) {
-                const withChainId = JSON.stringify({
-                  ...JSON.parse(currentAwConnection),
-                  chainId: cid
-                });
-                localStorage.setItem(
-                  "walletconnect_aw",
-                  withChainId
-                );
-              }
             }
 
             try {
@@ -303,11 +216,12 @@ export function useWeb3() {
           }
         );
 
-        syncLocalStorageConnection(wallet);
+        console.log("_>>>>>> NEW PROVIDER");
+        console.log(newProvider);
 
         setWeb3ProviderFn(web3Provider);
         setChainIdFn(Number((await web3Provider.getNetwork()).chainId));
-        setProviderFn(p);
+        setProviderFn(newProvider);
         setWalletNameFn(wallet);
         setWalletNameValue(wallet);
         setIsActiveFn(true);
@@ -330,13 +244,12 @@ export function useWeb3() {
       setWalletChangeModalOpenFn,
       setWalletNameFn,
       setWeb3ProviderFn,
-      syncLocalStorageConnection
+      wc2Blockchains
     ]
   );
 
   const changeNetwork = useCallback(
     async (cid: number) => {
-      console.log(cid);
       try {
         setChangingNetworkFn(true);
         await provider.request({
@@ -380,7 +293,6 @@ export function useWeb3() {
 
   const disconnect = useCallback(
     () => {
-      console.log(provider);
       if (provider && provider.disconnect) {
         console.log("Triyng to disconnect");
         provider.disconnect();

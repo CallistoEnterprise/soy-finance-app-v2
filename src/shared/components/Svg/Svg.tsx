@@ -1,8 +1,8 @@
 import React from "react";
-import { svgIconsNames } from "./svgIconsMap";
+import {IconName} from "./svgIconsMap";
 
 interface Props {
-  iconName: typeof svgIconsNames[number],
+  iconName: IconName,
   size?: number,
   style?: React.CSSProperties,
   [key: string]: any

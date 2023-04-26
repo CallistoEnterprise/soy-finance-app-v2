@@ -1,6 +1,6 @@
 @use "../../../../styles/media";
-@use "../../../../styles/typography";
-@import "../../../../styles/colors.module";
+//@use "../../../../styles/typography";
+@use "../../../../styles/colors.module";
 
 .modalWrapper {
   position: relative;
@@ -28,7 +28,7 @@
   font-size: 32px;
   line-height: 32px;
   text-align: center;
-  color: #122110;
+  color: colors.$text-primary;
   margin-bottom: 35px;
 }
 
@@ -63,7 +63,7 @@
   display: flex;
   flex-direction: column;
   grid-gap: 10px;
-  background: #fff;
+  background: colors.$background-primary;
   margin-bottom: 20px;
   @include media.for-mobile {
     grid-template-columns: 1fr;
@@ -80,7 +80,6 @@
   gap: 10px;
   padding-bottom: 20px;
   overflow: scroll;
-  height: 452px;
 }
 
 .wcLink {
@@ -89,7 +88,7 @@
   padding: 0 14px 0 20px;
   gap: 2px;
   border-radius: 8px;
-  border: 1px solid $basic-border-button;
+  border: 1px solid colors.$border-primary;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -97,14 +96,12 @@
   transition-duration: 0.2s;
 
   &:hover {
-    border-color: #6DA316;
+    border-color: colors.$palette-green;
   }
 
   font-size: 16px;
   line-height: 20px;
-  color: #122110;
-
-
+  color: colors.$text-primary;
 }
 
 .wcLinkContent {
@@ -132,14 +129,31 @@
   font-size: 24px;
   line-height: 32px;
   text-align: center;
-  color: #122110;
+  color: colors.$text-primary;
   margin-bottom: 20px;
 }
 
 .qrWrapper {
   text-align: center;
   padding: 20px;
-  border: 1px solid #D4DDD8;
+  border: 1px solid colors.$border-primary;
   border-radius: 20px;
   margin-bottom: 20px;
+  background-color: colors.$palette-white;
+}
+
+.pickNetworks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.pickButtonContent {
+  color: colors.$text-primary;
+}
+
+.subheading {
+  color: colors.$text-secondary;
+  text-align: center;
 }

@@ -1,8 +1,8 @@
-@import "../../../styles/colors.module";
+@use "src/styles/colors.module";
 
 .divider {
   height: 1px;
-  background: #D4DDD8;
+  background: colors.$border-primary;
   position: relative;
   width: 100%;
 

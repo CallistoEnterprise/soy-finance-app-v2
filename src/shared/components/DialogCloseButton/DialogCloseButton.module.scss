@@ -1,4 +1,5 @@
-@use "../../../styles/media";
+@use "src/styles/media";
+@use "src/styles/colors.module";
 
 .closeButton {
   position: absolute;
@@ -9,7 +10,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #4B564B;
+  color: colors.$text-secondary;
 
   @include media.for-mobile {
     right: 2px;

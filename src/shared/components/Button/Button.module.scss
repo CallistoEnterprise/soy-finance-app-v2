@@ -1,12 +1,20 @@
-@use "../../../styles/typography";
-@import "../../../styles/colors.module";
+//@use "../../../styles/typography";
+@use "src/styles/colors.module";
+@use "src/styles/mixins";
 
 .button {
   border-radius: 8px;
   font-size: 16px;
+  line-height: 20px;
   height: 40px;
   transition-duration: 0.2s;
-  padding: 0 16px;
+  padding: 0 24px;
+  overflow: hidden;
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
     cursor: pointer;
@@ -19,82 +27,180 @@
   &.fullWidth {
     width: 100%;
   }
+
+  &.startIcon {
+    padding-left: 16px;
+  }
+
+  &.endIcon {
+    padding-right: 16px;
+  }
+
+  &.loading {
+    pointer-events: none;
+    .content {
+      visibility: hidden;
+    }
+  }
 }
 
-.small {
-  height: 38px;
-  min-width: 100px;
-  padding: 0 20px;
-  border-radius: 4px;
+.text {
+  font-size: 16px;
+  line-height: 20px;
+
+  color: colors.$palette-green;
+
+  &:hover {
+    color: colors.$palette-green-saturated;
+  }
 }
 
-.extra-small {
-  height: 26px;
-  min-width: 66px;
-  padding: 0 12px;
-  border-radius: 4px;
-
-  @include typography.t-body-12;
-}
-
-.primary {
+.contained {
   @extend .button;
-  background: #6DA316;
+  background: colors.$palette-green;
 
   padding: 0 24px;
   border-radius: 70px;
   background-origin: border-box;
   background-clip: padding-box, border-box;
-  color: #fff;
-  position: relative;
-
-  span {
-    position: relative;
-    z-index: 3;
-  }
+  color: colors.$palette-white;
 
   &:hover {
-    background-color: #588D00;
+    background-color: colors.$hover-primary;
   }
 
   &[disabled] {
-    opacity: 0.5;
+    background: colors.$palette-grey-light;
+  }
+
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple 900ms linear;
+    background-color: rgba(255, 255, 255, 0.4);
   }
 }
 
-.secondary {
+.popup {
   @extend .button;
-  background: #F1F1F1;
-  border-radius: 8px;
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  color: #122110;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: colors.$background-secondary;
+  text-align: center;
+  width: 100%;
+  border-radius: 0 0 20px 20px;
+  color: colors.$palette-green;
   position: relative;
 
-  &:hover {
-    background: #E2E2E2;
-  }
 
-  span {
-    position: relative;
-    z-index: 3;
+  &:hover {
+    background-color: colors.$hover-secondary;
   }
 
   &[disabled] {
-    opacity: 0.5;
+    background: colors.$palette-grey-light;
+  }
+
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple 900ms linear;
+    background-color: rgba(0, 0, 0, 0.1);
   }
 }
 
-.outline {
+.preloader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.outlined {
   @extend .button;
-  border: 1px solid $basic-border-button;
-  color: $basic-text-main;
+  background: transparent;
+  border: 1px solid colors.$palette-green;
+  border-radius: 70px;
+  color: colors.$text-primary;
+
   &:hover {
-    border-color: $basic-border-active;
-    background-color: $hover-button-filling;
+    //color: colors.$palette-green-saturated;
+    background: rgba(109, 163, 22, 0.2);
   }
 
   &[disabled] {
-    opacity: 0.5;
+    color: colors.$palette-grey-light;
+    border-color: colors.$text-secondary;
+  }
+
+  svg {
+    color: colors.$palette-green;
+  }
+
+  &.error {
+    border: 1px solid colors.$palette-red;
+    &:hover {
+      //color: colors.$palette-green-saturated;
+      background: rgba(205, 21, 21, 0.1);
+    }
+    svg {
+      color: colors.$palette-red;
+      transform: rotate(-180deg);
+      transform-origin: center;
+    }
+
+    .ripple {
+      background-color: rgba(205, 21, 21, 0.3);
+    }
+  }
+
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple 900ms linear;
+    background-color: rgba(109, 163, 22, 0.3);
+  }
+}
+
+.large {
+  height: 60px;
+}
+
+.small {
+  height: 24px;
+  border-radius: 4px;
+  padding: 0 8px;
+
+  @include mixins.t-body-12
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ripple {
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 900ms linear;
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
   }
 }
