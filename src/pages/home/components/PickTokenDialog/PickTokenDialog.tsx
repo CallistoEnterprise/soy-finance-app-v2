@@ -25,10 +25,6 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
 
   console.log(searchRequest);
 
-  if(!chainId) {
-    return;
-  }
-
   const filteredList = useMemo(() => {
     return swapTokensList.filter(token => {
       if(!searchRequest) {
@@ -38,6 +34,10 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
       return token[chainId].token_address.toLowerCase() === searchRequest.toLowerCase() || token[chainId].original_name.toLowerCase().startsWith(searchRequest.toLowerCase());
     })
   }, [searchRequest])
+
+  if(!chainId) {
+    return;
+  }
 
   return <Dialog isOpen={isOpened} onClose={handleClose}>
     <div className={styles.pickTokenDialog}>

@@ -59,12 +59,8 @@ export default function SwapSettingsDialog() {
           </div>
         </div>
 
-
-
         <div className={styles.deadline}>
           <p className="font-500">Transaction deadline</p>
-
-
           <div className={styles.deadlineInput}>
             <InputWithUnits units="min" value={deadlineValue} setValue={setDeadlineValue} />
           </div>
