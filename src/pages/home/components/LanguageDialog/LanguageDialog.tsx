@@ -8,6 +8,7 @@ import Dialog from "../../../../shared/components/Dialog";
 import useTranslation from "next-translate/useTranslation";
 import {useRouter} from "next/router";
 import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
+import DialogHeader from "../../../../shared/components/DialogHeader";
 
 interface Props {
   langOpened: boolean,
@@ -22,9 +23,8 @@ export default function LanguageDialog({ langOpened, setLangOpened }: Props) {
 
 
   return <Dialog isOpen={langOpened} onClose={() => setLangOpened(false)}>
-    <DialogCloseButton handleClose={() => setLangOpened(false)} />
+    <DialogHeader handleClose={() => setLangOpened(false)} title={t("language")} />
     <div className={styles.langDialog}>
-      <h4 className={styles.langHeading}>{t("language")}</h4>
       <div className={styles.langPickerWrapper}>
         {[
           {

@@ -1,12 +1,14 @@
 import React, {useEffect, useRef, useState} from "react";
 import styles from "./WalletMenu.module.scss";
-import Button from "../../../../shared/components/Button";
 import Svg from "../../../../shared/components/Svg/Svg";
 import clsx from "clsx";
 import Portal from "../../../../shared/components/Portal";
 import Divider from "../../../../shared/components/Divider";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import useTranslation from "next-translate/useTranslation";
+import {useEvent} from "effector-react";
+import {setWalletDialogOpened} from "../../../../shared/models";
+import WalletDialog from "../WalletDialog";
 
 function formatAddress(address: string | null) {
   if(!address) {
@@ -22,6 +24,8 @@ export default function WalletMenu() {
   const walletRef = useRef<HTMLDivElement | null>(null);
   const [isWalletMenuOpened, setWalletMenuOpened] = useState(false);
   const { account, disconnect } = useWeb3();
+
+  const setWalletDialogOpenedFn = useEvent(setWalletDialogOpened);
 
   const [walletPositions, setWalletPositions] = useState({
     top: 0,
@@ -59,7 +63,9 @@ export default function WalletMenu() {
                   </span>
                 </span>
       </button>
-      <Portal root="dropdown-root" isOpen={isWalletMenuOpened} onClose={() => setWalletMenuOpened(false)} isTransitioningClassName={styles.in} className={clsx(
+      <Portal root="dropdown-root" isOpen={isWalletMenuOpened} onClose={() => {
+        setWalletMenuOpened(false);
+      }} isTransitioningClassName={styles.in} className={clsx(
         styles.dialogContainer,
         isWalletMenuOpened && styles.open
       )}>
@@ -67,7 +73,10 @@ export default function WalletMenu() {
           <nav>
             <ul className={styles.walletMenuList}>
               <li>
-                <div className={styles.walletMenuItem} role="button">
+                <div className={styles.walletMenuItem} onClick={() => {
+                  setWalletMenuOpened(false);
+                  setWalletDialogOpenedFn(true);
+                }} role="button">
                   <span className={styles.iconWrapper}><Svg iconName="wallet" /></span>
                   <span>{t("wallet")}</span>
                 </div>
@@ -96,5 +105,6 @@ export default function WalletMenu() {
         }} />
       </Portal>
     </div>
+    <WalletDialog />
   </>;
 }

@@ -136,9 +136,9 @@
     border-color: colors.$text-secondary;
   }
 
-  svg {
-    color: colors.$palette-green;
-  }
+  //svg {
+  //  color: colors.$palette-green;
+  //}
 
   &.error {
     border: 1px solid colors.$palette-red;

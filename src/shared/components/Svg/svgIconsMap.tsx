@@ -27,7 +27,8 @@ export const svgIconsNames = [
   "gitbook",
   "facebook",
   "arrow-next",
-  "search"
+  "search",
+  "no-transactions"
 ] as const;
 
 export type IconName = typeof svgIconsNames[number];

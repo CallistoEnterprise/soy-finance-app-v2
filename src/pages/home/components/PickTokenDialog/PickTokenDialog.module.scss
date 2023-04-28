@@ -110,7 +110,7 @@
     @include mixins.t-body-24;
   }
 
-  span {
+  p {
     color: colors.$text-secondary;
     @include mixins.t-body-16;
   }

@@ -1,7 +1,7 @@
 import "../../processes/web3/models/init";
 import "../../pages/home/components/Swap/models/init";
-import {$balances} from "./stores";
-import {pushBalance, resetBalance, updateBalance} from "./index";
+import {$balances, $isWalletDialogOpened} from "./stores";
+import {pushBalance, resetBalance, setWalletDialogOpened, updateBalance} from "./index";
 
 $balances.on(
   pushBalance,
@@ -44,3 +44,10 @@ $balances.on(
     return state;
   }
 ).reset(resetBalance);
+
+$isWalletDialogOpened.on(
+  setWalletDialogOpened,
+  (_, data) => {
+    return data;
+  }
+)

@@ -48,7 +48,7 @@ export default function SwapTokenCard({setDialogOpened, isDialogOpened, pickedTo
       <div className={styles.inputWrapper}>
         <input placeholder="0.0" value={inputValue} onChange={(e) => {
           handleInputChange(e.target.value);
-          recalculateTrade(e.target.value, pickedToken);
+          recalculateTrade(e.target.value, pickedToken, "input");
         }} type="text" className={styles.amountInput}/>
         <div className={styles.picker}>
           {pickedToken && <>
