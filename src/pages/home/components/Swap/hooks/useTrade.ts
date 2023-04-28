@@ -516,15 +516,11 @@ export function useTrade() {
 
       (async () => {
         if(tradeRef.current?.tradeType === TradeType.EXACT_INPUT) {
-          console.log("RECALCULATING TRADE CAUSED BY BLOCK CHANGE");
           await recalculateTradeIn(swapInputDataRef.current.amountIn, swapInputDataRef.current.tokenFrom);
-          showMessage("Recalculated exactIn trade due to new block");
         }
 
         if(tradeRef.current?.tradeType === TradeType.EXACT_OUTPUT) {
-          console.log("RECALCULATING TRADE CAUSED BY BLOCK CHANGE");
           await recalculateTradeOut(swapInputDataRef.current.amountOut, swapInputDataRef.current.tokenTo);
-          showMessage("Recalculated exactOut trade due to new block");
         }
       })();
     }

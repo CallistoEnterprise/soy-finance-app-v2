@@ -4,7 +4,7 @@ import {Contract, ErrorCode, EthersError, parseUnits} from "ethers";
 import routerABI from "../../../../../shared/abis/router.json";
 import {useWeb3} from "../../../../../processes/web3/hooks/useWeb3";
 import {useStore} from "effector-react";
-import {$swapInputData, $trade} from "../models/stores";
+import {$swapDeadline, $swapInputData, $swapSlippage, $trade} from "../models/stores";
 import {BigNumber} from "@ethersproject/bignumber";
 import useTransactionDeadline from "./useTransactionDeadline";
 import {isNativeToken} from "../../../../../shared/utils";
@@ -38,7 +38,8 @@ export function useSwapAction() {
     () => contracts.router[chainId],
     [chainId]
   );
-  const deadline = useTransactionDeadline(20);
+  const swapDeadline = useStore($swapDeadline);
+  const deadline = useTransactionDeadline(swapDeadline);
 
   const swapInputData = useStore($swapInputData)
 
@@ -55,6 +56,9 @@ export function useSwapAction() {
 
     return "swapExactTokensForTokens";
   }, [swapInputData.tokenTo, swapInputData.tokenFrom, swapInputData.amountIn]);
+
+  const slippage = useStore($swapSlippage);
+
 
   const handleSwap = useCallback(
     async () => {
@@ -85,7 +89,7 @@ export function useSwapAction() {
 
         const _amountOutWithSlippage = calculateSlippageAmount(
           _amountOut[_amountOut.length - 1],
-          0.5
+          slippage
         );
 
         const args: any = [

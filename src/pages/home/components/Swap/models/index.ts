@@ -22,3 +22,9 @@ export const setTradeOutLoading = createEvent<boolean>("Set value of tradeOut is
 export const setTokenSpendApproved = createEvent<boolean>("Set token spending approve");
 export const setTokenSpendEnabling = createEvent<boolean>("Set token spending enabling status");
 export const setTokenSpendRequesting = createEvent<boolean>("Set token spending requesting status");
+export const setSwapSettingsDialogOpened = createEvent<boolean>("Open dialog for settings");
+
+export const setSwapSlippage = createEvent<number>("Set slippage in percents");
+export const setSwapDeadline = createEvent<number>("Set deadline in percents");
+
+export const setFiatPrices = createEvent<{[key:string]: number}>("Set prices for chainId");

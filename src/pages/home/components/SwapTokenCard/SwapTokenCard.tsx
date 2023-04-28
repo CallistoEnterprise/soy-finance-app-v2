@@ -7,12 +7,29 @@ import PickTokenDialog from "../PickTokenDialog";
 import useNetworkSectionBalance from "../../../../shared/hooks/useNetworkSectionBalance";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
+import {useFiatPrice} from "../Swap/hooks/useFiatPrice";
+import {SwapToken} from "../Swap/models/types";
 
-export default function SwapTokenCard({setDialogOpened, isDialogOpened, pickedToken, inputValue, setToken, handleInputChange, recalculateTrade}) {
+interface Props {
+  setDialogOpened: any,
+  isDialogOpened: boolean,
+  pickedToken: SwapToken,
+  inputValue: string,
+  setToken: any,
+  handleInputChange: any,
+  recalculateTrade: any
+}
+
+export default function SwapTokenCard({setDialogOpened, isDialogOpened, pickedToken, inputValue, setToken, handleInputChange, recalculateTrade}: Props) {
   const {chainId} = useWeb3();
   const {network, contracts} = useNetworkSectionBalance({chainId})
   const { showMessage } = useSnackbar();
+  const {loading, price} = useFiatPrice(pickedToken?.token_address, chainId);
 
+
+  console.log("PRICE IS GOOOING ON");
+  console.log(loading);
+  console.log(price);
   function showComingSoon() {
     showMessage("Coming soon", "info");
   }
@@ -50,7 +67,9 @@ export default function SwapTokenCard({setDialogOpened, isDialogOpened, pickedTo
       </div>
       <div className={styles.balanceBox}>
           <span>
-            ~0.08 USD
+            {!loading && pickedToken && price && `~ ${formatBalance(Number(inputValue) * price)} USD`}
+            {loading && pickedToken && "loading..."}
+            {!pickedToken && "~ 0.0 USD"}
           </span>
         <span>Balance:
           {" "}

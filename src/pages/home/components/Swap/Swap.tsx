@@ -15,13 +15,13 @@ import styles from "./Swap.module.scss";
 import IconButton from "../../../../shared/components/IconButton";
 import Svg from "../../../../shared/components/Svg/Svg";
 import Button from "../../../../shared/components/Button";
-import {$swapInputData, $swapRoute, $trade} from "./models/stores";
+import {$swapInputData, $swapRoute, $swapSlippage, $trade} from "./models/stores";
 import {
   changeOrder,
   resetInputData,
   setAmountIn,
   setAmountOut,
-  setSwapInputData,
+  setSwapInputData, setSwapSettingsDialogOpened,
   setTokenFrom,
   setTokenTo,
   setTrade
@@ -35,10 +35,9 @@ import {useSwapApprove} from "./hooks/useSwapApprove";
 import ConnectWalletButton from "../../../../processes/web3/ui/ConnectWalletButton";
 import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
 import useNetworkSectionBalance from "../../../../shared/hooks/useNetworkSectionBalance";
-import {SwapVariant} from "./models/types";
+import SwapSettingsDialog from "../SwapSettingsDialog";
 
 export const ONE_BIPS = new Percent(JSBI.BigInt(1), JSBI.BigInt(10000));
-
 
 const BASE_FEE = new Percent(JSBI.BigInt(25), JSBI.BigInt(10000))
 const ONE_HUNDRED_PERCENT = new Percent(JSBI.BigInt(10000), JSBI.BigInt(10000))
@@ -130,8 +129,13 @@ export default function Swap() {
   const setAmountOutFn = useEvent(setAmountOut);
   const resetInputDataFn = useEvent(resetInputData);
 
+  const setSwapSettingsDialogOpenedFn = useEvent(setSwapSettingsDialogOpened);
+
   const trade = useStore($trade);
   const route = useStore($swapRoute);
+  const slippage = useStore($swapSlippage);
+
+  console.log(slippage);
 
   const {contracts, network} = useNetworkSectionBalance({chainId});
 
@@ -208,11 +212,12 @@ export default function Swap() {
         {/*<span className="font-14 font-primary">PRO mode</span>*/}
         {/*<Switch checked={checked} setChecked={() => setChecked(!checked)} />*/}
         <IconButton onClick={() => {
-          showComingSoon();
+          setSwapSettingsDialogOpenedFn(true);
         }}>
           <Svg iconName="filters"/>
         </IconButton>
       </div>
+      <SwapSettingsDialog />
     </div>
 
     <SwapTokenCard
@@ -262,7 +267,7 @@ export default function Swap() {
       </div>
       <div className={styles.infoRow}>
         <span>Slippage tolerance</span>
-        <span>0.5%</span>
+        <span>{slippage}%</span>
       </div>
     </div>
     {!isActive && <ConnectWalletButton fullWidth/>}
@@ -290,8 +295,8 @@ export default function Swap() {
         <span>
           {!trade && "—"}
           {trade?.tradeType === TradeType.EXACT_INPUT
-            ? computeSlippageAdjustedAmounts(trade, 0.5)
-            : computeSlippageAdjustedAmountsOut(trade || undefined, 0.5)
+            ? computeSlippageAdjustedAmounts(trade, slippage)
+            : computeSlippageAdjustedAmountsOut(trade || undefined, slippage)
           }
         </span>
       </div>

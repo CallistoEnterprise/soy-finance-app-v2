@@ -31,3 +31,9 @@ export const $tokenSpendApproved = createStore<boolean>(true);
 export const $tokenSpendEnabling = createStore<boolean>(false);
 export const $tokenSpendRequesting = createStore<boolean>(false);
 
+export const $isSwapSettingsDialogOpened = createStore<boolean>(false, {sid: "isSwapSettingsDialogOpened"});
+
+export const $swapDeadline = createStore<number>(20, {sid: "swapDeadline"});
+export const $swapSlippage = createStore<number>(0.5, {sid: "swapSlippage"});
+
+export const $swapFiatPrices = createStore<{[key: string]: number} | null>(null);

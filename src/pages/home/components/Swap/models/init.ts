@@ -1,8 +1,9 @@
 import {
+  $isSwapSettingsDialogOpened,
   $isTradeInLoading,
-  $isTradeOutLoading,
+  $isTradeOutLoading, $swapDeadline, $swapFiatPrices,
   $swapInputData,
-  $swapRoute,
+  $swapRoute, $swapSlippage,
   $swapTokens,
   $tokenSpendApproved, $tokenSpendEnabling, $tokenSpendRequesting,
   $trade
@@ -10,7 +11,7 @@ import {
 import {
   changeOrder, resetInputData,
   setAmountIn,
-  setAmountOut, setRoute,
+  setAmountOut, setFiatPrices, setRoute, setSwapDeadline, setSwapSettingsDialogOpened, setSwapSlippage,
   setTokenFrom, setTokenSpendApproved, setTokenSpendEnabling, setTokenSpendRequesting,
   setTokenTo, setTrade,
   setTradeInLoading,
@@ -137,6 +138,33 @@ $tokenSpendEnabling.on(
 
 $tokenSpendRequesting.on(
   setTokenSpendRequesting,
+  (_, data) => {
+    return data;
+  }
+);
+
+$isSwapSettingsDialogOpened.on(
+  setSwapSettingsDialogOpened, (_, data) => {
+    return data;
+  }
+);
+
+$swapSlippage.on(
+  setSwapSlippage,
+  (_, data) => {
+    return data;
+  }
+);
+
+$swapFiatPrices.on(
+  setFiatPrices,
+  (_, data) => {
+    return data;
+  }
+)
+
+$swapDeadline.on(
+  setSwapDeadline,
   (_, data) => {
     return data;
   }

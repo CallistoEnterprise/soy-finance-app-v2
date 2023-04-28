@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {ChangeEvent, useMemo, useState} from "react";
 import styles from "./PickTokenDialog.module.scss";
 import Tabs from "../../../../shared/components/Tabs";
 import Tab from "../../../../shared/components/Tab";
@@ -8,6 +8,7 @@ import Dialog from "../../../../shared/components/Dialog";
 import useNetworkSectionBalance from "../../../../shared/hooks/useNetworkSectionBalance";
 import {formatBalance, isNativeToken} from "../../../../shared/utils";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
+import Svg from "../../../../shared/components/Svg/Svg";
 
 interface Props {
   isOpened: boolean,
@@ -20,15 +21,29 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
   const {chainId} = useWeb3();
   const {isLoading, contracts, network} = useNetworkSectionBalance({chainId});
 
+  const [searchRequest, setSearchRequest] = useState("");
+
+  console.log(searchRequest);
+
   if(!chainId) {
     return;
   }
+
+  const filteredList = useMemo(() => {
+    return swapTokensList.filter(token => {
+      if(!searchRequest) {
+        return true;
+      }
+
+      return token[chainId].token_address.toLowerCase() === searchRequest.toLowerCase() || token[chainId].original_name.toLowerCase().startsWith(searchRequest.toLowerCase());
+    })
+  }, [searchRequest])
 
   return <Dialog isOpen={isOpened} onClose={handleClose}>
     <div className={styles.pickTokenDialog}>
       <h2 className="font-32 bold center mb-20">Select a token</h2>
       <div className={styles.searchTokenWrapper}>
-        <input className={styles.searchToken} placeholder="Name or address" />
+        <input onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchRequest(e.target.value)} className={styles.searchToken} placeholder="Name or address" />
       </div>
       <div className={styles.baseTokens}>
         <button className={styles.baseTokenButton}>
@@ -79,8 +94,15 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
       <Tabs view="merged">
         <Tab title="All">
           <div className={styles.tokensList}>
+            {!!searchRequest && !filteredList.length ? <div className={styles.noSearch}>
+                <div className={styles.bigIconWrapper}>
+                  <Svg size={84} iconName="search" />
+                </div>
+                <h4>No tokens found</h4>
+                <p>We did not find tokens with such a name</p>
+              </div> :
             <ul>
-              {swapTokensList.filter(token => Boolean(token[chainId])).map(token => {
+              {filteredList.filter(token => Boolean(token[chainId])).map(token => {
                 return <li className={styles.pickTokenListItem} key={token[chainId].token_address}>
                   <button className={clsx(styles.favButton, favoriteTokensToPick.includes(token[chainId].token_address) && styles.active)} onClick={() => {
                     if(favoriteTokensToPick.includes(token[chainId].token_address)) {
@@ -111,59 +133,54 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
                   </button>
                 </li>
               })}
-            </ul>
+            </ul>}
 
           </div>
         </Tab>
         <Tab title="My list">
           <div className={styles.tokensList}>
-            {!!swapTokensList.filter(t => Boolean(t[chainId]) && favoriteTokensToPick.includes(t[chainId].token_address)).length ? <ul>
-              {swapTokensList.filter(t => favoriteTokensToPick.includes(t[chainId].token_address)).map(token => {
-                return <li key={token[chainId].token_address} className={styles.pickTokenListItem}>
-                  <button className={clsx(styles.favButton, favoriteTokensToPick.includes(token[chainId].token_address) && styles.active)} onClick={() => {
-                    setFavoriteTokensToPick(favoriteTokensToPick.filter(v => v !== token[chainId].token_address));
-                  }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12.0003 17.2698L16.1503 19.7798C16.9103 20.2398 17.8403 19.5598 17.6403 18.6998L16.5403 13.9798L20.2103 10.7998C20.8803 10.2198 20.5203 9.11977 19.6403 9.04977L14.8103 8.63977L12.9203 4.17977C12.5803 3.36977 11.4203 3.36977 11.0803 4.17977L9.19032 8.62977L4.36032 9.03977C3.48032 9.10977 3.12032 10.2098 3.79032 10.7898L7.46032 13.9698L6.36032 18.6898C6.16032 19.5498 7.09032 20.2298 7.85032 19.7698L12.0003 17.2698Z" fill="currentColor"/>
-                    </svg>
-                  </button>
-                  <button className={styles.pickTokenButton} onClick={() => {
-                    pickToken(token[chainId]);
-                    handleClose();
-                  }}>
-                    <div className={styles.tokenButtonInfo}>
-                      <img height={40} width={40} src={token[chainId].imgUri} alt={token[chainId].original_name} />
-                      {token[chainId].original_name}
-                    </div>
+            {!!swapTokensList.filter(t => Boolean(t[chainId]) && favoriteTokensToPick.includes(t[chainId].token_address)).length ?
+              <>{!!searchRequest && !filteredList.length ? <ul>
+                {filteredList.filter(t => favoriteTokensToPick.includes(t[chainId].token_address)).map(token => {
+                  return <li key={token[chainId].token_address} className={styles.pickTokenListItem}>
+                    <button className={clsx(styles.favButton, favoriteTokensToPick.includes(token[chainId].token_address) && styles.active)} onClick={() => {
+                      setFavoriteTokensToPick(favoriteTokensToPick.filter(v => v !== token[chainId].token_address));
+                    }}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.0003 17.2698L16.1503 19.7798C16.9103 20.2398 17.8403 19.5598 17.6403 18.6998L16.5403 13.9798L20.2103 10.7998C20.8803 10.2198 20.5203 9.11977 19.6403 9.04977L14.8103 8.63977L12.9203 4.17977C12.5803 3.36977 11.4203 3.36977 11.0803 4.17977L9.19032 8.62977L4.36032 9.03977C3.48032 9.10977 3.12032 10.2098 3.79032 10.7898L7.46032 13.9698L6.36032 18.6898C6.16032 19.5498 7.09032 20.2298 7.85032 19.7698L12.0003 17.2698Z" fill="currentColor"/>
+                      </svg>
+                    </button>
+                    <button className={styles.pickTokenButton} onClick={() => {
+                      pickToken(token[chainId]);
+                      handleClose();
+                    }}>
+                      <div className={styles.tokenButtonInfo}>
+                        <img height={40} width={40} src={token[chainId].imgUri} alt={token[chainId].original_name} />
+                        {token[chainId].original_name}
+                      </div>
 
-                    <span className={styles.tokenBalance}>{isNativeToken(token[chainId].token_address) ?
-                      formatBalance(network?.balance) :
-                      formatBalance(contracts?.find(c => c.symbol === token[chainId].original_name)?.balance) || "0.0"
-                    }</span>
-                  </button>
-                </li>
-              })}
-            </ul> :
-              <>
-                <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect width="120" height="120" rx="20" fill="url(#paint0_linear_454_29833)"/>
-                  <path fillRule="evenodd" clipRule="evenodd" d="M76.747 91.4287L60.5 81.7606L44.253 91.3902C41.2776 93.162 37.6367 90.5428 38.4197 87.2302L42.7262 69.0495L28.3583 56.8007C25.7353 54.5666 27.1447 50.3296 30.5898 50.0599L49.499 48.4807L56.8983 31.34C58.2293 28.22 62.7707 28.22 64.1017 31.34L71.501 48.5192L90.4102 50.0985C93.8553 50.3681 95.2647 54.6051 92.6417 56.8392L78.2738 69.088L82.5803 87.2687C83.3633 90.5813 79.7224 93.2006 76.747 91.4287ZM61.534 56.3169C62.262 55.5695 62.6031 54.8699 62.7795 54.3895C63.0324 53.7009 63.0783 53.1045 63.1277 52.4629V52.4629C63.1825 51.7507 63.2416 50.9827 63.5928 49.9708C63.7422 49.54 63.8968 49.203 63.9957 49C63.3915 49.147 62.5583 49.4668 61.8889 50.1976C60.5753 51.6322 60.4242 54.0712 61.534 56.3169ZM60.6986 55.2249C60.8836 55.6197 60.9061 56.0052 60.8958 56.2693C60.8373 56.2278 60.7456 56.1667 60.6268 56.1063C60.1513 55.8648 59.7113 55.8709 59.4442 55.8745C59.3998 55.8752 59.3602 55.8757 59.3259 55.875C58.4062 55.8578 57.4674 54.8919 57.0926 53.9919C56.7974 53.2826 56.8489 52.6058 56.9237 52.1952C56.975 52.2882 57.0567 52.4244 57.1743 52.5752C57.5406 53.0457 57.9265 53.2381 58.4184 53.4832C58.5551 53.5513 58.6999 53.6235 58.8548 53.7068L58.8551 53.707C59.6965 54.1599 60.3689 54.5218 60.6986 55.2249ZM65.5227 68.1519C65.7594 67.79 66.2807 66.8864 66.3006 65.6233C66.3247 64.1023 65.606 63.043 65.3632 62.7143C66.2702 61.3482 66.3322 59.6085 65.5183 58.2955C64.7393 57.039 63.0724 56.0352 61.5378 56.5844C59.7813 57.2126 59.4775 59.4178 59.4628 59.5365C59.2952 60.9084 59.9302 61.9473 60.1318 62.2509C59.7779 62.71 58.4959 64.4838 58.8691 66.6747C58.9604 67.2111 59.1335 67.6706 59.3231 68.0472C59.0966 68.9616 58.7909 70.7313 59.3027 72.8361C59.6472 74.2524 60.2401 75.3188 60.6958 76C61.0167 75.86 65.5405 73.8137 65.7724 70.0524C65.8036 69.5458 65.7636 68.901 65.5227 68.1519ZM58.4041 65.8274C58.8834 64.6404 58.7579 63.5841 58.68 63.1431C58.8662 63.0458 59.1415 62.8701 59.3881 62.5673C59.5172 62.4088 59.6075 62.2533 59.671 62.1218C59.4744 61.7908 59.0716 61.0106 59.0778 59.9453C59.0854 58.6526 59.6902 57.7557 59.91 57.4589C59.7047 57.3004 58.7296 56.5821 57.434 56.7783C56.3219 56.9469 55.6669 57.6841 55.4342 57.9459L55.4338 57.9463C53.921 59.65 54.5401 62.1478 54.6113 62.4176C54.2838 62.6097 53.7795 62.9746 53.4177 63.6047C52.5097 65.1868 53.3521 66.9561 53.4374 67.1284C53.3597 67.6069 53.2792 68.5015 53.5899 69.5466C53.966 70.8118 54.7083 71.5995 55.0676 71.9363C55.4866 71.6235 56.5294 70.754 56.9417 69.2455C57.1114 68.6251 57.1269 68.0701 57.0999 67.6543C57.4311 67.3665 58.0217 66.7742 58.4041 65.8274ZM67.283 56.3449C66.5076 56.9981 65.3238 56.7536 64.1797 56.5172C63.5179 56.3806 62.9834 56.1783 62.6069 56.0111C62.7433 55.7862 62.9654 55.4988 63.3172 55.309C63.5556 55.1804 63.7268 55.165 64.1301 55.1286C64.3441 55.1094 64.6236 55.0842 65.0131 55.033C65.6197 54.9535 65.9193 54.8896 66.1443 54.7622C66.3721 54.6332 66.5259 54.4841 66.6787 54.3359L66.6787 54.3358C66.8775 54.143 67.0745 53.9519 67.4305 53.8093C67.637 53.7263 67.8191 53.691 67.941 53.6742C67.9754 53.8744 68.239 55.5394 67.283 56.3449Z" fill="#6DA316"/>
-                  <rect opacity="0.5" x="25.5518" y="34.4414" width="1.93165" height="8.54795" rx="0.965824" transform="rotate(-60.197 25.5518 34.4414)" fill="#6DA316"/>
-                  <rect opacity="0.5" x="38.0146" y="21.2949" width="1.93165" height="8.54795" rx="0.965824" transform="rotate(-25.0655 38.0146 21.2949)" fill="#6DA316"/>
-                  <rect opacity="0.5" width="1.93165" height="8.54795" rx="0.965824" transform="matrix(-0.497019 -0.867739 -0.867739 0.497019 94.4492 34.4414)" fill="#6DA316"/>
-                  <rect opacity="0.5" width="1.93165" height="8.54795" rx="0.965824" transform="matrix(-0.905824 -0.423655 -0.423655 0.905824 81.9863 21.2949)" fill="#6DA316"/>
-                  <defs>
-                    <linearGradient id="paint0_linear_454_29833" x1="120" y1="120" x2="-6.33183" y2="9.84185" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#F5F3FC"/>
-                      <stop offset="0.532144" stopColor="#F8FAFF"/>
-                      <stop offset="1" stopColor="#F6FDEF"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
-                No favorites yet
-              </>}
-
-
+                      <span className={styles.tokenBalance}>{isNativeToken(token[chainId].token_address) ?
+                        formatBalance(network?.balance) :
+                        formatBalance(contracts?.find(c => c.symbol === token[chainId].original_name)?.balance) || "0.0"
+                      }</span>
+                    </button>
+                  </li>
+                })}
+              </ul> :  <div className={styles.noSearch}>
+                <div className={styles.bigIconWrapper}>
+                  <Svg size={84} iconName="search" />
+                </div>
+                <h4>No tokens found</h4>
+                <p>We did not find tokens with such a name</p>
+              </div>}</>
+               :
+              <div className={styles.noSearch}>
+                <div className={styles.bigIconWrapper}>
+                  <Svg size={84} iconName="search" />
+                </div>
+                <h4>No favorite tokens yet</h4>
+                <p>We did not find tokens with such a name</p>
+              </div>}
               </div>
         </Tab>
       </Tabs>

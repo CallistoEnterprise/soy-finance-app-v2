@@ -1,0 +1,16 @@
+@use "src/styles/mixins";
+@use "src/styles/colors.module";
+
+.dialogHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 12px 12px 40px;
+
+
+  h3 {
+    color: colors.$text-primary;
+    @include mixins.t-body-24;
+    font-weight: 700;
+  }
+}

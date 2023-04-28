@@ -8,6 +8,7 @@ import {headersNetworks} from "../../constants/networks";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import {useStore} from "effector-react";
 import {$wc2blockchains} from "../../../../processes/web3/models/stores";
+import ConfirmationPopup from "../../../../shared/components/ConfirmationPopup";
 
 export default function HeaderNetwork() {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -15,7 +16,7 @@ export default function HeaderNetwork() {
 
   const networks = useStore($wc2blockchains);
 
-  const { chainId, changeNetwork } = useWeb3();
+  const { chainId, changeNetwork, isChangingNetwork } = useWeb3();
 
   const [positions, setPositions] = useState({
     top: 0,
@@ -84,7 +85,7 @@ export default function HeaderNetwork() {
         setNetworksDropdownOpened(false);
       }}/>
     </Portal>
-
+    <ConfirmationPopup open={isChangingNetwork} details="Awaiting network change" />
   </div>
   }</>;
 }
