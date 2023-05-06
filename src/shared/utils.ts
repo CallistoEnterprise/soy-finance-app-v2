@@ -19,3 +19,23 @@ export function formatBalance(balance) {
       ".0"
     );
 }
+
+export function formatBalanceToEight(balance) {
+  if(!balance) {
+    return "0.0";
+  }
+
+  return Number(balance).toFixed(8)
+    .replace(
+      /\.00000000/,
+      ".0"
+    );
+}
+
+export function formatAddress(address: string | null) {
+  if (!address) {
+    return "";
+  }
+
+  return `${address.substring(0, 4)}...${address.slice(-4)}`;
+}

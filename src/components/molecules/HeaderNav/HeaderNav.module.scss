@@ -1,0 +1,15 @@
+@use "../../../styles/colors.module";
+
+.menu {
+  display: flex;
+  gap: 6px;
+}
+
+.navLink {
+  color: colors.$text-primary;
+  padding: 7px;
+
+  &:hover {
+    color: colors.$palette-green;
+  }
+}

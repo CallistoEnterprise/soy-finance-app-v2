@@ -1,0 +1,27 @@
+@use "../../../styles/mixins";
+@use "../../../styles/colors.module";
+
+.confirmationPopup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  width: 480px;
+}
+
+.heading {
+  margin-top: 20px;
+  margin-bottom: 4px;
+  @include mixins.t-body-24;
+  color: colors.$text-secondary;
+  text-align: center;
+  font-weight: 700;
+}
+
+.details {
+  @include mixins.t-body-16;
+  color:  colors.$text-secondary;
+  text-align: center;
+}
+

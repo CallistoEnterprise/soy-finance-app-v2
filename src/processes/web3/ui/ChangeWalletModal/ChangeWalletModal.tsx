@@ -1,11 +1,12 @@
 import clsx from "clsx";
-import Dialog from "../../../../shared/components/Dialog";
+import Dialog from "../../../../components/molecules/Dialog";
 import styles from "./ChangeWalletModal.module.scss";
 import {useEvent, useStore} from "effector-react";
 import {$isWalletChangeModalOpened} from "../../models/stores";
 import {setWalletChangeModalOpen} from "../../models";
 import dynamic from "next/dynamic";
-import Preloader from "../../../../shared/components/Preloader/Preloader";
+import Preloader from "../../../../components/atoms/Preloader/Preloader";
+import DialogHeader from "../../../../components/molecules/DialogHeader";
 
 const DynamicChangeWalletContent = dynamic(() => import("../ChangeWalletContent"), {
   loading: () => {
@@ -28,6 +29,7 @@ export default function ChangeWalletModal() {
       handleClose();
     }}
   >
+    <DialogHeader title="Choose wallet" handleClose={handleClose} />
     <div className={clsx(
       styles.modalWrapper
     )}>

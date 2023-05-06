@@ -1,0 +1,34 @@
+@use "src/styles/colors.module";
+
+.liquidityPage {
+  display: grid;
+  grid-template-columns: 1fr 453px;
+  gap: 10px;
+}
+
+.userLiquidity {
+  border-radius: 20px;
+  border: 1px solid colors.$border-primary;
+  background-color: colors.$background-primary;
+
+}
+
+.noLiquidity {
+  height: 288px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.svgWrapper {
+  border-radius: 20px;
+  width: 120px;
+  height: 120px;
+  background: colors.$background-global;
+  color: colors.$palette-green;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}

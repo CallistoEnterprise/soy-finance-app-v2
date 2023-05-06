@@ -1,0 +1,29 @@
+@use "src/styles/colors.module";
+
+.networkItem {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  gap: 8px;
+  white-space: nowrap;
+  color: colors.$text-primary;
+
+  &:hover {
+    background: colors.$background-secondary;
+    cursor: pointer;
+  }
+
+  &.active {
+    color: colors.$palette-green-saturated;
+    pointer-events: none;
+  }
+}
+
+.imageWrapper {
+  width: 24px;
+  height: 24px;
+
+  svg {
+    color: colors.$text-secondary;
+  }
+}

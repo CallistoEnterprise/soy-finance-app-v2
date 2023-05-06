@@ -13,7 +13,16 @@ const nextConfig = {
   },
   webpack: (config, { isServer, webpack }) => {
     return config;
-  }
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/swap',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 module.exports = nextTranslate(nextConfig);

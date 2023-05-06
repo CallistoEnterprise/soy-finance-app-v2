@@ -1,0 +1,43 @@
+@use "src/styles/colors.module";
+
+.dropdownButton {
+  height: 40px;
+  border-radius: 8px;
+  background: colors.$background-secondary;
+  padding: 0 12px 0 16px;
+  font-size: 16px;
+  line-height: 20px;
+  color: colors.$text-primary;
+
+  &:hover {
+    background: colors.$hover-secondary;
+  }
+}
+
+.buttonContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.expandArrow {
+  transition-duration: 0.3s;
+  transform-origin: center center;
+  height: 24px;
+  width: 24px;
+
+  &.opened {
+    transform: rotate(-180deg);
+  }
+}
+
+.imageWrapper {
+  margin-right: 4px;
+  width: 24px;
+  height: 24px;
+
+  svg {
+    color: colors.$text-secondary;
+  }
+}

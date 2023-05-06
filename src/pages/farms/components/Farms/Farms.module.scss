@@ -1,0 +1,16 @@
+@use "src/styles/colors.module";
+
+.farmsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.farm {
+  border: 1px solid colors.$border-primary;
+  height: 60px;
+  border-radius: 8px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+}

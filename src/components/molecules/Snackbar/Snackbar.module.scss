@@ -1,0 +1,119 @@
+@use "../../../styles/media";
+@use "../../../styles/colors.module";
+
+.customSnackbar {
+  min-height: 50px;
+  border-radius: 8px;
+  padding: 7px 8px 7px 16px;
+  max-width: 740px;
+  display: flex;
+  align-items: center;
+  color: colors.$text-primary;
+
+  background-color: colors.$background-primary;
+  z-index: 1400;
+  position: fixed;
+
+  justify-content: center;
+
+  bottom: 24px;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  margin-right:-50%;
+
+  opacity: 0;
+
+  animation-name: showSnackbar;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-duration: 230ms;
+
+  @include media.for-tablet {
+    max-width: 540px;
+    //width: calc(100% - 32px);
+  }
+
+  @include media.for-mobile {
+    max-width: 330px;
+    //width: calc(100% - 32px);
+  }
+}
+
+@keyframes showSnackbar {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.error {
+  border: 1px solid colors.$palette-red;
+  box-shadow: 0 4px 0 colors.$palette-red;
+
+  .iconWrapper {
+    background: colors.$palette-red;
+  }
+}
+
+.success {
+  border: 1px solid colors.$palette-green;
+  box-shadow: 0 4px 0 colors.$palette-green;
+
+  .iconWrapper {
+    background: colors.$palette-green;
+  }
+}
+
+.info {
+  border: 1px solid colors.$palette-blue;
+  box-shadow: 0 4px 0 colors.$palette-blue;
+
+  .iconWrapper {
+    background: colors.$palette-blue;
+  }
+}
+
+.warning {
+  border: 1px solid colors.$palette-orange;
+  box-shadow: 0 4px 0 colors.$palette-orange;
+
+  .iconWrapper {
+    background: colors.$palette-orange;
+  }
+}
+
+.iconWrapper {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: colors.$palette-white;
+  border-radius: 8px;
+}
+
+.buttonWrapper {
+  margin-left: 16px;
+}
+
+.text {
+  position: relative;
+  top: -1px;
+}
+
+.snackbarContainer {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.snackbarBlock {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

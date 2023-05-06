@@ -1,0 +1,18 @@
+@use "../../../styles/colors.module";
+
+.checkmark {
+  display: flex;
+  border: 1px solid colors.$border-primary;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+
+  &.isChecked {
+    background-color: colors.$palette-green;
+    color: colors.$palette-white;
+    border-color: colors.$palette-green;
+  }
+}

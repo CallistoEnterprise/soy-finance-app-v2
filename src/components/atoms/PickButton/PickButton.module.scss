@@ -1,0 +1,35 @@
+@use "../../../styles/colors.module";
+
+.pickButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid colors.$border-primary;
+  width: 100%;
+  height: 60px;
+  border-radius: 8px;
+  padding: 0 20px;
+  font-size: 16px;
+  line-height: 20px;
+  transition-duration: 0.2s;
+
+  &.card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 21px 0 20px;
+    width: 160px;
+    border-radius: 8px;
+    border: 1px solid colors.$border-primary;
+    min-height: 150px;
+  }
+
+  &:hover:not(.active) {
+    border: 1px solid colors.$palette-green;
+  }
+
+  &.active {
+    border-color: colors.$palette-green;
+    background-color: colors.$transparent-primary;
+  }
+}

@@ -1,0 +1,79 @@
+@use "../../../styles/mixins";
+@use "../../../styles/colors.module";
+
+.listItem {
+  flex: 1;
+}
+
+.tabButton {
+  height: 50px;
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+  color: colors.$palette-white;
+  //@include typography.t-body-16;
+
+  &.active {
+    //background: $basic-filling-primary;
+  }
+}
+
+.separateViewTitle {
+  background: transparent;
+  height: 40px;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid colors.$palette-green;
+  color: colors.$text-primary;
+  //min-width: 120px;
+  padding: 0 23px;
+  @include mixins.t-body-16;
+
+  transition-duration: 0.2s;
+
+  &.small {
+    height: 24px;
+    font-size: 12px;
+    line-height: 14px;
+  }
+
+  &:hover:not(.active) {
+    background-color: colors.$transparent-primary;
+  }
+
+  &.active {
+    background: colors.$palette-green;
+    color: #fff;
+  }
+}
+
+.mergedViewTitle {
+  background: transparent;
+  height: 40px;
+  width: 100%;
+  border-radius: 8px;
+  color: colors.$text-primary;
+  min-width: 120px;
+  padding: 0 23px;
+  font-size: 14px;
+  line-height: 18px;
+
+  transition-duration: 0.2s;
+
+  &.active {
+    color: colors.$palette-green;
+  }
+}
+
+//
+//.buttonViewTitle {
+//  background: transparent;
+//  height: 38px;
+//  width: 100%;
+//  color: $basic-text-secondary;
+//  border-radius: 8px;
+//  @include typography.t-body-16;
+//
+//  &.active {
+//    border: 1px solid $border-4;
+//  }
+//}

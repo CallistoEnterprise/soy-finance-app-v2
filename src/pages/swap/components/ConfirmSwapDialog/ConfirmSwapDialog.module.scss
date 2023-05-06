@@ -1,0 +1,72 @@
+@use "src/styles/colors.module";
+@use "src/styles/mixins";
+
+.bottomInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid colors.$border-primary;
+  margin-top: 20px;
+}
+
+.infoRow {
+  @include mixins.t-body-14;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: colors.$text-secondary;
+}
+
+.dialogContent {
+  padding: 40px;
+  width: 480px;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.tokenBlock {
+  background-color: colors.$background-secondary;
+  border-radius: 8px;
+  height: 104px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.tokens {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  position: relative;
+}
+
+.tokenName {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: colors.$text-secondary;
+}
+
+.arrowTo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: colors.$background-primary;
+  width: 40px;
+  height: 40px;
+  z-index: 2;
+}

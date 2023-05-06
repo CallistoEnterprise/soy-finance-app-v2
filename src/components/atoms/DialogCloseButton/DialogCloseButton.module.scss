@@ -1,0 +1,19 @@
+@use "../../../styles/media";
+@use "../../../styles/colors.module";
+
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: colors.$text-secondary;
+
+  @include media.for-mobile {
+    right: 2px;
+    top: 2px;
+  }
+}

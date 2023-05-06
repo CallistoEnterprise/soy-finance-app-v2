@@ -1,0 +1,35 @@
+.pairLogos {
+  display: flex;
+  align-items: center;
+}
+
+.secondToken {
+  transform: translateX(-4px);
+}
+
+.tokensInfo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.blockHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.tabContent {
+  padding-top: 20px;
+}
+
+.tradingChart {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}

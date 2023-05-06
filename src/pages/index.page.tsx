@@ -1,1 +1,3 @@
-export { default } from "./home/Home";
+export default function () {
+  return null;
+}

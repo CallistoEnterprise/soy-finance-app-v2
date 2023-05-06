@@ -1,0 +1,106 @@
+@use "src/styles/colors.module";
+@use "sass:math";
+
+.progressContainer {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  border-radius: 20px;
+  overflow: hidden;
+  background-color: colors.$background-secondary;
+}
+
+.progressBar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  &.green {
+    background-color: colors.$palette-green;
+  }
+
+  &.purple {
+    background-color: colors.$palette-violet;
+  }
+
+  &.pink {
+    background-color: colors.$palette-pink;
+  }
+}
+
+.progressNumbers {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  align-items: center;
+}
+
+.bar {
+  stroke-linecap: round;
+  cx: 160px;
+  cy: 160px;
+  r: 155px;
+  fill: transparent;
+  stroke-width: 10px;
+  stroke: colors.$palette-green;
+  stroke-dasharray: 488px;
+  stroke-dashoffset: 488px;
+}
+
+.bar1 {
+  stroke-linecap: round;
+  cx: 160px;
+  cy: 160px;
+  r: 155px;
+  fill: transparent;
+  stroke-width: 10px;
+  stroke: grey;
+  stroke-dasharray: math.$pi * 2 * 160px;
+}
+
+.semiProgressContainer {
+  width: 320px;
+  height: 320px;
+  border: 10px solid colors.$background-secondary;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.barWrapper {
+  overflow: hidden;
+}
+
+.progressText {
+  position: absolute;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  top: 30px;
+  width: 260px;
+  height: 130px;
+  padding-top: 50px;
+
+  .dashArc {
+    position: absolute;
+    top: 0;
+    color: colors.$border-primary;
+  }
+  //border: 1px dashed #404040;
+}
+
+.semiCircleProgressContainer {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.pointsText {
+  color: colors.$palette-green;
+}

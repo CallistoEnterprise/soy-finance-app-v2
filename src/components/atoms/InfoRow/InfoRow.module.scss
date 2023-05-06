@@ -1,0 +1,14 @@
+@use "../../../styles/colors.module";
+@use "../../../styles/mixins";
+
+.infoRow {
+  @include mixins.t-body-14;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: colors.$text-secondary;
+}
+
+.value {
+  color: colors.$text-primary;
+}

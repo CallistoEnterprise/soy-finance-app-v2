@@ -3,8 +3,7 @@ import {useWeb3} from "../../hooks/useWeb3";
 import styles from "./ChangeWalletContent.module.scss";
 import MetamaskCard from "../MetamaskCard";
 import WalletConnectCard from "../WalletConnectCard";
-import DialogCloseButton from "../../../../shared/components/DialogCloseButton";
-import Button from "../../../../shared/components/Button";
+import Button from "../../../../components/atoms/Button";
 import {wallets} from "../../constants/wallets";
 import QRCode from "react-qr-code";
 
@@ -13,12 +12,13 @@ export async function copyToClipboard(text: string) {
 }
 
 import Image from "next/image";
-import IconButton from "../../../../shared/components/IconButton";
+import IconButton from "../../../../components/atoms/IconButton";
 import useTranslation from "next-translate/useTranslation";
 import {useEvent, useStore} from "effector-react";
 import {disableWc2Blockchain, enableWc2Blockchain, setWalletChangeModalOpen} from "../../models";
 import {$wc2blockchains} from "../../models/stores";
-import PickButton from "../../../../shared/components/PickButton";
+import PickButton from "../../../../components/atoms/PickButton";
+import Svg from "../../../../components/atoms/Svg/Svg";
 
 
 export default function ChangeWalletContent() {
@@ -63,25 +63,14 @@ export default function ChangeWalletContent() {
       {step === 2 && <IconButton className={styles.backButton} transparent onClick={() => {
         setStep(1);
       }}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16.6186 2.99055C16.1286 2.50055 15.3386 2.50055 14.8486 2.99055L6.53859 11.3005C6.14859 11.6905 6.14859 12.3205 6.53859 12.7105L14.8486 21.0205C15.3386 21.5105 16.1286 21.5105 16.6186 21.0205C17.1086 20.5305 17.1086 19.7405 16.6186 19.2505L9.37859 12.0005L16.6286 4.75055C17.1086 4.27055 17.1086 3.47055 16.6186 2.99055Z" fill="#4B564B"/>
-        </svg>
+        <Svg iconName="back" />
       </IconButton>}
     {step === 3 && <IconButton className={styles.backButton} transparent onClick={() => {
       setStep(2);
     }}>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M16.6186 2.99055C16.1286 2.50055 15.3386 2.50055 14.8486 2.99055L6.53859 11.3005C6.14859 11.6905 6.14859 12.3205 6.53859 12.7105L14.8486 21.0205C15.3386 21.5105 16.1286 21.5105 16.6186 21.0205C17.1086 20.5305 17.1086 19.7405 16.6186 19.2505L9.37859 12.0005L16.6286 4.75055C17.1086 4.27055 17.1086 3.47055 16.6186 2.99055Z" fill="#4B564B"/>
-      </svg>
+      <Svg iconName="back" />
     </IconButton>}
-      <DialogCloseButton handleClose={() => {
-        handleClose();
-        setTimeout(() => {
-          setStep(1);
-        }, 300);
-      }} />
       {step === 1 && <>
-        <h4 className={styles.heading}>{t("connect_wallet")}</h4>
         <div className={styles.walletsWrapper}>
           <MetamaskCard active={currentWallet === "metamask"} onClick={
             () => {

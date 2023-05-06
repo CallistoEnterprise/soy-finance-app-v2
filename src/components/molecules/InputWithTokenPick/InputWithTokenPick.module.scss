@@ -1,0 +1,58 @@
+@use "src/styles/colors.module";
+
+
+.amountInput {
+  width: 100%;
+  padding-right: 120px;
+  padding-left: 16px;
+  height: 40px;
+  background: colors.$background-primary;
+  border: 1px solid colors.$border-primary;
+  border-radius: 8px;
+  outline: 0;
+
+  &:active,
+  &:focus {
+    border: 1px solid colors.$palette-green;
+  }
+  //background: transparent;
+  //text-align: right;
+  //border: 0;
+  //outline: none;
+  //width: 100px;
+}
+
+.picker {
+  position: absolute;
+  right: 1px;
+  z-index: 1;
+  top: 1px;
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.tokenSelect {
+  height: 38px;
+  padding: 0 10px;
+  background-color: colors.$background-primary;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  border-radius: 8px;
+}
+
+.iconWrapper {
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+}
+
+.expandArrow {
+  width: 24px;
+  height: 24px;
+  color: colors.$text-primary;
+}

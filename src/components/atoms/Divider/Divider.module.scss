@@ -1,0 +1,13 @@
+@use "../../../styles/colors.module";
+
+.divider {
+  height: 1px;
+  background: colors.$border-primary;
+  position: relative;
+  width: 100%;
+
+  &.vertical {
+    height: 100%;
+    width: 1px;
+  }
+}

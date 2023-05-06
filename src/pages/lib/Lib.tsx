@@ -1,16 +1,16 @@
 import styles from "./Lib.module.scss";
-import Button from "../../shared/components/Button";
-import Preloader from "../../shared/components/Preloader/Preloader";
+import Button from "../../components/atoms/Button";
+import Preloader from "../../components/atoms/Preloader/Preloader";
 import {useSnackbar} from "../../shared/providers/SnackbarProvider";
-import SwitchTheme from "../home/components/SwitchTheme";
+import SwitchTheme from "../../components/molecules/SwitchTheme";
 import {ChangeEvent, useState} from "react";
-import Switch from "../../shared/components/Switch";
-import Checkbox from "../../shared/components/Checkbox";
-import PickButton from "../../shared/components/PickButton";
-import IconButton from "../../shared/components/IconButton";
-import Svg from "../../shared/components/Svg/Svg";
-import Tabs from "../../shared/components/Tabs";
-import Tab from "../../shared/components/Tab";
+import Switch from "../../components/atoms/Switch";
+import Checkbox from "../../components/atoms/Checkbox";
+import PickButton from "../../components/atoms/PickButton";
+import IconButton from "../../components/atoms/IconButton";
+import Svg from "../../components/atoms/Svg/Svg";
+import Tabs from "../../components/molecules/Tabs";
+import Tab from "../../components/atoms/Tab";
 
 export default function Lib() {
   const {showMessage} = useSnackbar();

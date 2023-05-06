@@ -1,5 +1,5 @@
 import React, { useContext, useState, createContext, useEffect } from "react";
-import Snackbar from "../components/Snackbar";
+import Snackbar from "../../components/molecules/Snackbar";
 
 interface SnackbarContextInterface {
   showMessage: (message: string, severity?: "success" | "error" | "info" | "warning", duration?: number) => void

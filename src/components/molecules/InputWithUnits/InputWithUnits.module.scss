@@ -1,0 +1,40 @@
+@use "../../../styles/colors.module";
+@use "../../../styles/mixins";
+
+.inputWithUnits {
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid colors.$border-primary;
+  border-radius: 8px;
+  padding-right: 47px;
+  padding-left: 16px;
+  background-color: colors.$background-secondary;
+  height: 40px;
+  outline: 0;
+
+  &:focus,
+  &:active {
+    border-color: colors.$palette-green;
+
+    + .units {
+      border-color: colors.$palette-green;
+    }
+  }
+}
+
+.units {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 47px;
+  height: 40px;
+  border-left: 1px solid colors.$border-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include mixins.t-body-16;
+}

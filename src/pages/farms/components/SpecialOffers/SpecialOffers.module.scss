@@ -1,0 +1,14 @@
+@use "src/styles/colors.module";
+
+.offersContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.offerCard {
+  display: flex;
+  border-radius: 8px;
+  border: 1px solid colors.$border-primary;
+  min-height: 296px;
+}

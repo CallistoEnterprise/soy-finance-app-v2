@@ -1,0 +1,43 @@
+@use "../../../styles/mixins";
+@use "../../../styles/colors.module";
+
+.copyContainer {
+  width: 100%;
+  padding: 17px 60px 17px 20px;
+  border-radius: 8px;
+  position: relative;
+  height: 60px;
+  white-space: nowrap;
+  background-color: #F1F1F1;
+
+  &.button {
+  }
+
+  &.small {
+    padding: 7px 62px 7px 22px;
+    height: 38px;
+  }
+}
+
+.copyButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 8px;
+  transition-duration: 0.2s;
+
+  color: colors.$text-secondary;
+  cursor: pointer;
+  //&:hover {
+  //  cursor: pointer;
+  //  svg path {
+  //    fill: #4B564B;
+  //  }
+  //}
+}
+
+.text {
+  @include mixins.t-body-16;
+  color: colors.$text-primary;
+  opacity: 0;
+}

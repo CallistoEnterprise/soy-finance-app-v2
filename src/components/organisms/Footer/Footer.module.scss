@@ -1,0 +1,87 @@
+@use "../../../styles/mixins";
+@use "../../../styles/colors.module";
+
+.topFooter {
+  padding: 0 20px 40px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.leftSide {
+  padding-top: 12px;
+}
+
+.footerLogo {
+  margin-bottom: 14px;
+}
+
+.footerSettings {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.soyPrice {
+  @include mixins.t-body-16;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid colors.$border-primary;
+  border-radius: 8px;
+  gap: 2px;
+}
+
+.socials {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.externalLinkColumnTitle {
+  @include mixins.t-body-20;
+  font-weight: 700;
+  color: colors.$text-primary;
+  margin-bottom: 16px;
+}
+
+.externalLinks {
+  display: flex;
+  gap: 120px;
+  padding-top: 20px;
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bottomFooter {
+  padding: 20px 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.topFooter, .bottomFooter {
+  a {
+    color: colors.$text-secondary;
+    transition-duration: 0.2s;
+    &:hover {
+      color: colors.$palette-green;
+    }
+  }
+}
+
+.copyright {
+  @include mixins.t-body-16;
+  color: colors.$text-secondary;
+}
+
+.termsPolicy {
+  display: flex;
+  align-items: center;
+  gap: 21px;
+}
