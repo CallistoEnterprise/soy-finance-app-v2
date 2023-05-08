@@ -24,14 +24,27 @@ import {useColorMode} from "../../../../shared/providers/ThemeProvider";
 import {useStore} from "effector-react";
 import {$swapInputData} from "../../models/stores";
 import {SwapToken} from "../../models/types";
-import {fetchTokenPriceData, inter, startTimestamp} from "../../../../shared/fetcher";
+import {
+  fetchTokenPriceData,
+  getUnixTime,
+  inter,
+  startOfHour,
+  startTimestamp,
+  utcCurrentTime
+} from "../../../../shared/fetcher";
 import 'chartjs-adapter-date-fns';
-import {data} from "../../../liquidity/components/TradingChart/TradingChart";
+import Svg from "../../../../components/atoms/Svg/Svg";
+import {sub} from "../../../../shared/fetcher";
+import Preloader from "../../../../components/atoms/Preloader/Preloader";
+import Text from "../../../../components/atoms/Text";
+import {isNativeToken} from "../../../../shared/utils";
+import {WCLO_ADDRESS} from "../../hooks/useTrade";
+
 
 const tooltipLine = {
   id: 'tooltipLine',
   afterDraw(chart: Chart) {
-    if (!chart.config.options.candlestick) {
+    // if (!chart.config.options.plugins.candlestick) {
       if (chart.tooltip?.getActiveElements().length) {
         let x = chart.tooltip?.getActiveElements()[0].element.x;
         let yAxis = chart.scales.y;
@@ -53,37 +66,14 @@ const tooltipLine = {
         ctx.stroke();
         ctx.restore();
       }
-    }
+    // }
   }
 };
-
-// const movingAverage = {
-//   id: "movingAverage",
-//   afterDatasetDraw(chart: Chart, args: { index: number; meta: ChartMeta }, options) {
-//     if (chart.config.options.candlestick) {
-//       const {ctx, data, scales: {x, y}} = chart;
-//
-//       ctx.save();
-//
-//       ctx.beginPath();
-//       ctx.strokeStyle = "rgba(102, 102, 102, 1)";
-//
-//
-//
-//       ctx.moveTo(chart.getDatasetMeta(0).data[0].x, y.getPixelForValue(data.datasets[0].data[0].c));
-//       for(let i = 1; i < data.datasets[0].data.length; i++) {
-//         ctx.lineTo(chart.getDatasetMeta(0).data[i].x, y.getPixelForValue(data.datasets[0].data[i].c));
-//       }
-//
-//       ctx.stroke();
-//     }
-//   }
-// }
 
 const candlestick = {
   id: "candlestick",
   beforeDatasetDraw(chart: Chart, args: { index: number; meta: ChartMeta }, options): boolean | void {
-    if (chart.config.options.candlestick) {
+    if (chart.config.options.plugins.candlestick) {
       const {ctx, data, chartArea: {top, bottom, left, right, width, height}, scales: {x, y}} = chart;
 
       ctx.save();
@@ -117,7 +107,6 @@ ChartJS.register(
   Legend,
   tooltipLine,
   candlestick,
-  // movingAverage,
   TimeSeriesScale
 );
 
@@ -130,44 +119,242 @@ const getCandleData = (data) => ({
         const {raw: {o, c}} = ctx;
         let color;
         if (c >= o) {
-          color = 'rgba(75, 192, 192, 1)'
+          color = '#6DA316'
         } else {
-          color = 'rgba(255, 26, 104, 1)'
+          color = '#CD1515'
         }
 
         return color;
       }),
       borderColor: "rgba(0,0,0,1)",
+      borderRadius: 2,
+      borderSkipped: false,
       label: 'Financial Chart',
       data
     },
   ],
 });
 
-const financialOptions = {
-  candlestick: true,
+const financialOptions = (timeline): ChartOptions =>  ({
+  responsive: true,
+  animation: false,
+  interaction: {
+    mode: "nearest",
+    intersect: false,
+    axis: "x"
+  },
   parsing: {
     xAxisKey: "x",
     yAxisKey: "s"
   },
   scales: {
     x: {
-      type: "timeseries"
+      type: "timeseries",
+      time: {
+        unit: timeline === "day" ? "hour" : 'day'
+      },
+      ticks: {
+        maxTicksLimit: 6,
+      },
+      grid: {
+        display: false,
+        drawBorder: false
+      },
     },
     y: {
       beginAtZero: false,
-      // grace: 1
+      grid: {
+        display: false,
+        color: (context) => {
+          if (context.index === 0) {
+            return ""
+          }
+        }
+      },
+      ticks: {
+        callback: function(value, index, values) {
+          return '$' + Number(value).toFixed(8).replace(/\.?0+$/, '');
+        }
+      }
     }
   },
   plugins: {
     candlestick: {},
-    // movingAverage: {}
+    tooltipLine: {},
+    legend: {
+      display: false
+    },
+    tooltip: {
+      // Disable the on-canvas tooltip
+      enabled: false,
+      external: externalTooltipHandler,
+      position: "nearest",
+      mode: "index",
+      intersect: false,
+      yAlign: "bottom",
+      padding: 16,
+      caretPadding: 20,
+      caretSize: 0,
+
+      borderWidth: 1,
+      cornerRadius: 4,
+      titleAlign: "center",
+      titleFont: {
+        size: 14,
+      },
+      titleMarginBottom: 8,
+      bodyFont: {
+        size: 14,
+      },
+      bodyAlign: "center",
+      footerAlign: "center",
+      displayColors: false
+    }
   }
-}
+});
 
-export const options: ChartOptions = {
+const tooltipElementConfig = {
+  background: "#fff",
+  borderRadius: "4px",
+  color: "#D4DDD8",
+  opacity: 1,
+  pointerEvents: "none",
+  position: "absolute",
+  transform: "translate(-50%, 0)",
+  transition: "all .1s ease",
+  minWidth: "132px",
+  border: "1px solid #D4DDD8",
+  textAlign: "center",
+};
+
+const getOrCreateTooltip = (chart) => {
+  let tooltipEl = document.getElementById('chartjs-tooltip');
+
+  if (!tooltipEl) {
+    tooltipEl = document.createElement("div");
+    tooltipEl.id = "chartjs-tooltip";
+    tooltipEl.style.position = "relative";
+    for (const styleName in tooltipElementConfig) {
+      tooltipEl.style[styleName] = tooltipElementConfig[styleName];
+    }
+
+    const table = document.createElement("div");
+    table.style.margin = "0px";
+
+    tooltipEl.appendChild(table);
+    chart.canvas.parentNode.appendChild(tooltipEl);
+  }
+
+  return tooltipEl;
+};
+
+const externalTooltipHandler = (context) => {
+  // Tooltip Element
+  const { chart, tooltip } = context;
+  const tooltipEl = getOrCreateTooltip(chart);
+
+  const {x, y} = context.tooltip.dataPoints[0].parsed;
+
+  if (tooltip.opacity === 0) {
+    tooltipEl.style.opacity = "0";
+    return;
+  }
+
+  const tableRoot = tooltipEl.querySelector("div");
+
+  // Remove old children
+  while (tableRoot.firstChild) {
+    tableRoot.firstChild.remove();
+  }
+
+  const dayBlock = document.createElement("div");
+  dayBlock.innerText = new Date(x).toLocaleString('en-US', {year: "numeric", day: "numeric", month: "short"});
+
+  const timeBlock = document.createElement("div");
+  timeBlock.innerText = new Date(x).toLocaleString('en-US', {minute: "2-digit", second: "2-digit", hour: "2-digit"});
+
+  const dateRow = document.createElement("div");
+  dateRow.style.display = "flex";
+  dateRow.style.justifyContent = "space-between";
+  dateRow.style.gap = "40px";
+  dateRow.style.fontSize = "14px";
+  dateRow.style.marginBottom = "10px";
+  dateRow.style.whiteSpace = "nowrap";
+  dateRow.style.color = "#4B564B";
+
+  dateRow.appendChild(dayBlock);
+  dateRow.appendChild(timeBlock);
+  tableRoot.appendChild(dateRow);
+
+  const cryptoSumRow = document.createElement("div");
+  cryptoSumRow.style.fontSize = "16px";
+  cryptoSumRow.style.lineHeight = "26px";
+  cryptoSumRow.style.textAlign = "left";
+  cryptoSumRow.style.fontWeight = "700";
+  cryptoSumRow.style.color = "#122110";
+
+  if(context.tooltip.dataPoints[0].raw.s) {
+    const firstRow = document.createElement("span");
+    const secondRow = document.createElement("span");
+
+
+    firstRow.style.whiteSpace = secondRow.style.whiteSpace = "nowrap";
+
+    cryptoSumRow.style.display = "flex";
+    cryptoSumRow.style.flexDirection = "column";
+    cryptoSumRow.style.gap = "4px";
+
+    firstRow.innerText = `Open: $${context.tooltip.dataPoints[0].raw.s[0].toFixed(18)}`;
+    secondRow.innerText = `Closed: $${context.tooltip.dataPoints[0].raw.s[1].toFixed(18)}`;
+
+    cryptoSumRow.appendChild(firstRow);
+    cryptoSumRow.appendChild(secondRow);
+  } else {
+    cryptoSumRow.innerText = `$${y.toFixed(18)}`;
+  }
+
+  tableRoot.appendChild(cryptoSumRow);
+
+  const arrow = document.createElement("div");
+  arrow.style.position = "absolute";
+  arrow.style.bottom = "0";
+  arrow.style.left = "50%";
+  arrow.style.width = "8px";
+  arrow.style.height = "8px";
+  arrow.style.borderRight = "1px solid #D4DDD8";
+  arrow.style.borderBottom = "1px solid #D4DDD8";
+  arrow.style.transform = "rotate(45deg) translate(4px, 4px)";
+  arrow.style.backgroundColor = "#fff";
+
+
+  tableRoot.appendChild(arrow);
+
+
+  const { offsetLeft: positionX, offsetTop: positionY } = chart.canvas;
+
+  tooltipEl.style.opacity = "1";
+
+  const offset = tooltip.x + tooltip.width - chart.chartArea.width;
+  if (offset > 0) {
+    tooltipEl.style.left = positionX + tooltip.caretX - offset + "px";
+  } else {
+    tooltipEl.style.left = positionX + tooltip.caretX + "px";
+  }
+
+  if(context.tooltip.dataPoints[0].raw.s) {
+    tooltipEl.style.top = positionY + tooltip.caretY - 140 + "px";
+  } else {
+    tooltipEl.style.top = positionY + tooltip.caretY - 110 + "px";
+  }
+
+
+  tooltipEl.style.font = tooltip.options.bodyFont.string;
+  tooltipEl.style.padding = tooltip.options.padding + "px " + tooltip.options.padding + "px";
+};
+
+export const options = (timeline): ChartOptions => ({
   responsive: true,
-
+  animation: false,
   interaction: {
     mode: "nearest",
     intersect: false,
@@ -182,15 +369,58 @@ export const options: ChartOptions = {
     legend: {
       display: false
     },
+    tooltip: {
+      // Disable the on-canvas tooltip
+      enabled: false,
+      external: externalTooltipHandler,
+      position: "nearest",
+      mode: "index",
+      intersect: false,
+      yAlign: "bottom",
+      padding: 16,
+      caretPadding: 20,
+      caretSize: 0,
+
+      borderWidth: 1,
+      cornerRadius: 4,
+      titleAlign: "center",
+      titleFont: {
+        size: 14,
+      },
+      titleMarginBottom: 8,
+      bodyFont: {
+        size: 14,
+      },
+      bodyAlign: "center",
+      footerAlign: "center",
+      displayColors: false
+    }
   },
   scales: {
     x: {
-      grid: {
-        display: false,
-        drawBorder: false
+      type: "timeseries",
+      time: {
+        unit: timeline === "day" ? "hour" : 'day'
       },
+      grid: {
+        // color: "transparent",
+        tickColor: "black",
+        drawTicks: true,
+
+        display: false,
+        // display: false,
+        // drawBorder: false
+        // offset: true
+      },
+      // type: "timeseries",
       ticks: {
-        maxTicksLimit: 7
+        // padding: 30,
+        // stepSize: 44440000
+        maxTicksLimit: timeline === "year" ? 10 : 7,
+        labelOffset: 10
+        // autoSkip: false,
+        // autoSkipPadding: 50,
+        // align: "inner"
       }
     },
     y: {
@@ -201,15 +431,20 @@ export const options: ChartOptions = {
             return ""
           }
         }
+      },
+      ticks: {
+        callback: function(value, index, values) {
+          return '$' + Number(value).toFixed(8).replace(/\.?0+$/, '');
+        }
       }
     }
   }
-};
+});
 
 const color = "#6DA316";
 
 
-export const getData = (mode, data, labels) => ({
+export const getData = (mode, data, labels): ChartData => ({
   labels,
   datasets: [
     {
@@ -241,17 +476,12 @@ export const getData = (mode, data, labels) => ({
       pointHoverBorderColor: "#fff",
       pointRadius: 4,
       // cubicInterpolationMode: 'monotone'
-      tension: 0.2
+      // tension: 0.2
     }
   ],
 });
 
-function formatTimestamp(timestamp: number): string {
-  const date = new Date(timestamp * 1000);
-  const options = {day: '2-digit', month: 'short', year: 'numeric'};
-  return date.toLocaleDateString().toLowerCase();
-}
-
+const tabsTimeline = ["day", "week", "month", "year"];
 
 export default function TradingChart() {
   const [selectedTab, setSelectedTab] = useState(1);
@@ -272,25 +502,43 @@ export default function TradingChart() {
   const [candleData, setCandleData] = useState([]);
   const [labels, setLabels] = useState([]);
 
+  const [time, setTime] = useState({
+    startTimestamp,
+    interval: inter
+  });
+
+  const [loading, setIsLoading] = useState(true);
+
   console.log(firstToken);
 
   const [secondToken, setSecondToken] = useState<SwapToken>(null);
 
   useEffect(() => {
     if (swapInputData.tokenFrom) {
+      if(isNativeToken(swapInputData.tokenFrom.token_address)) {
+        return setFirstToken({...swapInputData.tokenFrom, token_address: WCLO_ADDRESS});
+      }
+
       setFirstToken(swapInputData.tokenFrom);
     }
   }, [swapInputData.tokenFrom]);
 
   useEffect(() => {
-    setSecondToken(swapInputData.tokenTo);
+    if (swapInputData.tokenTo) {
+      if(isNativeToken(swapInputData.tokenTo.token_address)) {
+        return setFirstToken({...swapInputData.tokenTo, token_address: WCLO_ADDRESS});
+      }
+
+      setFirstToken(swapInputData.tokenTo);
+    }
   }, [swapInputData.tokenTo]);
 
   useEffect(() => {
     (async () => {
-      const price = await fetchTokenPriceData(currentGraph === "first" ? firstToken.token_address.toLowerCase() : secondToken.token_address.toLowerCase(), inter, startTimestamp);
+      setIsLoading(true);
+      const price = await fetchTokenPriceData(currentGraph === "first" ? firstToken.token_address.toLowerCase() : secondToken.token_address.toLowerCase(), time.interval, time.startTimestamp);
 
-      const candlePrice = await fetchTokenPriceData(currentGraph === "first" ? firstToken.token_address.toLowerCase() : secondToken.token_address.toLowerCase(), inter * 4, startTimestamp);
+      const candlePrice = await fetchTokenPriceData(currentGraph === "first" ? firstToken.token_address.toLowerCase() : secondToken.token_address.toLowerCase(), time.interval, time.startTimestamp);
 
       const dataResult = [];
       const labelsResult = [];
@@ -299,14 +547,15 @@ export default function TradingChart() {
       if (price.data) {
         for (const priceObj of price.data) {
           dataResult.push(priceObj.close);
-          labelsResult.push(formatTimestamp(priceObj.time));
+          labelsResult.push( new Date(priceObj.time * 1000));
         }
       }
 
       if (candlePrice.data) {
         for (const priceObj of candlePrice.data) {
+          console.log(priceObj.time);
           candleDataResult.push({
-            x: new Date(priceObj.time),
+            x: new Date(priceObj.time * 1000),
             o: priceObj.open,
             h: priceObj.high,
             l: priceObj.low,
@@ -320,11 +569,24 @@ export default function TradingChart() {
       setCandleData(candleDataResult);
       setLabels(labelsResult);
       setData(dataResult);
-      console.log(price);
+
+      const newValue = dataResult[dataResult.length - 1];
+      const oldValue = dataResult[0];
+
+      const change = ((newValue - oldValue) / oldValue) * 100;
+      setPriceChange(+change.toFixed(1));
+
+      // console.log(dataResult[0], dataResult[dataResult.length - 1]);
+      //
+      // console.log(price);
+      setIsLoading(false);
     })();
 
-  }, [firstToken, currentGraph, secondToken]);
+  }, [firstToken, currentGraph, secondToken, time]);
 
+  const [view, setView] = useState<"line" | "candlestick">("line");
+
+  const [priceChange, setPriceChange] = useState(0);
 
   return <div className="paper">
 
@@ -335,14 +597,14 @@ export default function TradingChart() {
             <button onClick={() => {
               setCurrentGraph("first");
             }} className={clsx(styles.firstImageToken, currentGraph === "first" && styles.active)}>
-              <img width={34} height={34} src={firstToken.imgUri}/>
+              <img width={36} height={36} src={firstToken.imgUri}/>
             </button>
             <button disabled={!secondToken}
                     onClick={() => {
                       setCurrentGraph("second");
                     }} className={clsx(styles.secondImageToken, currentGraph === "second" && styles.active)}>
 
-              {secondToken ? <img width={34} height={34} src={secondToken.imgUri}/>
+              {secondToken ? <img width={36} height={36} src={secondToken.imgUri}/>
                 :
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -355,6 +617,9 @@ export default function TradingChart() {
 
             </button>
           </div>
+          {/*<button onClick={() => {*/}
+          {/*  setView(view === "candlestick" ? "line" : "candlestick");*/}
+          {/*}}><Svg iconName="roadmap" /></button>*/}
           {/*<Text variant={24} weight={700} color="primary">{firstToken.original_name}</Text>*/}
           {/*<IconButton onClick={() => {*/}
           {/*  setFirstToken(secondToken);*/}
@@ -363,22 +628,73 @@ export default function TradingChart() {
           {/*  <Svg iconName="swap"/>*/}
           {/*</IconButton>*/}
         </div>
-        <div className={styles.tabs}>
-          <TabTitle title="1D" selectedTab={selectedTab} setSelectedTab={setSelectedTab} view="separate" index={0}/>
-          <TabTitle title="1W" selectedTab={selectedTab} setSelectedTab={setSelectedTab} view="separate" index={1}/>
-          <TabTitle title="1M" selectedTab={selectedTab} setSelectedTab={setSelectedTab} view="separate" index={2}/>
-          <TabTitle title="1Y" selectedTab={selectedTab} setSelectedTab={setSelectedTab} view="separate" index={3}/>
+        <div className={styles.chartSettings}>
+          <div className={styles.tabs}>
+            <TabTitle size="small" title="1D" selectedTab={selectedTab} setSelectedTab={(tab) => {
+              setSelectedTab(tab);
+              setTime({
+                startTimestamp: getUnixTime(startOfHour(sub(utcCurrentTime, {days: 1}))),
+                interval: 1800
+              })
+            }} view="separate" index={0}/>
+            <TabTitle size="small" title="1W" selectedTab={selectedTab} setSelectedTab={(tab) => {
+              setSelectedTab(tab);
+              setTime({
+                startTimestamp: getUnixTime(startOfHour(sub(utcCurrentTime, {weeks: 1}))),
+                interval: 3600
+              })
+            }} view="separate" index={1}/>
+            <TabTitle size="small" title="1M" selectedTab={selectedTab} setSelectedTab={(tab) => {
+              setSelectedTab(tab);
+              setTime({
+                startTimestamp: getUnixTime(startOfHour(sub(utcCurrentTime, {months: 1}))),
+                interval: 3600 * 4
+              })
+            }} view="separate" index={2}/>
+            <TabTitle size="small" title="1Y" selectedTab={selectedTab} setSelectedTab={(tab) => {
+              setSelectedTab(tab);
+              setTime({
+                startTimestamp: getUnixTime(startOfHour(sub(utcCurrentTime, {years: 1}))),
+                interval: 3600 * 24
+              })
+            }} view="separate" index={3}/>
+          </div>
+          <div className={styles.viewButtons}>
+            <button onClick={() => {
+              setView("line");
+            }} className={view === "line" && styles.active}><Svg size={18} iconName="trading" /></button>
+            <button onClick={() => {
+              setView("candlestick");
+            }} className={view === "candlestick" && styles.active}><Svg size={18} iconName="candle" /></button>
+          </div>
         </div>
       </div>
       <p className="font-24 font-secondary font-300">1 {firstToken.original_name} = 1,655.2385 USDT ($1,664.11)</p>
-      <div>
-        {selectedTab === 0 && <div className={clsx("font-20", "font-secondary", styles.tabContent)}>Past 1 hour</div>}
-        {selectedTab === 1 && <div className={clsx("font-20", "font-secondary", styles.tabContent)}>Past 7 days</div>}
-        {selectedTab === 2 && <div className={clsx("font-20", "font-secondary", styles.tabContent)}>Past 30 days</div>}
-        {selectedTab === 3 && <div className={clsx("font-20", "font-secondary", styles.tabContent)}>Past 365 days</div>}
+
+      <div className={styles.chartContainer}>
+        {loading && <div className={styles.loading}><Preloader withLogo={false} size={100} /></div>}
+        <div>
+          {selectedTab === 0 && <div className={clsx("font-16", "font-secondary", styles.tabContent)}>
+            <span className={clsx(styles.priceChange, priceChange >= 0 ? styles.green : styles.red)}>{priceChange}%</span>
+            <Text color="secondary">Past 1 hour</Text>
+          </div>}
+          {selectedTab === 1 && <div className={clsx("font-16", "font-secondary", styles.tabContent)}>
+            <span className={clsx(styles.priceChange, priceChange >= 0 ? styles.green : styles.red)}>{priceChange}%</span>
+            <Text color="secondary">Past 7 days</Text>
+          </div>}
+          {selectedTab === 2 && <div className={clsx("font-16", "font-secondary", styles.tabContent)}>
+            <span className={clsx(styles.priceChange, priceChange >= 0 ? styles.green : styles.red)}>{priceChange}%</span>
+            <Text color="secondary">Past 30 days</Text>
+          </div>}
+          {selectedTab === 3 && <div className={clsx("font-16", "font-secondary", styles.tabContent)}>
+            <span className={clsx(styles.priceChange, priceChange >= 0 ? styles.green : styles.red)}>{priceChange}%</span>
+            <Text color="secondary">Past 365 days</Text>
+          </div>}
+        </div>
+        {view==="line" && data.length && labels.length && <Line options={options(tabsTimeline[selectedTab])} data={getData(mode, data, labels)} type="line"/>}
+        {view==="candlestick" && candleData.length && <Bar options={financialOptions(tabsTimeline[selectedTab])} data={getCandleData(candleData)} type="bar"/>}
       </div>
-      {data.length && labels.length && <Line options={options} data={getData(mode, data, labels)} type="line"/>}
-      {candleData.length && <Bar options={financialOptions} data={getCandleData(candleData)} type="bar"/>}
+
     </>
   </div>;
 }

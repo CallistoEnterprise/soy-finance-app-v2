@@ -43,7 +43,7 @@ export const multiQuery = async (
 
 const chainId = 820;
 
-function getUnixTime(date: Date): number {
+export function getUnixTime(date: Date): number {
   return Math.floor(date.getTime() / 1000);
 }
 
@@ -75,7 +75,7 @@ const getBlockSubqueries = (timestamps: number[]) =>
     }`
   })
 
-function sub(date: Date | number, duration: Duration): Date {
+export function sub(date: Date | number, duration: Duration): Date {
   const newDate = new Date(date);
   const { years = 0, months = 0, weeks = 0, days = 0, hours = 0, minutes = 0, seconds = 0 } = duration;
   newDate.setFullYear(newDate.getFullYear() - years);
@@ -153,7 +153,7 @@ const getPriceSubqueries = (tokenAddress: string, blocks: any) =>
 
 const timeWindow = { weeks: 1 };
 
-function startOfHour(date: Date): Date {
+export function startOfHour(date: Date): Date {
   const startHour = new Date(date);
   startHour.setMinutes(0);
   startHour.setSeconds(0);
@@ -161,7 +161,7 @@ function startOfHour(date: Date): Date {
   return startHour;
 }
 
-const utcCurrentTime = getUnixTime(new Date()) * 1000
+export const utcCurrentTime = getUnixTime(new Date()) * 1000
 export const startTimestamp = getUnixTime(startOfHour(sub(utcCurrentTime, timeWindow)))
 export const inter = 3600;
 

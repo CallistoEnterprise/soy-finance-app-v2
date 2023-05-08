@@ -20,16 +20,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
+  margin-bottom: 12px;
 }
 
 .tabs {
   display: flex;
-  gap: 10px;
+  gap: 4px;
 }
 
 .tabContent {
-  padding-top: 20px;
+  padding-top: 6px;
+  padding-bottom: 20px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 .firstImageToken,
@@ -43,6 +47,7 @@
   padding: 0;
   opacity: 0.7;
   border: 2px solid colors.$border-primary;
+  overflow: hidden;
 
   transition-duration: 0.3s;
 
@@ -58,4 +63,77 @@
     opacity: 1;
     border: 2px solid colors.$palette-green;
   }
+}
+
+.chartContainer {
+  position: relative;
+  height: 498px;
+}
+
+.loading {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+}
+
+.priceChange {
+  height: 30px;
+  padding: 2px 10px;
+  border-radius: 8px;
+
+  &.green {
+    background-color: colors.$transparent-primary;
+    color: colors.$palette-green;
+  }
+
+  &.red {
+    background: rgba(205, 21, 21, 0.1);
+    color: colors.$palette-red;
+  }
+}
+
+.chartSettings {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.viewButtons {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid #D4DDD8;
+  border-radius: 4px;
+
+  button {
+    color: colors.$palette-grey-light;
+    padding: 0;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+
+    transition-duration: 0.2s;
+
+    &:hover:not(.active) {
+      background-color: colors.$transparent-primary;
+    }
+
+    &.active {
+      background-color: colors.$palette-green;
+      color: colors.$palette-white;
+    }
+  }
+}
+
+.tooltip {
+  padding: 16px 20px;
 }
