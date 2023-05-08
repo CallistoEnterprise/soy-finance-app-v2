@@ -75,7 +75,7 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
       </div>
       {Boolean(baseTokens[chainId]) && <div className={styles.baseTokens}>
         {baseTokens[chainId].map((token) => {
-          return <button onClick={() => {
+          return <button key={token.original_name} onClick={() => {
             pickToken(token);
             handleClose();
           }} className={styles.baseTokenButton}>
@@ -98,6 +98,7 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
               <ul>
                 {filteredList.map(token => {
                   return <PickTokenItem
+                    key={token.token_address}
                     token={token}
                     handlePick={() => {
                       pickToken(token);
@@ -114,6 +115,7 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
             {favoriteList.length ? <ul>
               {favoriteList.map(token => {
                 return <PickTokenItem
+                  key={token.token_address}
                   token={token}
                   handlePick={() => {
                     pickToken(token);

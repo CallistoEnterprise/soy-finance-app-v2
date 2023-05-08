@@ -11,7 +11,7 @@ interface Props {
 export default function PercentageButtons({balance, inputValue, handleClick}: Props) {
   return <div className={styles.partButtons}>
     {[0.25, 0.5, 0.75, 1].map((part, index) => {
-      return <Button onClick={() => {
+      return <Button key={part} onClick={() => {
         handleClick((balance * part).toString());
       }} active={(balance * part).toString() === inputValue} variant="outlined" size="small">{part === 1 ? "Max" : `${100 * part}%`}</Button>
     })}

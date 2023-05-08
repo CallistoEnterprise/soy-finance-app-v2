@@ -104,7 +104,7 @@ export default function WalletDialog({defaultTab}) {
             <div className={styles.tabContent}>
               {chainId && recentTransactions[chainId]?.length ?
                 <div className={styles.transactionsContainer}>{recentTransactions[chainId].slice(0).reverse().map(t => {
-                  return <Transaction transaction={t}/>
+                  return <Transaction key={t.hash} transaction={t}/>
                 })}</div>
                 :
                 <div className={styles.noSearch}>

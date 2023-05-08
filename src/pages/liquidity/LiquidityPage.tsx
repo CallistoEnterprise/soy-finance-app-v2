@@ -29,7 +29,7 @@ export default function LiquidityPage() {
           </div>
 
           <p className="font-24 font-700 mb-4 font-secondary">No liquidity yet</p>
-          <p className="mb-16 font-16 font-400 font-secondary">Don't see a pool you joined?</p>
+          <p className="mb-16 font-16 font-400 font-secondary">Don&apos;t see a pool you joined?</p>
           <Button variant="outlined">Find other LP tokens</Button>
         </div>}
       </div>
