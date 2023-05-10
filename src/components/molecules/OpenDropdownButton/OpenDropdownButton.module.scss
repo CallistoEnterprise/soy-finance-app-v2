@@ -1,4 +1,6 @@
 @use "src/styles/colors.module";
+@use "src/styles/media";
+@use "src/styles/mixins";
 
 .dropdownButton {
   height: 40px;
@@ -11,6 +13,10 @@
 
   &:hover {
     background: colors.$hover-secondary;
+  }
+
+  @include media.for-mobile {
+    width: 100%;
   }
 }
 
@@ -39,5 +45,15 @@
 
   svg {
     color: colors.$text-secondary;
+  }
+}
+
+.label {
+  @include mixins.t-body-16;
+
+  @include media.for-mobile {
+    width: calc(100% - 60px);
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

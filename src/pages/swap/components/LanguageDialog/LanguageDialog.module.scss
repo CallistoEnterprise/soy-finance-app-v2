@@ -1,9 +1,15 @@
 @use "src/styles/colors.module";
+@use "src/styles/media";
 
 .langPickerWrapper {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
+
+  @include media.for-mobile {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .langHeading {
@@ -14,7 +20,6 @@
   color: colors.$text-primary;
   text-align: center;
   margin-bottom: 28px;
-
 }
 
 .langButton {
@@ -39,7 +44,34 @@
   }
 }
 
+.mobileLangButton {
+  padding: 0 20px;
+  height: 60px;
+  width: 100%;
+  border: 1px solid colors.$border-primary;
+  font-size: 16px;
+  line-height: 26px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+
+  &:hover:not(.active) {
+    border: 1px solid colors.$palette-green;
+  }
+
+  &.active {
+    background: colors.$transparent-primary;
+    border: 1px solid colors.$palette-green;
+  }
+}
+
 .langDialog {
   padding: 40px;
   border: 1px solid colors.$border-primary;
+
+  @include media.for-mobile {
+    padding: 16px;
+    border: 0;
+  }
 }

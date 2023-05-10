@@ -1,13 +1,24 @@
+@use "src/styles/media";
+
 .voteContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @include media.for-mobile {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 
 .voteButtons {
   display: flex;
   align-items: center;
   gap: 10px;
+
+  @include media.for-mobile {
+    width: 100%;
+  }
 }
 
 .soyLabel {
@@ -15,6 +26,12 @@
   justify-content: center;
   align-items: center;
   gap: 8px;
+
+  @include media.for-mobile {
+    background: #F1F1F1;
+    border-radius: 30px;
+    width: 100%;
+  }
 }
 
 .soyIcon {

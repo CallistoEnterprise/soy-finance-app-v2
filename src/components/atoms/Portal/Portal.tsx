@@ -4,7 +4,7 @@ import clsx from "clsx";
 import useMountTransition from "../../../shared/hooks/useMountTransition";
 import {useScrollBlockingOnOpen} from "../../../shared/hooks/useScrollBlockingOnOpen";
 import {useCloseWithEscape} from "../../../shared/hooks/useCloseWithEscape";
-import { robotoFlex } from "../../../shared/fonts";
+import {montserrat} from "../../../shared/fonts";
 
 interface Props {
   root: string,
@@ -42,7 +42,7 @@ export default function Portal({ root, isOpen, children, onClose, removeWhenClos
       className={clsx(
         className,
         isTransitioning && isTransitioningClassName,
-        robotoFlex.className
+        montserrat.className
       )}
     >
       {children}

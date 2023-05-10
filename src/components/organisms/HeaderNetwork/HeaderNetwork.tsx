@@ -10,7 +10,11 @@ import ConfirmationPopup from "../ConfirmationPopup";
 import OpenDropdownButton from "../../molecules/OpenDropdownButton";
 import DropdownItem from "../../molecules/DropdownItem";
 
-export default function HeaderNetwork() {
+interface Props {
+  expandDirection?: "bottom" | "top"
+}
+
+export default function HeaderNetwork({expandDirection = "bottom"}) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isNetworksDropdownOpened, setNetworksDropdownOpened] = useState(false);
 
@@ -19,7 +23,7 @@ export default function HeaderNetwork() {
   const { chainId, changeNetwork, isChangingNetwork } = useWeb3();
 
   const [positions, setPositions] = useState({
-    top: 0,
+    [expandDirection === "bottom" ? "top" : "bottom"]: 0,
     left: 0
   });
 
@@ -29,7 +33,9 @@ export default function HeaderNetwork() {
         const currentRef = ref.current as HTMLDivElement;
 
         setPositions({
-          top: currentRef.getBoundingClientRect().y + currentRef.getBoundingClientRect().height + 20,
+          [expandDirection === "bottom" ? "top" : "bottom"]: expandDirection === "bottom"
+            ? currentRef.getBoundingClientRect().y + currentRef.getBoundingClientRect().height + 20
+            : currentRef.getBoundingClientRect().height + 20,
           left: currentRef.getBoundingClientRect().left
         });
       }
@@ -61,7 +67,7 @@ export default function HeaderNetwork() {
       styles.dialogContainer,
       isNetworksDropdownOpened && styles.open
     )}>
-      <div style={{top: positions.top, left: positions.left}} className={styles.networksDropdown}>
+      <div style={{top: positions.top, left: positions.left, bottom: positions.bottom}} className={styles.networksDropdown}>
         <nav>
           <ul className={styles.networksList}>
             {headersNetworks.filter(n => networks.includes(n.chainId)).map(n => <li key={n.chainId}>

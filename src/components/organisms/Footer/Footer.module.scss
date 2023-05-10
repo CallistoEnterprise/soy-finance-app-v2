@@ -1,14 +1,23 @@
 @use "../../../styles/mixins";
 @use "../../../styles/colors.module";
+@use "src/styles/media";
 
 .topFooter {
   padding: 0 20px 40px;
   display: flex;
   justify-content: space-between;
+
+  @include media.for-mobile {
+    padding: 0 0 20px;
+  }
 }
 
 .leftSide {
   padding-top: 12px;
+
+  @include media.for-mobile {
+    padding: 0;
+  }
 }
 
 .footerLogo {
@@ -36,6 +45,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .externalLinkColumnTitle {
@@ -49,6 +59,10 @@
   display: flex;
   gap: 120px;
   padding-top: 20px;
+
+  @include media.for-mobile {
+    display: none;
+  }
 }
 
 .linkList {
@@ -62,6 +76,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @include media.for-mobile {
+    padding: 16px 0 0;
+    margin-bottom: 44px;
+    @include mixins.t-body-12;
+  }
 }
 
 
@@ -78,6 +98,10 @@
 .copyright {
   @include mixins.t-body-16;
   color: colors.$text-secondary;
+
+  @include media.for-mobile {
+    @include mixins.t-body-12;
+  }
 }
 
 .termsPolicy {

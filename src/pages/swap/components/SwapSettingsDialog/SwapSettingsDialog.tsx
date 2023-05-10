@@ -9,6 +9,7 @@ import Button from "../../../../components/atoms/Button";
 import clsx from "clsx";
 import InputWithUnits from "../../../../components/molecules/InputWithUnits";
 import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
+import DrawerDialog from "../../../../components/atoms/DrawerDialog";
 
 export default function SwapSettingsDialog() {
   const isSwapSettingsDialogOpened = useStore($isSwapSettingsDialogOpened);
@@ -44,7 +45,7 @@ export default function SwapSettingsDialog() {
     }, 300);
   }, [setSwapSettingsDialogOpenedFn]);
 
-  return <Dialog isOpen={isSwapSettingsDialogOpened} onClose={handleClose}>
+  return <DrawerDialog isOpen={isSwapSettingsDialogOpened} onClose={handleClose}>
     <div className={styles.swapSettingsDialog}>
       <DialogHeader title="Settings" handleClose={handleClose} />
 
@@ -76,5 +77,5 @@ export default function SwapSettingsDialog() {
       </div>
     </div>
 
-  </Dialog>;
+  </DrawerDialog>;
 }

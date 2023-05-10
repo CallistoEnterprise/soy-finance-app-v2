@@ -16,9 +16,9 @@ export default function SwitchLanguage() {
     }}>
       <Svg iconName="web3" />
     </IconButton>
-    {langOpened && <DynamicLanguageDialog
+    <DynamicLanguageDialog
       langOpened={langOpened}
       setLangOpened={setLangOpened}
-    />}
+    />
   </>;
 }

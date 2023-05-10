@@ -669,7 +669,7 @@ export default function TradingChart() {
           </div>
         </div>
       </div>
-      <p className="font-24 font-secondary font-300">1 {firstToken.original_name} = 1,655.2385 USDT ($1,664.11)</p>
+      <p className="font-24 font-secondary">1 {firstToken.original_name} = 1,655.2385 USDT ($1,664.11)</p>
 
       <div className={styles.chartContainer}>
         {loading && <div className={styles.loading}><Preloader withLogo={false} size={100} /></div>}

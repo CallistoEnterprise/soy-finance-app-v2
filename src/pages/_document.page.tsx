@@ -18,6 +18,7 @@ export default function Document() {
         <script dangerouslySetInnerHTML={{ __html: setInitialTheme }}/>
         <Main />
         <div id="dialog-root" />
+        <div id="drawer-root" />
         <div id="dropdown-root" />
         <NextScript />
       </body>

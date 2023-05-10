@@ -2,10 +2,14 @@ import React from "react";
 import styles from "./GrowthPoll.module.scss";
 import Button from "../../../../components/atoms/Button";
 import Text from "../../../../components/atoms/Text";
+import useMediaQuery from "../../../../shared/hooks/useMediaQuery";
+
 
 export default function GrowthPoll() {
+  const isMobile = useMediaQuery("(max-width: 600px)");
+
   return <div className="paper">
-    <Text tag="h3" weight={700}>Your opinion is important to us</Text>
+    <Text tag="h3" weight={700} variant={20}>Your opinion is important to us</Text>
     <div className="mb-10" />
     <div className={styles.voteContainer}>
       <div className={styles.soyLabel}>
@@ -22,10 +26,10 @@ export default function GrowthPoll() {
       </div>
 
       <div className={styles.voteButtons}>
-        <Button variant="outlined" onClick={() => {
+        <Button fullWidth={isMobile} variant="outlined" onClick={() => {
           return;
         }} endIcon="arrow-up">Bullish</Button>
-        <Button variant="outlined" mode="error" onClick={() => {
+        <Button fullWidth={isMobile} variant="outlined" mode="error" onClick={() => {
           return;
         }} endIcon="arrow-up">Bearish</Button>
       </div>

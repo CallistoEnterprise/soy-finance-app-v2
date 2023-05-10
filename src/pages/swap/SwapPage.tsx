@@ -16,14 +16,14 @@ export default function SwapPage() {
     <Layout>
       <main>
         <div className="container">
-          <div className={clsx(styles.contentWrapper, "mb-20", "mt-20")}>
+          <div className={clsx(styles.contentWrapper, "mb-20")}>
             <div className={styles.column}>
-              <TradingChart />
-              <TradeHistory />
+              <div className="desktop"><TradingChart /></div>
+              <div className="desktop"><TradeHistory /></div>
             </div>
             <div className={styles.column}>
               <Swap />
-              <SafeTrading />
+              <div className="desktop"><SafeTrading /></div>
               <GrowthPoll />
             </div>
           </div>

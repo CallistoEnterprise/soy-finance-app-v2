@@ -1,5 +1,6 @@
 @use "../../../styles/mixins";
 @use "../../../styles/colors.module";
+@use "src/styles/media";
 
 .dialogHeader {
   display: flex;
@@ -7,10 +8,17 @@
   align-items: center;
   padding: 12px 12px 12px 40px;
 
+  @include media.for-mobile {
+    padding: 8px 8px 8px 16px;
+  }
 
   h3 {
     color: colors.$text-primary;
     @include mixins.t-body-24;
     font-weight: 700;
+
+    @include media.for-mobile {
+      @include mixins.t-body-20;
+    }
   }
 }

@@ -20,6 +20,18 @@ export function formatBalance(balance) {
     );
 }
 
+export function formatBalanceToSix(balance) {
+  if(!balance) {
+    return "0.0";
+  }
+
+  return Number(balance).toFixed(6)
+    .replace(
+      /\.00000000/,
+      ".0"
+    );
+}
+
 export function formatBalanceToEight(balance) {
   if(!balance) {
     return "0.0";

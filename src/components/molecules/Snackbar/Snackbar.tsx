@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { snackbarIcons } from "./snackbarIcons";
 import Svg from "../../atoms/Svg/Svg";
 import IconButton from "../../atoms/IconButton";
-import { robotoFlex } from "../../../shared/fonts";
+import {montserrat} from "../../../shared/fonts";
 
 
 type SnackbarSeverity = "error" | "success" | "info" | "warning";
@@ -19,7 +19,7 @@ export default function Snackbar({ severity, message, handleClose }: Props) {
   return <div className={clsx(
     styles.customSnackbar,
     styles[severity],
-    robotoFlex.className
+    montserrat.className
   )}>
     <div className={styles.snackbarContainer}>
       <div className={styles.snackbarBlock}>

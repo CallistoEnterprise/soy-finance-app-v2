@@ -13,6 +13,7 @@ body {
 
 body {
   background: colors.$background-global;
+  font-weight: 500;
 }
 
 html,
@@ -123,6 +124,11 @@ svg, svg path {
   @include media.for-tablet {
     padding-left: 15px;
     padding-right: 15px;
+  }
+
+  @include media.for-mobile {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 

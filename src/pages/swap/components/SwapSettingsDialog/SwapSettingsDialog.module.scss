@@ -1,17 +1,26 @@
 @use "src/styles/colors.module";
 @use "src/styles/mixins";
+@use "src/styles/media";
 
 .slippageControls {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin-top: 8px;
+
+  @include media.for-mobile {
+    grid-template-columns: 1fr 1fr 1fr 110px;
+  }
 }
 
 .swapSettingsDialog {
   width: 550px;
   border-radius: 20px;
   gap: 10px;
+
+  @include media.for-mobile {
+    width: 100%;
+  }
 }
 
 .slippageInput {
@@ -24,6 +33,10 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  @include media.for-mobile {
+    padding: 16px;
+  }
 }
 
 .actionButtons {

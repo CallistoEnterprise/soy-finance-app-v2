@@ -21,7 +21,7 @@ export default function OpenDropdownButton({handleClick, label, isOpened, img}: 
                       ? <Image width={24} height={24} src={img} alt="Currently picked network"/>
                       : img}
                   </span>}
-                  <Text>{label}</Text>
+                  <span className={styles.label}>{label}</span>
                   <span className={clsx(
                     styles.expandArrow,
                     isOpened && styles.opened)

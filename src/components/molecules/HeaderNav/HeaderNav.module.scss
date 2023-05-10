@@ -1,8 +1,13 @@
 @use "../../../styles/colors.module";
+@use "src/styles/media";
 
 .menu {
   display: flex;
   gap: 6px;
+
+  @include media.for-mobile {
+    display: none;
+  }
 }
 
 .navLink {

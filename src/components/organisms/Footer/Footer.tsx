@@ -9,7 +9,7 @@ import Svg from "../../atoms/Svg/Svg";
 import IconButton from "../../atoms/IconButton";
 import {IconName} from "../../atoms/Svg/svgIconsMap";
 import {useSoyPrice} from "../../../shared/hooks/useSoyPrice";
-import {formatBalance} from "../../../shared/utils";
+import {formatBalanceToSix} from "../../../shared/utils";
 import Text from "../../atoms/Text";
 
 export default function Footer() {
@@ -29,7 +29,7 @@ export default function Footer() {
                      alt="Soy finance"/>}
           </div>
 
-          <p className="font-16 font-secondary mb-20">The DeFi Ecosystem with a real emphasis on security</p>
+          <p className="font-16 font-secondary mb-20">Where DeFi Meets Safety</p>
           <div className={styles.footerSettings}>
             <div className={styles.soyPrice}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -50,7 +50,7 @@ export default function Footer() {
                   fill="#588D00"/>
               </svg>
 
-              <Text>1 SOY = ${!loading ? formatBalance(price) : 0.0}</Text>
+              <Text>1 SOY = ${!loading ? formatBalanceToSix(price) : 0.0}</Text>
 
             </div>
             <SwitchLanguage/>

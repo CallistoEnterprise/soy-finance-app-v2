@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app';
 import {useScope} from "../shared/models/useScope";
 import "/src/shared/models/init";
 import { Provider } from "effector-react";
-import { robotoFlex } from "../shared/fonts";
+import {montserrat} from "../shared/fonts";
 import { SnackbarProvider } from "../shared/providers/SnackbarProvider";
 import dynamic from "next/dynamic";
 import {useInit} from "../processes/web3/hooks/useInit";
@@ -23,7 +23,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return <ThemeProvider>
     <SnackbarProvider>
       <Provider value={scope}>
-        <main className={robotoFlex.className}>
+        <main className={montserrat.className}>
           <Component {...pageProps} />
         </main>
       </Provider>

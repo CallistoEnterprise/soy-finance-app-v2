@@ -306,7 +306,7 @@ export default function Swap() {
         </span>} />
       <InfoRow label="Slippage tolerance" value={`${slippage}%`} />
     </div>
-    {!isActive && <ConnectWalletButton fullWidth/>}
+    {!isActive && <ConnectWalletButton variant="outlined" fullWidth/>}
     {isActive && <>
       {!+swapInputData.amountIn && <Button fullWidth variant="outlined" disabled>Enter amount</Button>}
       {+swapInputData.amountIn ? <>
