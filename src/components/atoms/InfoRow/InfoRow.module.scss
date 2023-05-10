@@ -1,5 +1,6 @@
 @use "../../../styles/colors.module";
 @use "../../../styles/mixins";
+@use "src/styles/media";
 
 .infoRow {
   @include mixins.t-body-14;
@@ -7,6 +8,10 @@
   justify-content: space-between;
   align-items: center;
   color: colors.$text-secondary;
+
+  @include media.for-mobile {
+    @include mixins.t-body-12;
+  }
 }
 
 .value {

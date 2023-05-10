@@ -1,5 +1,14 @@
+@use "src/styles/mixins";
+@use "src/styles/media";
+
 .route {
   display: flex;
   align-items: center;
   gap: 4px;
+
+  @include mixins.t-body-14;
+
+  @include media.for-mobile {
+    @include mixins.t-body-12;
+  }
 }

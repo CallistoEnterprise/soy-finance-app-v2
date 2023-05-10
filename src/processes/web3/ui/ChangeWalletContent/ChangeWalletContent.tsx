@@ -59,13 +59,15 @@ export default function ChangeWalletContent() {
     }
   }
 
+  console.log(currentWallet);
+
   return <>
-      {step === 2 && <IconButton className={styles.backButton} transparent onClick={() => {
+      {step === 2 && <IconButton className={styles.backButton} onClick={() => {
         setStep(1);
       }}>
         <Svg iconName="back" />
       </IconButton>}
-    {step === 3 && <IconButton className={styles.backButton} transparent onClick={() => {
+    {step === 3 && <IconButton className={styles.backButton} onClick={() => {
       setStep(2);
     }}>
       <Svg iconName="back" />
@@ -90,7 +92,7 @@ export default function ChangeWalletContent() {
 
           if (currentWallet === "metamask") {
             if (isMobileDevice() && !(window as any).ethereum) {
-              return window.open(`https://metamask.app.link/dapp/${window.location.hostname}/dashboard/bridge`);
+              return window.open(`https://metamask.app.link/dapp/${window.location.hostname}/swap`);
             }
 
             if (!isMobileDevice() && !(window as any).ethereum) {
@@ -145,27 +147,29 @@ export default function ChangeWalletContent() {
       </>}
     </>}
     {step === 3 && <>
-      <div className={styles.title}>
-        <Image alt={wallets[currentWallet].name} src={wallets[currentWallet].image} width={24} height={24} />
-        <span>{wallets[currentWallet].name}</span>
-      </div>
-      <div className={styles.qrWrapper}>
-        <div style={{ background: "#fff",
-          margin: "20px auto",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 8 }}>
-          <QRCode size={294} value={connectionURI || ""} />
+      {currentWallet === "walletConnect" && <>
+        <div className={styles.title}>
+          <Image alt={wallets[currentWallet].name} src={wallets[currentWallet].image} width={24} height={24} />
+          <span>{wallets[currentWallet].name}</span>
         </div>
-        Scan QR code with a compatible wallet
-      </div>
-      <Button fullWidth onClick={async () => {
-        await copyToClipboard(connectionURI || "");
-        console.log("Successfully copied!");
-      }} size="small">
-        Copy to clipboard
-      </Button>
+        <div className={styles.qrWrapper}>
+          <div style={{ background: "#fff",
+            margin: "20px auto",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 8 }}>
+            <QRCode size={294} value={connectionURI || ""} />
+          </div>
+          Scan QR code with a compatible wallet
+        </div>
+        <Button fullWidth onClick={async () => {
+          await copyToClipboard(connectionURI || "");
+          console.log("Successfully copied!");
+        }} size="small">
+          Copy to clipboard
+        </Button>
+      </>}
     </>}
   </>
 }

@@ -10,7 +10,7 @@ export default function Route({route}) {
           return <React.Fragment key={index}><span key={r.symbol}>
                 {r.symbol}
               </span>
-            {index !== route?.path.length - 1 && <Svg size={20} iconName="arrow-right"/>}</React.Fragment>;
+            {index !== route?.path.length - 1 && <Svg size={18} iconName="next"/>}</React.Fragment>;
         })}
       </div>
       : <span>—</span>}

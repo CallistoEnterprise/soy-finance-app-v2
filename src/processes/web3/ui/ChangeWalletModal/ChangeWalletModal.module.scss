@@ -10,6 +10,8 @@
   min-height: 278px;
   @include media.for-mobile {
     padding: 26px 16px 16px;
+    width: 100%;
+    min-height: unset;
   }
 }
 

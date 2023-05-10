@@ -48,14 +48,13 @@ export default function Header() {
         </> : <DynamicWalletMenu />}
       </div>
       <div className={styles.mobileWalletMenu}>
-
         {isActive && <DynamicHeaderNetwork expandDirection="top" />}
         {!isActive ? <>
           <ConnectWalletButton fullWidth />
           <ChangeWalletModal />
-        </> : <DynamicWalletMenu />}
+        </> : <DynamicWalletMenu expandDirection="top" />}
       </div>
-      <div>
+      <div className={styles.burger}>
         <IconButton onClick={() => setMenuOpen(true)}>
           <Svg iconName="menu" />
         </IconButton>

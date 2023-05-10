@@ -13,6 +13,7 @@ import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
 import Button from "../../atoms/Button";
 import Preloader from "../../atoms/Preloader/Preloader";
 import InfoRow from "../../atoms/InfoRow";
+import DrawerDialog from "../../atoms/DrawerDialog";
 
 function Transaction({transaction}) {
   const {web3Provider, chainId} = useWeb3();
@@ -76,7 +77,7 @@ export default function WalletDialog({defaultTab}) {
     }
   }, [chainId]);
 
-  return <Dialog isOpen={isWalletDialogOpened} onClose={() => setWalletDialogOpenedFn(false)}>
+  return <DrawerDialog isOpen={isWalletDialogOpened} onClose={() => setWalletDialogOpenedFn(false)}>
     <div className={styles.dialogContainer}>
       <DialogHeader handleClose={() => setWalletDialogOpenedFn(false)} title="Your wallet"/>
       <div className={styles.dialogContent}>
@@ -119,5 +120,5 @@ export default function WalletDialog({defaultTab}) {
         </Tabs>
       </div>
     </div>
-  </Dialog>;
+  </DrawerDialog>;
 }

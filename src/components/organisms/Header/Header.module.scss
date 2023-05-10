@@ -28,6 +28,14 @@
   gap: 40px;
 }
 
+.burger {
+  display: none;
+
+  @include media.for-mobile {
+    display: block;
+  }
+}
+
 .headerSettings {
   display: flex;
   align-items: center;

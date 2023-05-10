@@ -1,5 +1,6 @@
 @use "../../../styles/mixins";
 @use "../../../styles/colors.module";
+@use "src/styles/media";
 
 .confirmationPopup {
   display: flex;
@@ -8,6 +9,10 @@
   justify-content: center;
   padding: 40px;
   width: 480px;
+
+  @include media.for-mobile {
+    width: 100%;
+  }
 }
 
 .heading {

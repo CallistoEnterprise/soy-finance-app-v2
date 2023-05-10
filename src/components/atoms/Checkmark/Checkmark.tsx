@@ -8,6 +8,6 @@ export default function Checkmark({isChecked}) {
     styles.checkmark,
     isChecked && styles.isChecked
   )}>
-    {isChecked && <Svg iconName="checkmark" />}
+    {isChecked && <Svg iconName="check" />}
   </span>;
 }

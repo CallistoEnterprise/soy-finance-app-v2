@@ -7,6 +7,7 @@ import {setWalletChangeModalOpen} from "../../models";
 import dynamic from "next/dynamic";
 import Preloader from "../../../../components/atoms/Preloader/Preloader";
 import DialogHeader from "../../../../components/molecules/DialogHeader";
+import DrawerDialog from "../../../../components/atoms/DrawerDialog";
 
 const DynamicChangeWalletContent = dynamic(() => import("../ChangeWalletContent"), {
   loading: () => {
@@ -23,7 +24,7 @@ export default function ChangeWalletModal() {
 
   const handleClose = () => setWalletChangeModalOpenFn(false);
 
-  return <Dialog
+  return <DrawerDialog
     isOpen={isOpened}
     onClose={() => {
       handleClose();
@@ -35,5 +36,5 @@ export default function ChangeWalletModal() {
     )}>
       <DynamicChangeWalletContent />
     </div>
-  </Dialog>;
+  </DrawerDialog>;
 }

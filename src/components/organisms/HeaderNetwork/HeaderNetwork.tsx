@@ -14,7 +14,7 @@ interface Props {
   expandDirection?: "bottom" | "top"
 }
 
-export default function HeaderNetwork({expandDirection = "bottom"}) {
+export default function HeaderNetwork({expandDirection = "bottom"}: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isNetworksDropdownOpened, setNetworksDropdownOpened] = useState(false);
 

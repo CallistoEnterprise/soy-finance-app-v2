@@ -10,6 +10,8 @@ import {useEvent, useStore} from "effector-react";
 import {$favoriteTokens} from "../../../shared/models/stores";
 import { setFavoriteTokens } from "../../../shared/models";
 import PickTokenItem from "../../molecules/PickTokenItem";
+import DrawerDialog from "../../atoms/DrawerDialog";
+import DialogHeader from "../../molecules/DialogHeader";
 
 interface Props {
   isOpened: boolean,
@@ -66,9 +68,9 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
     return;
   }
 //TODO: Handle empty search fro favorites
-  return <Dialog isOpen={isOpened} onClose={handleClose}>
+  return <DrawerDialog isOpen={isOpened} onClose={handleClose}>
     <div className={styles.pickTokenDialog}>
-      <h2 className="font-32 bold center mb-20">Select a token</h2>
+      <DialogHeader title="Select a token" handleClose={handleClose} />
       <div className={styles.searchTokenWrapper}>
         <input onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchRequest(e.target.value)}
                className={styles.searchToken} placeholder="Name or address"/>
@@ -138,5 +140,5 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
 
 
     </div>
-  </Dialog>;
+  </DrawerDialog>;
 }

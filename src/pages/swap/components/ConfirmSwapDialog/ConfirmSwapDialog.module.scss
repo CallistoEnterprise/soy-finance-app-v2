@@ -1,5 +1,6 @@
 @use "src/styles/colors.module";
 @use "src/styles/mixins";
+@use "src/styles/media";
 
 .bottomInfo {
   display: flex;
@@ -22,6 +23,11 @@
 .dialogContent {
   padding: 40px;
   width: 480px;
+
+  @include media.for-mobile {
+    width: 100%;
+    padding: 16px;
+  }
 }
 
 .buttons {

@@ -3,6 +3,7 @@ import Dialog from "../../molecules/Dialog";
 import styles from "./ConfirmationPopup.module.scss";
 import { useWeb3 } from "../../../processes/web3/hooks/useWeb3";
 import Preloader from "../../atoms/Preloader/Preloader";
+import DrawerDialog from "../../atoms/DrawerDialog";
 
 interface Props {
   open: boolean,
@@ -29,7 +30,7 @@ export default function ConfirmationPopup({ open, details, heading }: Props) {
     [open]
   );
 
-  return <Dialog isOpen={open && internalOpen} onClose={() => setInternalOpen(false)}>
+  return <DrawerDialog isOpen={open && internalOpen} onClose={() => setInternalOpen(false)}>
     <div className={styles.confirmationPopup}>
       <Preloader type="circular" size={100} />
 
@@ -40,5 +41,5 @@ export default function ConfirmationPopup({ open, details, heading }: Props) {
         {details}
       </p>
     </div>
-  </Dialog>;
+  </DrawerDialog>;
 }

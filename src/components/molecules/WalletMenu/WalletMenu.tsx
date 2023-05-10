@@ -13,7 +13,9 @@ import OpenDropdownButton from "../OpenDropdownButton";
 import DropdownItem from "../DropdownItem";
 import {formatAddress} from "../../../shared/utils";
 
-export default function WalletMenu() {
+
+
+export default function WalletMenu({expandDirection = "bottom"}) {
   const {t} = useTranslation('common');
 
   const walletRef = useRef<HTMLDivElement | null>(null);
@@ -23,7 +25,7 @@ export default function WalletMenu() {
   const setWalletDialogOpenedFn = useEvent(setWalletDialogOpened);
 
   const [walletPositions, setWalletPositions] = useState({
-    top: 0,
+    [expandDirection === "bottom" ? "top" : "bottom"]: 0,
     right: 0
   });
 
@@ -35,7 +37,9 @@ export default function WalletMenu() {
         const currentRef = walletRef.current as HTMLDivElement;
 
         setWalletPositions({
-          top: currentRef.getBoundingClientRect().y + currentRef.getBoundingClientRect().height + 20,
+          [expandDirection === "bottom" ? "top" : "bottom"]: expandDirection === "bottom"
+            ? currentRef.getBoundingClientRect().y + currentRef.getBoundingClientRect().height + 20
+            : currentRef.getBoundingClientRect().height + 20,
           right: currentRef.getBoundingClientRect().right
         });
       }
@@ -57,7 +61,7 @@ export default function WalletMenu() {
         styles.dialogContainer,
         isWalletMenuOpened && styles.open
       )}>
-        <div style={{top: walletPositions.top, left: walletPositions.right, transform: "translate(-100%)"}}
+        <div style={{top: walletPositions.top, left: walletPositions.right, bottom: walletPositions.bottom, transform: "translate(-100%)"}}
              className={styles.walletMenuDropdown}>
           <nav>
             <ul className={styles.walletMenuList}>

@@ -291,13 +291,7 @@ export function useWeb3() {
         provider.disconnect();
       }
       setIsActiveFn(false);
-      if (walletName === "aw") {
-        localStorage.removeItem("walletconnect_aw");
-      }
 
-      if (walletName === "walletConnect") {
-        localStorage.removeItem("walletconnect_wc");
-      }
       if (provider && !provider.disconnect) {
         setChainIdFn(null);
         setAccountFn(null);

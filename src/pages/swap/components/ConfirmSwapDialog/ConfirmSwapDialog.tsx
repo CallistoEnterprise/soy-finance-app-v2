@@ -17,6 +17,7 @@ import {TradeType} from "@callisto-enterprise/soy-sdk";
 import DialogHeader from "../../../../components/molecules/DialogHeader";
 import {formatBalanceToEight} from "../../../../shared/utils";
 import Route from "../../../../components/molecules/Route";
+import DrawerDialog from "../../../../components/atoms/DrawerDialog";
 
 export default function ConfirmSwapDialog() {
   const { handleSwap } = useSwapAction();
@@ -48,7 +49,7 @@ export default function ConfirmSwapDialog() {
     }
   }, [trade]);
 
-  return <Dialog isOpen={isSwapConfirmDialogOpened} onClose={() => setSwapConfirmDialogOpenedFn(false)}>
+  return <DrawerDialog isOpen={isSwapConfirmDialogOpened} onClose={() => setSwapConfirmDialogOpenedFn(false)}>
 
     <DialogHeader handleClose={() => setSwapConfirmDialogOpenedFn(false)} title="Confirm swap" />
 
@@ -126,5 +127,5 @@ export default function ConfirmSwapDialog() {
 
     </div>
 
-  </Dialog>;
+  </DrawerDialog>;
 }
