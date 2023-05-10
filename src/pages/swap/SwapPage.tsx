@@ -7,8 +7,15 @@ import GrowthPoll from "./components/GrowthPoll";
 import clsx from "clsx";
 import Layout from "../../shared/layouts/Layout";
 import Head from "next/head";
+import Drawer from "../../components/atoms/Drawer/Drawer";
+import {useEvent, useStore} from "effector-react";
+import {$isMobileChartOpened} from "./models/stores";
+import {setMobileChartOpened} from "./models";
 
 export default function SwapPage() {
+  const isChartOpened = useStore($isMobileChartOpened);
+  const setMobileChartOpenedFn = useEvent(setMobileChartOpened);
+
   return <>
     <Head>
       <title>Swap | Soy.Finance</title>
@@ -20,6 +27,13 @@ export default function SwapPage() {
             <div className={styles.column}>
               <div className="desktop"><TradingChart /></div>
               <div className="desktop"><TradeHistory /></div>
+              <div className="mobile">
+                <Drawer isOpen={isChartOpened} onClose={() => {
+                  setMobileChartOpenedFn(false);
+                }} position="bottom">
+                  <TradingChart />
+                </Drawer>
+              </div>
             </div>
             <div className={styles.column}>
               <Swap />

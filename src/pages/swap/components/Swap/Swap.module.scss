@@ -1,5 +1,6 @@
 @use "src/styles/colors.module";
 @use "src/styles/mixins";
+@use "src/styles/media";
 
 .swapHeader {
   display: flex;
@@ -11,6 +12,10 @@
   display: flex;
   align-items: center;
   gap: 10px;
+
+  @include media.for-mobile {
+    gap: 0;
+  }
 }
 
 .changeOrder {

@@ -1,9 +1,15 @@
 @use "src/styles/colors.module";
+@use "src/styles/media";
+@use "src/styles/mixins";
 
 .pairLogos {
   display: flex;
   align-items: center;
   gap: 10px;
+
+  @include media.for-mobile {
+    gap: 4px;
+  }
 }
 
 .secondToken {
@@ -21,6 +27,13 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+
+  @include media.for-mobile {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
 }
 
 .tabs {
@@ -68,6 +81,11 @@
 .chartContainer {
   position: relative;
   height: 498px;
+
+  @include media.for-mobile {
+    height: unset;
+    min-height: 200px;
+  }
 }
 
 .loading {
@@ -96,12 +114,24 @@
     background: rgba(205, 21, 21, 0.1);
     color: colors.$palette-red;
   }
+
+  @include media.for-mobile {
+    @include mixins.t-body-12;
+    height: 24px;
+    padding: 5px 6px;
+  }
 }
 
 .chartSettings {
   display: flex;
   align-items: center;
   gap: 22px;
+
+  @include media.for-mobile {
+    justify-content: space-between;
+    gap: unset;
+    width: 100%;
+  }
 }
 
 .viewButtons {
@@ -136,4 +166,8 @@
 
 .tooltip {
   padding: 16px 20px;
+}
+
+.tokenPrice {
+
 }

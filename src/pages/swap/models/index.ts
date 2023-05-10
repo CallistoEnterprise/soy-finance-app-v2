@@ -30,3 +30,4 @@ export const setSwapDeadline = createEvent<number>("Set deadline in percents");
 export const setFiatPrices = createEvent<{[key:string]: number}>("Set prices for chainId");
 
 export const setSwapConfirmDialogOpened = createEvent<boolean>("Set opened or closer swap confirmation dialog");
+export const setMobileChartOpened = createEvent<boolean>("Open or close mobile chart");

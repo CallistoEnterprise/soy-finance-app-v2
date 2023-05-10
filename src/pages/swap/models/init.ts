@@ -1,4 +1,5 @@
 import {
+  $isMobileChartOpened,
   $isSwapConfirmDialogOpened,
   $isSwapSettingsDialogOpened,
   $isTradeInLoading,
@@ -14,7 +15,7 @@ import {
   resetInputData,
   setAmountIn,
   setAmountOut,
-  setFiatPrices,
+  setFiatPrices, setMobileChartOpened,
   setRoute,
   setSwapConfirmDialogOpened,
   setSwapDeadline,
@@ -184,6 +185,13 @@ $swapDeadline.on(
 
 $isSwapConfirmDialogOpened.on(
   setSwapConfirmDialogOpened, (_, data) => {
+    return data;
+  }
+)
+
+$isMobileChartOpened.on(
+  setMobileChartOpened,
+  (_, data) => {
     return data;
   }
 )

@@ -39,3 +39,5 @@ export const $swapSlippage = createStore<number>(0.5, {sid: "swapSlippage"});
 export const $swapFiatPrices = createStore<{[key: string]: number} | null>(null, {sid: "swapFiatPrices"});
 
 export const $isSwapConfirmDialogOpened = createStore<boolean>(false, {sid: "isSwapConfirmDialogOpened"})
+
+export const $isMobileChartOpened = createStore<boolean>(false, {sid: "isMobileChartOpened"});

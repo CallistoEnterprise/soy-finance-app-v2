@@ -39,6 +39,7 @@ import Preloader from "../../../../components/atoms/Preloader/Preloader";
 import Text from "../../../../components/atoms/Text";
 import {isNativeToken} from "../../../../shared/utils";
 import {WCLO_ADDRESS} from "../../hooks/useTrade";
+import useMediaQuery from "../../../../shared/hooks/useMediaQuery";
 
 
 const tooltipLine = {
@@ -335,11 +336,11 @@ const externalTooltipHandler = (context) => {
   tooltipEl.style.opacity = "1";
 
   const offset = tooltip.x + tooltip.width - chart.chartArea.width;
-  if (offset > 0) {
-    tooltipEl.style.left = positionX + tooltip.caretX - offset + "px";
-  } else {
+  // if (offset > 0) {
+  //   tooltipEl.style.left = positionX + tooltip.caretX - offset + "px";
+  // } else {
     tooltipEl.style.left = positionX + tooltip.caretX + "px";
-  }
+  // }
 
   if(context.tooltip.dataPoints[0].raw.s) {
     tooltipEl.style.top = positionY + tooltip.caretY - 140 + "px";
@@ -373,7 +374,7 @@ export const options = (timeline): ChartOptions => ({
       // Disable the on-canvas tooltip
       enabled: false,
       external: externalTooltipHandler,
-      position: "nearest",
+      // position: "nearest",
       mode: "index",
       intersect: false,
       yAlign: "bottom",
@@ -506,6 +507,8 @@ export default function TradingChart() {
     startTimestamp,
     interval: inter
   });
+
+  const isMobile = useMediaQuery("(max-width: 600px)");
 
   const [loading, setIsLoading] = useState(true);
 
@@ -669,7 +672,7 @@ export default function TradingChart() {
           </div>
         </div>
       </div>
-      <p className="font-24 font-secondary">1 {firstToken.original_name} = 1,655.2385 USDT ($1,664.11)</p>
+      <p className={styles.tokenPrice}>1 {firstToken.original_name} = 1,655.2385 USDT ($1,664.11)</p>
 
       <div className={styles.chartContainer}>
         {loading && <div className={styles.loading}><Preloader withLogo={false} size={100} /></div>}

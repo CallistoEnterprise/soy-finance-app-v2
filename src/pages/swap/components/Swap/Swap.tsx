@@ -20,7 +20,7 @@ import {
   changeOrder,
   resetInputData,
   setAmountIn,
-  setAmountOut,
+  setAmountOut, setMobileChartOpened,
   setSwapConfirmDialogOpened,
   setSwapSettingsDialogOpened,
   setTokenFrom,
@@ -165,6 +165,7 @@ export default function Swap() {
   const {priceImpactWithoutFee, realizedLPFee} = useMemo(() => computeTradePriceBreakdown(trade), [trade])
 
   const changeOrderFn = useEvent(changeOrder);
+  const setMobileChartOpenedFn = useEvent(setMobileChartOpened);
 
   const [isFromTokenPickDialogOpened, setFromTokenPickDialogOpened] = useState(false);
   const [isToTokenPickDialogOpened, setToTokenPickDialogOpened] = useState(false);
@@ -219,9 +220,16 @@ export default function Swap() {
 
   return <PageCard>
     <PageCardHeading title="Swap" content={<div className={styles.settings}>
-      <Text variant={14}>PRO mode</Text>
+      {/*<Text variant={14}>PRO mode</Text>*/}
       <>
-        <Switch checked={checked} setChecked={() => setChecked(!checked)} />
+        {/*<Switch checked={checked} setChecked={() => setChecked(!checked)} />*/}
+        <span className="mobile">
+          <IconButton onClick={() => {
+            setMobileChartOpenedFn(true);
+          }}>
+            <Svg iconName="trading" />
+          </IconButton>
+        </span>
         <IconButton onClick={() => {
           setSwapSettingsDialogOpenedFn(true);
         }}>
