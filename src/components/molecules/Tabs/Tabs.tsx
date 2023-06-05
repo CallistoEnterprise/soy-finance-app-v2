@@ -1,17 +1,19 @@
-import React, {Children, ReactElement, useState} from "react";
+import React, {Children, ReactElement, useCallback, useState} from "react";
 import TabTitle from "../../atoms/TabTitle";
 import styles from "./Tabs.module.scss";
 import clsx from "clsx";
 
 interface Props {
   children: ReactElement[],
-  view?: "separate" | "merged",
+  view?: "separate" | "merged" | "default",
   size?: "default" | "small",
   className?: string,
   defaultTab?: number
+  activeTab?: number,
+  setActiveTab?: any
 }
 
-function Tabs({ children, view = "merged", className = "", size = "default", defaultTab }: Props) {
+function Tabs({ children, view = "merged", className = "", size = "default", defaultTab = 0, activeTab = null, setActiveTab = null }: Props) {
   const [selectedTab, setSelectedTab] = useState(defaultTab || 0);
 
   return (
@@ -22,10 +24,10 @@ function Tabs({ children, view = "merged", className = "", size = "default", def
         {children.map((item, index) => (
           <TabTitle
             key={index}
-            selectedTab={selectedTab}
+            selectedTab={activeTab || selectedTab}
             title={item.props.title}
             index={index}
-            setSelectedTab={setSelectedTab}
+            setSelectedTab={setActiveTab || setSelectedTab}
             view={view}
             size={size}
           />
@@ -39,7 +41,7 @@ function Tabs({ children, view = "merged", className = "", size = "default", def
         <div className={styles.spacer} />
         </>
       }
-      {children[selectedTab]}
+      {children[activeTab || selectedTab]}
     </div>
   );
 }

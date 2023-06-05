@@ -1,0 +1,39 @@
+@use "src/styles/colors.module";
+
+.changeOrder {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+
+  > button {
+    transform: rotate(90deg);
+  }
+}
+
+.pricesBlock {
+  margin-top: 20px;
+  border: 1px solid colors.$border-primary;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.greyHeader {
+  background: colors.$background-secondary;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+}
+
+.blockRows {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.blockRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

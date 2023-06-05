@@ -10,17 +10,17 @@ import {
   TradeType,
   WETH
 } from "@callisto-enterprise/soy-sdk";
-import {Contract, parseUnits} from "ethers";
-import MULTICALL_ABI from "../../../shared/abis/multicall.json";
+import {Contract, FunctionFragment, Interface, parseUnits} from "ethers";
+import MULTICALL_ABI from "../../../shared/abis/interfaces/multicall.json";
 import {isNativeToken} from "../../../shared/utils";
-import {FunctionFragment, Interface} from "@ethersproject/abi";
-import IUniswapV2PairABI from "../../../shared/abis/IUniswapV2Pair.json";
+import IUniswapV2PairABI from "../../../shared/abis/interfaces/IUniswapV2Pair.json";
 import {useEvent, useStore} from "effector-react";
 import {$swapInputData, $trade} from "../models/stores";
 import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
 import {useBlockNumber} from "../../../shared/hooks/useBlockNumber";
 import {setAmountIn, setAmountOut, setRoute, setTrade} from "../models";
 import {useSnackbar} from "../../../shared/providers/SnackbarProvider";
+import {PAIR_INTERFACE} from "../../../shared/config/interfaces";
 
 type ExtensionValue = string | number | boolean | null | undefined;
 
@@ -316,71 +316,18 @@ export const MULTICALL_NETWORKS: { [chainId in ChainId]: string } = {
   [ChainId.BTTMAINNET]: "0x8dFbdEEeF41eefd92A663a34331db867CA6581AE"
 };
 
-const PAIR_INTERFACE = new Interface(IUniswapV2PairABI);
 const methodName = "getReserves";
 const fragment = PAIR_INTERFACE.getFunction(methodName);
 
-export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blockNumber, chainId) {
-  const common: [Token, Token] = BASES_TO_CHECK_TRADES_AGAINST[chainId] ?? [];
-
-  const basePairs: [Token, Token][] = common.flatMap(
-    (base): [Token, Token][] => common.map((otherBase) => [base, otherBase])
-  );
-
-  const [tokenA, tokenB] = [wrappedCurrency(
-    currencyIn,
-    chainId
-  ), wrappedCurrency(
-    currencyOut,
-    chainId
-  )];
-
-  if (!chainId) return [];
-
-  const swapPairCombinations = tokenA && tokenB ? [
-    // the direct pair
-    [tokenA, tokenB],
-    // token A against all bases
-    ...common.map((base): [Token, Token] => [tokenA, base]),
-    // token B against all bases
-    ...common.map((base): [Token, Token] => [tokenB, base]),
-    // each base against all bases
-    ...basePairs,
-  ]
-    .filter((tokens): tokens is [Token, Token] => Boolean(tokens[0] && tokens[1]))
-    .filter(([t0, t1]) => t0.address !== t1.address)
-    .filter(([tokenA_, tokenB_]) => {
-
-      const customBases = CUSTOM_BASES[chainId];
-
-      const customBasesA: Token[] | undefined = customBases?.[tokenA_.address];
-      const customBasesB: Token[] | undefined = customBases?.[tokenB_.address];
-
-      if (!customBasesA && !customBasesB) return true;
-
-      if (customBasesA && !customBasesA.find((base) => tokenB_.equals(base))) return false;
-      if (customBasesB && !customBasesB.find((base) => tokenA_.equals(base))) return false;
-
-      return true;
-    }) : [];
-
-  const tokens = swapPairCombinations.map(([currencyA, currencyB]) => [
-    wrappedCurrency(
-      currencyA,
-      chainId
-    ),
-    wrappedCurrency(
-      currencyB,
-      chainId
-    ),
-  ]);
-
+export async function getPairs(tokens, chainId, web3Provider, blockNumber) {
   const swapPairAddresses = tokens.map(([tokenA, tokenB]) => {
     return tokenA && tokenB ? Pair.getAddress(
       tokenA,
       tokenB
     ) : undefined;
   });
+
+  console.log(swapPairAddresses);
 
   const callData: string | undefined = fragment
     ? PAIR_INTERFACE.encodeFunctionData(fragment)
@@ -452,6 +399,66 @@ export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blo
     ];
   });
 
+  return pairs;
+}
+
+export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blockNumber, chainId) {
+  const common: [Token, Token] = BASES_TO_CHECK_TRADES_AGAINST[chainId] ?? [];
+
+  const basePairs: [Token, Token][] = common.flatMap(
+    (base): [Token, Token][] => common.map((otherBase) => [base, otherBase])
+  );
+
+  const [tokenA, tokenB] = [wrappedCurrency(
+    currencyIn,
+    chainId
+  ), wrappedCurrency(
+    currencyOut,
+    chainId
+  )];
+
+  if (!chainId) return [];
+
+  const swapPairCombinations = tokenA && tokenB ? [
+    // the direct pair
+    [tokenA, tokenB],
+    // token A against all bases
+    ...common.map((base): [Token, Token] => [tokenA, base]),
+    // token B against all bases
+    ...common.map((base): [Token, Token] => [tokenB, base]),
+    // each base against all bases
+    ...basePairs,
+  ]
+    .filter((tokens): tokens is [Token, Token] => Boolean(tokens[0] && tokens[1]))
+    .filter(([t0, t1]) => t0.address !== t1.address)
+    .filter(([tokenA_, tokenB_]) => {
+
+      const customBases = CUSTOM_BASES[chainId];
+
+      const customBasesA: Token[] | undefined = customBases?.[tokenA_.address];
+      const customBasesB: Token[] | undefined = customBases?.[tokenB_.address];
+
+      if (!customBasesA && !customBasesB) return true;
+
+      if (customBasesA && !customBasesA.find((base) => tokenB_.equals(base))) return false;
+      if (customBasesB && !customBasesB.find((base) => tokenA_.equals(base))) return false;
+
+      return true;
+    }) : [];
+
+  const tokens = swapPairCombinations.map(([currencyA, currencyB]) => [
+    wrappedCurrency(
+      currencyA,
+      chainId
+    ),
+    wrappedCurrency(
+      currencyB,
+      chainId
+    ),
+  ]);
+
+  const pairs = await getPairs(tokens, chainId, web3Provider, blockNumber);
+
   const allowedPairs: Pair[] = Object.values(pairs
     // filter out invalid pairs
     .filter((result): result is [PairState.EXISTS, Pair] => Boolean(result[0] === PairState.EXISTS && result[1]))
@@ -467,7 +474,11 @@ export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blo
   return allowedPairs;
 }
 
-function toCurrency(token, chainId) {
+export function toCurrency(token, chainId) {
+  if(!token) {
+    return;
+  }
+
   return new WrappedTokenInfo({
       chainId,
       address: getAddress(token.token_address, chainId),
@@ -528,10 +539,6 @@ export function useTrade() {
 
   const recalculateTradeIn = useCallback(async (amount, token, tokenB = null) => {
     const tokenTo = tokenB || swapInputData.tokenTo;
-
-    console.log(amount);
-    console.log(tokenTo);
-    console.log(token);
 
     if(!amount) {
       setTradeFn(null);

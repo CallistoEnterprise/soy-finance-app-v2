@@ -1,0 +1,66 @@
+@use "src/styles/colors.module";
+
+.liquidityCard {
+  border-radius: 8px;
+  border: 1px solid colors.$border-primary;
+  padding: 0 20px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 0;
+}
+
+.hiddenInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.hiddenInfoRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.expandArrow {
+  transition-duration: 0.3s;
+
+  &.expanded {
+    transform: rotate(-180deg);
+  }
+}
+
+.pairImages {
+  display: flex;
+  align-items: center;
+  //margin-right: 8px;
+
+  .imgWrapper {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    //background-color: colors.$background-secondary;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .imgWrapper:nth-child(2) {
+    position: relative;
+    margin-right:8px;
+  }
+}
+
+

@@ -1,4 +1,5 @@
 @use "src/styles/colors.module";
+@use "src/styles/media";
 
 .liquidityPage {
   display: grid;
@@ -31,4 +32,22 @@
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
+}
+
+.contentWrapper {
+  display: grid;
+  grid-template-columns: 1fr 453px;
+  gap: 20px;
+  margin-top: 20px;
+
+  @include media.for-mobile {
+    display: block;
+    margin-top: 0;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }

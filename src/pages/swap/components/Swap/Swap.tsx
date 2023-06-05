@@ -123,8 +123,6 @@ export default function Swap() {
 
   useEffect(() => {
     resetInputDataFn();
-    // setTradeFn(null);
-
   }, [chainId]);
 
   const [tradeType, setTradeType] = useState(TradeType.EXACT_INPUT);

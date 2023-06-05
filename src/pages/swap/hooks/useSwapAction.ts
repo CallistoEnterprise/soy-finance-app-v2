@@ -1,14 +1,13 @@
 import {useCallback, useMemo} from "react";
 import {useSnackbar} from "../../../shared/providers/SnackbarProvider";
 import {BrowserProvider, Contract, ErrorCode, EthersError, parseUnits} from "ethers";
-import routerABI from "../../../shared/abis/router.json";
+import routerABI from "../../../shared/abis/interfaces/router.json";
 import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
 import {useEvent, useStore} from "effector-react";
 import {$swapDeadline, $swapInputData, $swapSlippage, $trade} from "../models/stores";
 import {BigNumber} from "@ethersproject/bignumber";
 import useTransactionDeadline from "./useTransactionDeadline";
 import {isNativeToken} from "../../../shared/utils";
-import {err} from "pino-std-serializers";
 import {addRecentTransaction} from "../../../shared/models";
 
 export function calculateSlippageAmount(value: BigInt, slippage: number): BigNumber {
@@ -62,8 +61,6 @@ async function awaitTransaction(hash: string, provider: BrowserProvider) {
 async function logWhenAwaited(tx, provider: BrowserProvider) {
   try {
     const beforeEnd = await provider.getTransactionReceipt(tx.hash);
-    console.log("BEFORE END");
-    console.log(beforeEnd);
     const transaction = await provider.getTransaction(tx.hash);
 
     if(transaction) {
@@ -192,7 +189,7 @@ export function useSwapAction() {
         }
       }
     },
-    [web3Provider, account, trade]
+    [account, web3Provider, trade, swapInputData.tokenFrom, swapInputData.tokenTo, swapInputData.amountIn, swapInputData.amountOut, chainId, bridgeAddress, slippage, deadline, functionName, addRecentTransactionFn, showMessage]
   );
 
   return { handleSwap };

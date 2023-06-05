@@ -1,0 +1,16 @@
+.noPool {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.spacer {
+  margin-bottom: 10px;
+}
+
+.textWrapper {
+  max-width: 350px;
+  text-align: center;
+}

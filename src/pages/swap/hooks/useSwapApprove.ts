@@ -7,8 +7,9 @@ import {isNativeToken} from "../../../shared/utils";
 import {SwapToken} from "../models/types";
 import {$swapInputData, $tokenSpendApproved, $tokenSpendEnabling, $tokenSpendRequesting} from "../models/stores";
 import {setTokenSpendApproved, setTokenSpendEnabling, setTokenSpendRequesting} from "../models";
-import WETH_ABI from "../../../shared/abis/weth.json";
+import WETH_ABI from "../../../shared/abis/interfaces/weth.json";
 import {addRecentTransaction, editTransactionStatus} from "../../../shared/models";
+import {WrappedTokenInfo} from "./useTrade";
 
 
 const ROUTER_ADDRESS = {
@@ -69,7 +70,7 @@ function useTokenAllowance(approved: boolean, token?: string): any | undefined {
   return { allowance };
 }
 
-export function useSwapApprove({ token }: {token: SwapToken | null}) {
+export function useSwapApprove({ token, amount }: {token: WrappedTokenInfo | null, amount: string}) {
   const { account, chainId, web3Provider, isSupportedSwapNetwork, isChangingWallet, isChangingNetwork } = useWeb3();
 
   const approved = useStore($tokenSpendApproved);
@@ -80,11 +81,9 @@ export function useSwapApprove({ token }: {token: SwapToken | null}) {
   const setEnabling = useEvent(setTokenSpendEnabling);
   const setRequesting = useEvent(setTokenSpendRequesting);
 
-  const { amountIn } = useStore($swapInputData);
-
   const currentAllowance = useTokenAllowance(
     approved,
-    token?.token_address
+    token?.address
   );
 
   const addRecentTransactionFn = useEvent(addRecentTransaction);
@@ -96,18 +95,18 @@ export function useSwapApprove({ token }: {token: SwapToken | null}) {
         return;
       }
 
-      if (isNativeToken(token.token_address)) {
+      if (isNativeToken(token.address)) {
         setApproved(true);
         return;
       }
 
-      if (+amountIn && currentAllowance?.allowance >= BigInt(parseEther((+amountIn).toString()))) {
+      if (+amount && currentAllowance?.allowance >= BigInt(parseEther((+amount).toString()))) {
         setApproved(true);
       } else {
         setApproved(false);
       }
     },
-    [currentAllowance, currentAllowance.allowance, isChangingNetwork, isChangingWallet, isSupportedSwapNetwork, setApproved, amountIn, token]
+    [currentAllowance, currentAllowance?.allowance, isChangingNetwork, isChangingWallet, isSupportedSwapNetwork, setApproved, token, amount]
   );
 
 
@@ -117,11 +116,11 @@ export function useSwapApprove({ token }: {token: SwapToken | null}) {
         return;
       }
 
-      if (token.token_address !== "") {
+      if (token.address !== "") {
         setRequesting(true);
         const routerAddr = ROUTER_ADDRESS[chainId];
         const tkContract = new Contract(
-          token.token_address,
+          token.address,
           WETH_ABI,
           await web3Provider.getSigner(account)
         );
@@ -133,7 +132,7 @@ export function useSwapApprove({ token }: {token: SwapToken | null}) {
           );
           setRequesting(false);
           setEnabling(true);
-          addRecentTransactionFn({chainId, hash: tx.hash, summary: `Approve ${token.original_name}`})
+          addRecentTransactionFn({chainId, hash: tx.hash, summary: `Approve ${token.symbol}`})
 
           const receipt = await tx.wait();
 
@@ -150,7 +149,7 @@ export function useSwapApprove({ token }: {token: SwapToken | null}) {
 
       }
     },
-    [web3Provider, account, chainId, token]
+    [web3Provider, account, token, chainId, setRequesting, setEnabling, addRecentTransactionFn, editTransactionStatusFn, setApproved]
   );
 
   return {

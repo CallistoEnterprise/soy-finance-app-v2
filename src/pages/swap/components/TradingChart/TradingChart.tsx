@@ -318,7 +318,7 @@ const externalTooltipHandler = (context) => {
 
   const arrow = document.createElement("div");
   arrow.style.position = "absolute";
-  arrow.style.bottom = "0";
+  arrow.style.bottom = "1px";
   arrow.style.left = "50%";
   arrow.style.width = "8px";
   arrow.style.height = "8px";
@@ -332,6 +332,8 @@ const externalTooltipHandler = (context) => {
 
 
   const { offsetLeft: positionX, offsetTop: positionY } = chart.canvas;
+
+  const pos = tooltipEl.getBoundingClientRect();
 
   tooltipEl.style.opacity = "1";
 
@@ -512,8 +514,6 @@ export default function TradingChart() {
 
   const [loading, setIsLoading] = useState(true);
 
-  console.log(firstToken);
-
   const [secondToken, setSecondToken] = useState<SwapToken>(null);
 
   useEffect(() => {
@@ -529,10 +529,10 @@ export default function TradingChart() {
   useEffect(() => {
     if (swapInputData.tokenTo) {
       if(isNativeToken(swapInputData.tokenTo.token_address)) {
-        return setFirstToken({...swapInputData.tokenTo, token_address: WCLO_ADDRESS});
+        return setSecondToken({...swapInputData.tokenTo, token_address: WCLO_ADDRESS});
       }
 
-      setFirstToken(swapInputData.tokenTo);
+      setSecondToken(swapInputData.tokenTo);
     }
   }, [swapInputData.tokenTo]);
 
@@ -556,7 +556,6 @@ export default function TradingChart() {
 
       if (candlePrice.data) {
         for (const priceObj of candlePrice.data) {
-          console.log(priceObj.time);
           candleDataResult.push({
             x: new Date(priceObj.time * 1000),
             o: priceObj.open,
@@ -568,7 +567,6 @@ export default function TradingChart() {
         }
       }
 
-      console.log(candleDataResult);
       setCandleData(candleDataResult);
       setLabels(labelsResult);
       setData(dataResult);

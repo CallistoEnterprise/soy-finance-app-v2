@@ -39,13 +39,13 @@ export function useFiatPrice(address, chainId) {
 
         setFiatPricesFn(pricesObject);
       })();
+    } catch (e) {
+      console.log(e);
     } finally {
       setLoading(false);
     }
 
-
-
-  }, [chainId]);
+  }, [chainId, setFiatPricesFn]);
 
   return useMemo(() => {
     return {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {ethers, formatEther, formatUnits, JsonRpcProvider, Provider} from "ethers";
 import { useEvent, useStore } from "effector-react";
 import { pushBalance } from "../models";
-import WETH_ABI from "../abis/weth.json";
+import WETH_ABI from "../abis/interfaces/weth.json";
 import {isNativeToken} from "../utils";
 import {useWeb3} from "../../processes/web3/hooks/useWeb3";
 import {BigNumber} from "@ethersproject/bignumber";
@@ -35,7 +35,7 @@ export const getErc20Contract = (address: string, signer?: ethers.Signer | Provi
   );
 };
 
-async function getContractsBalances(account, network, tokensToBridge: any[]) {
+export async function getContractsBalances(account, network, tokensToBridge: any[]) {
   const RPC_URL = new JsonRpcProvider(network?.rpcs[0]);
 
   if (!account) {
@@ -52,11 +52,16 @@ async function getContractsBalances(account, network, tokensToBridge: any[]) {
   const promises = [];
 
   async function writeBalance(tokenContract, symbol, decimal) {
-    const balance = await tokenContract.balanceOf(account);
-    temp[symbol] = formatUnits(
-      balance,
-      decimal
-    );
+    try {
+      const balance = await tokenContract.balanceOf(account);
+      temp[symbol] = formatUnits(
+        balance,
+        decimal
+      );
+    }catch (e) {
+      console.log(e);
+    }
+
   }
 
   for (const asset of tokensA) {
@@ -190,7 +195,7 @@ export default function useNetworkSectionBalance({ chainId }) {
         }
       })();
     },
-    [account, balances, chainId, networks, pushBalanceFn, tokens]
+    [account, balances, chainId, pushBalanceFn]
   );
 
 

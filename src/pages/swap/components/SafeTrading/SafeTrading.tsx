@@ -2,7 +2,6 @@ import React from "react";
 import styles from "./SafeTrading.module.scss";
 import clsx from "clsx";
 import Button from "../../../../components/atoms/Button";
-import Divider from "../../../../components/atoms/Divider";
 import PageCard from "../../../../components/atoms/PageCard";
 import PageCardHeading from "../../../../components/molecules/PageCardHeading";
 import Text from "../../../../components/atoms/Text";

@@ -9,27 +9,31 @@ import {SwapToken} from "../../../pages/swap/models/types";
 import InputWithTokenPick from "../../molecules/InputWithTokenPick";
 import PercentageButtons from "../../molecules/PercentageButtons";
 import Text from "../../atoms/Text";
+import {useBalanceOf} from "../../../shared/web3/hooks/useBalanceOf";
+import {formatEther} from "ethers";
+import {WrappedTokenInfo} from "../../../pages/swap/hooks/useTrade";
+import {TokenAmount} from "@callisto-enterprise/soy-sdk";
 
 interface Props {
   setDialogOpened: any,
   isDialogOpened: boolean,
-  pickedToken: SwapToken,
+  pickedToken: WrappedTokenInfo,
   inputValue: string,
   handleInputChange: any,
   handleTokenChange: any,
-  label: string
+  label: string,
+  pair?: [WrappedTokenInfo, WrappedTokenInfo],
+  balance: TokenAmount | null
 }
 
-export default function TokenSelector({setDialogOpened, isDialogOpened, pickedToken, inputValue, handleInputChange, handleTokenChange, label}: Props) {
+export default function TokenSelector({setDialogOpened, isDialogOpened, pickedToken, inputValue, handleInputChange, handleTokenChange, label, pair, balance}: Props) {
   const {chainId} = useWeb3();
-  const {network, contracts} = useNetworkSectionBalance({chainId})
-  const {loading, price} = useFiatPrice(pickedToken?.token_address, chainId);
+  // const {network, contracts} = useNetworkSectionBalance({chainId});
+  const {loading, price} = useFiatPrice(pickedToken?.address, chainId);
 
-  const balance = useMemo(() => {
-    return isNativeToken(pickedToken?.token_address) ? network?.balance : contracts?.find(c => c.symbol === pickedToken?.original_name)?.balance;
-  }, [pickedToken, network, contracts]);
-
-  console.log(balance);
+  // const balance = useMemo(() => {
+  //   return isNativeToken(pickedToken?.address) ? network?.balance : contracts?.find(c => c.symbol === pickedToken?.address)?.balance;
+  // }, [pickedToken, network, contracts]);
 
   return <div className={styles.swapCard}>
     <div className={styles.swapCardHeader}>
@@ -46,6 +50,7 @@ export default function TokenSelector({setDialogOpened, isDialogOpened, pickedTo
         value={inputValue}
         pickedToken={pickedToken}
         openDialog={() => setDialogOpened(true)}
+        pair={pair}
       />
       <div className={styles.balanceBox}>
           <span>
@@ -55,7 +60,7 @@ export default function TokenSelector({setDialogOpened, isDialogOpened, pickedTo
           </span>
         <span>Balance:
           {" "}
-          {balance ? formatBalance(balance) : "0.0"}
+          {balance ? balance.toSignificant(2) : "0.0"}
         </span>
       </div>
 

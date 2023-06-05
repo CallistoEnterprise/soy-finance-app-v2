@@ -1,0 +1,23 @@
+@use "src/styles/colors.module";
+
+.step {
+  height: 40px;
+  width: 40px;
+  border: 1px solid colors.$border-primary;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 20px;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

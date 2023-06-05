@@ -59,8 +59,6 @@ export default function ChangeWalletContent() {
     }
   }
 
-  console.log(currentWallet);
-
   return <>
       {step === 2 && <IconButton className={styles.backButton} onClick={() => {
         setStep(1);

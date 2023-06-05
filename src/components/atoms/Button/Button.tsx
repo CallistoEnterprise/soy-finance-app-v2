@@ -17,7 +17,8 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   endIcon?: IconName,
   fullWidth?:boolean,
   mode?: "default" | "error",
-  active?: boolean
+  active?: boolean,
+  disableRipple?: boolean
 }
 
 function Ripple({top, left, size}) {
@@ -36,6 +37,7 @@ export default function Button({
   fullWidth = false,
   mode = "default",
   active = false,
+  disableRipple = false,
   ...props
 }: Props) {
   const ref = useRef<HTMLButtonElement>();
@@ -63,7 +65,7 @@ export default function Button({
   } onClick={e => {
     const elem = ref.current;
 
-    if(elem) {
+    if(elem && !disableRipple) {
       const rect = elem.getBoundingClientRect();
       const left = e.clientX - rect.left;
       const top = e.clientY - rect.top;

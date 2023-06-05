@@ -1,0 +1,60 @@
+@use "src/styles/colors.module";
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.importHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.preloaderWrapper {
+  height: 578px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.middleIcon {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.poolToImport {
+  padding: 17px 20px 20px;
+  border: 1px solid colors.$border-primary;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.poolToImportHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 17px;
+}
+
+.poolLogos {
+  display: flex;
+  align-items: center;
+
+  img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.poolToImportInfo {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}

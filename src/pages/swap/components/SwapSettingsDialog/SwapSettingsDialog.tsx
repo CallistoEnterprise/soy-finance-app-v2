@@ -32,18 +32,16 @@ export default function SwapSettingsDialog() {
 
     showMessage("Settings updated");
     setSwapSettingsDialogOpenedFn(false);
-  }, [slippageValue, deadlineValue]);
+  }, [setSlippage, slippageValue, setDeadline, deadlineValue, showMessage, setSwapSettingsDialogOpenedFn]);
 
 
-  console.log(isSwapSettingsDialogOpened);
   const handleClose = useCallback(() => {
-    console.log("CLOSING");
     setSwapSettingsDialogOpenedFn(false);
     setTimeout(() => {
       setSlippageValue(slippage);
       setDeadlineValue(deadline);
     }, 300);
-  }, [setSwapSettingsDialogOpenedFn]);
+  }, [deadline, setSwapSettingsDialogOpenedFn, slippage]);
 
   return <DrawerDialog isOpen={isSwapSettingsDialogOpened} onClose={handleClose}>
     <div className={styles.swapSettingsDialog}>

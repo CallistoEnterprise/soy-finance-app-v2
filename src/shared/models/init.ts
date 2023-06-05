@@ -1,5 +1,8 @@
 import "../../processes/web3/models/init";
 import "../../pages/swap/models/init";
+import "../../pages/liquidity/models/init";
+import "../web3/models/init";
+
 import {$balances, $favoriteTokens, $isWalletDialogOpened, $recentTransactions} from "./stores";
 import {
   addFavoriteToken,
@@ -94,14 +97,10 @@ $recentTransactions.on(
   editTransactionStatus,
   (state, data) => {
     const newState = {...state};
-    console.log("SSS");
-    console.log(newState[data.chainId]);
     const index = newState[data.chainId].findIndex(t => t.hash === data.hash);
 
-    console.log(index);
     newState[data.chainId][index].status = data.status;
 
-    console.log(newState);
     localStorage.setItem("recentTransactions", JSON.stringify(newState));
 
     return newState;

@@ -1,0 +1,13 @@
+@use "src/styles/colors.module";
+
+.bigIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: colors.$background-global;
+  border-radius: 20px;
+  width: 120px;
+  height: 120px;
+
+  color: colors.$palette-green;
+}

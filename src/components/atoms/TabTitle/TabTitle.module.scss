@@ -66,16 +66,20 @@
   }
 }
 
-//
-//.buttonViewTitle {
-//  background: transparent;
-//  height: 38px;
-//  width: 100%;
-//  color: $basic-text-secondary;
-//  border-radius: 8px;
-//  @include typography.t-body-16;
-//
-//  &.active {
-//    border: 1px solid $border-4;
-//  }
-//}
+
+.defaultViewTitle {
+  background: transparent;
+  height: 40px;
+  width: 100%;
+  color: colors.$text-primary;
+  border-radius: 0;
+
+  background: colors.$background-secondary;
+
+  font-weight: 500;
+  @include mixins.t-body-16;
+
+  &.active {
+    background: colors.$background-primary;
+  }
+}

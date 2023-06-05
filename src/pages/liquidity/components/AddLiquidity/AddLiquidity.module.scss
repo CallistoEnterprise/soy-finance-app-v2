@@ -1,0 +1,131 @@
+@use "src/styles/colors.module";
+@use "src/styles/mixins";
+
+.swapHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.proMode {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.changeOrder {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+
+  > button {
+    transform: rotate(90deg);
+  }
+}
+
+.infoRow {
+  @include mixins.t-body-14;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: colors.$text-secondary;
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+
+.bottomInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid colors.$border-primary;
+  margin-top: 20px;
+}
+
+.priceContent {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.route {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.showInvertedButton {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
+  color: colors.$palette-green;
+  transition-duration: 0.2s;
+
+  &:hover {
+    color: colors.$palette-green-saturated;
+  }
+}
+
+.priceContent {
+  height: 24px;
+}
+
+.isNotSupported {
+  text-align: center;
+}
+
+.buttonsRow {
+  display: flex;
+  gap: 10px;
+}
+
+.stepRow {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 20px;
+}
+
+.stepWrapper {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid colors.$palette-green;
+  position: relative;
+}
+
+.stepRows {
+  display: grid;
+  gap: 10px;
+
+  & :nth-child(1) .stepWrapper {
+    &:before  {
+      content: "";
+      position: absolute;
+      top: 100%;
+      width: 1px;
+      height: 12px;
+      left: 50%;
+      background: colors.$palette-green;
+      transform: translateX(-50%);
+    }
+  }
+}

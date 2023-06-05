@@ -2,10 +2,9 @@ export function isNativeToken(address) {
   if (!address) {
     return false;
   }
-  return address.slice(
-    0,
-    -2
-  ) === "0x00000000000000000000000000000000000000";
+  return ["0xF5AD6F6EDeC824C7fD54A66d241a227F6503aD3a",
+    "0xF5AD6F6EDeC824C7fD54A66d241a227F6503aD3a",
+    "0x33e85f0e26600a6644b6c910639B0bc7a99fd34e"].includes(address)
 }
 
 export function formatBalance(balance) {
