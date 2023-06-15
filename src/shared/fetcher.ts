@@ -274,3 +274,434 @@ export const fetchTokenPriceData = async (
     }
   }
 }
+
+/**
+ * Data for displaying Liquidity and Volume charts on Overview page
+ */
+const PANCAKE_DAY_DATAS = gql`
+  query overviewCharts($startTime: Int!, $skip: Int!) {
+    soySwapDayDatas(first: 1000, skip: $skip, where: { date_gt: $startTime }, orderBy: date, orderDirection: asc) {
+      date
+      dailyVolumeUSD
+      totalLiquidityUSD
+    }
+  }
+`
+
+export interface Block {
+  number: number
+  timestamp: string
+}
+
+export interface ChartEntry {
+  date: number
+  volumeUSD: number
+  liquidityUSD: number
+}
+
+/**
+ * Formatted type for Candlestick charts
+ */
+export interface PriceChartEntry {
+  time: number
+  open: number
+  close: number
+  high: number
+  low: number
+}
+
+export enum TransactionType {
+  SWAP,
+  MINT,
+  BURN,
+}
+
+export type Transaction = {
+  type: TransactionType
+  hash: string
+  timestamp: string
+  sender: string
+  token0Symbol: string
+  token1Symbol: string
+  token0Address: string
+  token1Address: string
+  amountUSD: number
+  amountToken0: number
+  amountToken1: number
+}
+
+export interface ProtocolData {
+  volumeUSD: number
+  volumeUSDChange: number // in 24h, as percentage
+
+  liquidityUSD: number
+  liquidityUSDChange: number // in 24h, as percentage
+
+  txCount: number
+  txCountChange: number
+}
+
+export interface ProtocolState {
+  readonly overview?: ProtocolData
+
+  readonly chartData?: ChartEntry[]
+
+  readonly transactions?: Transaction[]
+}
+
+// POOLS
+
+export interface PoolData {
+  address: string
+
+  token0: {
+    name: string
+    symbol: string
+    address: string
+  }
+
+  token1: {
+    name: string
+    symbol: string
+    address: string
+  }
+
+  volumeUSD: number
+  volumeUSDChange: number
+  volumeUSDWeek: number
+  volumeUSDChangeWeek: number
+
+  totalFees24h: number
+  totalFees7d: number
+  lpFees24h: number
+  lpFees7d: number
+  lpApr7d: number
+
+  liquidityUSD: number
+  liquidityUSDChange: number
+
+  token0Price: number
+  token1Price: number
+
+  liquidityToken0: number
+  liquidityToken1: number
+}
+
+export interface PoolsState {
+  byAddress: {
+    [address: string]: {
+      data?: PoolData
+      chartData?: ChartEntry[]
+      transactions?: Transaction[]
+    }
+  }
+}
+
+// TOKENS
+
+export type TokenData = {
+  exists: boolean
+
+  name: string
+  symbol: string
+  address: string
+
+  volumeUSD: number
+  volumeUSDChange: number
+  volumeUSDWeek: number
+  txCount: number
+
+  liquidityToken: number
+  liquidityUSD: number
+  liquidityUSDChange: number
+
+  priceUSD: number
+  priceUSDChange: number
+  priceUSDChangeWeek: number
+}
+
+export interface TokensState {
+  byAddress: {
+    [address: string]: {
+      data?: TokenData
+      poolAddresses?: string[]
+      chartData?: ChartEntry[]
+      priceData: {
+        oldestFetchedTimestamp?: number
+        [secondsInterval: number]: PriceChartEntry[] | undefined
+      }
+      transactions?: Transaction[]
+    }
+  }
+}
+
+export interface TokenDayData {
+  date: number // UNIX timestamp in seconds
+  dailyVolumeUSD: string
+  totalLiquidityUSD: string
+}
+
+export interface TokenDayDatasResponse {
+  tokenDayDatas: TokenDayData[]
+}
+
+// Footprint is the same, declared just for better readability
+export type PancakeDayData = TokenDayData
+
+export interface PancakeDayDatasResponse {
+  soySwapDayDatas: PancakeDayData[]
+}
+
+// Info redux state
+export interface InfoState {
+  protocol: ProtocolState
+  pools: PoolsState
+  tokens: TokensState
+}
+
+const SS_V2_START = 1634494539;
+
+export const mapDayData = (tokenDayData: TokenDayData | PancakeDayData): ChartEntry => ({
+  date: tokenDayData.date,
+  volumeUSD: parseFloat(tokenDayData.dailyVolumeUSD),
+  liquidityUSD: parseFloat(tokenDayData.totalLiquidityUSD),
+})
+
+export const getOverviewChartData = async (skip: number): Promise<{ data?: ChartEntry[]; error: boolean }> => {
+  try {
+    const { soySwapDayDatas } = await request<PancakeDayDatasResponse>(infoClient, PANCAKE_DAY_DATAS, {
+      startTime: SS_V2_START,
+      skip,
+    })
+    const data = soySwapDayDatas.map(mapDayData)
+    return { data, error: false }
+  } catch (error) {
+    console.error('Failed to fetch overview chart data', error)
+    return { error: true }
+  }
+}
+
+const ONE_DAY_UNIX = 86400;
+
+type PoolOrTokenFetchFn = (skip: number, address: string | undefined) => Promise<{ data?: ChartEntry[]; error: boolean }>
+type OverviewFetchFn = (skip: number) => Promise<{ data?: ChartEntry[]; error: boolean }>
+
+export const fetchChartData = async (
+  getEntityDayDatas: PoolOrTokenFetchFn | OverviewFetchFn,
+  address?: string,
+): Promise<{ data?: ChartEntry[]; error: boolean }> => {
+  let chartEntries: ChartEntry[] = []
+  let error = false
+  let skip = 0
+  let allFound = false
+
+  while (!allFound) {
+    const { data, error: fetchError } = await getEntityDayDatas(skip, address)
+    skip += 1000
+    allFound = data.length < 1000
+    error = fetchError
+    if (data) {
+      chartEntries = chartEntries.concat(data)
+    }
+  }
+
+  if (error || chartEntries.length === 0) {
+    return {
+      error: true,
+    }
+  }
+
+  const formattedDayDatas = chartEntries.reduce((accum: { [date: number]: ChartEntry }, dayData) => {
+    // At this stage we track unix day ordinal for each data point to check for empty days later
+    const dayOrdinal = parseInt((dayData.date / ONE_DAY_UNIX).toFixed(0))
+    return {
+      [dayOrdinal]: dayData,
+      ...accum,
+    }
+  }, {})
+
+  const availableDays = Object.keys(formattedDayDatas).map((dayOrdinal) => parseInt(dayOrdinal, 10))
+
+  const firstAvailableDayData = formattedDayDatas[availableDays[0]]
+  // fill in empty days ( there will be no day datas if no trades made that day )
+  let timestamp = firstAvailableDayData?.date ?? SS_V2_START
+  let latestLiquidityUSD = firstAvailableDayData?.liquidityUSD ?? 0
+  const endTimestamp = getUnixTime(new Date())
+  while (timestamp < endTimestamp - ONE_DAY_UNIX) {
+    timestamp += ONE_DAY_UNIX
+    const dayOrdinal = parseInt((timestamp / ONE_DAY_UNIX).toFixed(0), 10)
+    if (!Object.keys(formattedDayDatas).includes(dayOrdinal.toString())) {
+      formattedDayDatas[dayOrdinal] = {
+        date: timestamp,
+        volumeUSD: 0,
+        liquidityUSD: latestLiquidityUSD,
+      }
+    } else {
+      latestLiquidityUSD = formattedDayDatas[dayOrdinal].liquidityUSD
+    }
+  }
+
+  return {
+    data: Object.values(formattedDayDatas),
+    error: false,
+  }
+}
+
+
+const GLOBAL_TRANSACTIONS = gql`
+  query overviewTransactions {
+    mints: mints(first: 50, orderBy: timestamp, orderDirection: desc) {
+      id
+      timestamp
+      pair {
+        token0 {
+          id
+          symbol
+        }
+        token1 {
+          id
+          symbol
+        }
+      }
+      to
+      amount0
+      amount1
+      amountUSD
+    }
+    burns: burns(first: 50, orderBy: timestamp, orderDirection: desc) {
+      id
+      timestamp
+      pair {
+        token0 {
+          id
+          symbol
+        }
+        token1 {
+          id
+          symbol
+        }
+      }
+      sender
+      amount0
+      amount1
+      amountUSD
+    }
+  }
+`
+
+export const mapMints = (mint: MintResponse) => {
+  return {
+    type: TransactionType.MINT,
+    hash: mint.id.split('-')[0],
+    timestamp: mint.timestamp,
+    sender: mint.to,
+    token0Symbol: mint.pair.token0.symbol,
+    token1Symbol: mint.pair.token1.symbol,
+    token0Address: mint.pair.token0.id,
+    token1Address: mint.pair.token1.id,
+    amountUSD: parseFloat(mint.amountUSD),
+    amountToken0: parseFloat(mint.amount0),
+    amountToken1: parseFloat(mint.amount1),
+  }
+}
+
+export const mapBurns = (burn: BurnResponse) => {
+  return {
+    type: TransactionType.BURN,
+    hash: burn.id.split('-')[0],
+    timestamp: burn.timestamp,
+    sender: burn.sender,
+    token0Symbol: burn.pair.token0.symbol,
+    token1Symbol: burn.pair.token1.symbol,
+    token0Address: burn.pair.token0.id,
+    token1Address: burn.pair.token1.id,
+    amountUSD: parseFloat(burn.amountUSD),
+    amountToken0: parseFloat(burn.amount0),
+    amountToken1: parseFloat(burn.amount1),
+  }
+}
+
+export const mapSwaps = (swap: SwapResponse) => {
+  return {
+    type: TransactionType.SWAP,
+    hash: swap.id.split('-')[0],
+    timestamp: swap.timestamp,
+    sender: swap.from,
+    token0Symbol: swap.pair.token0.symbol,
+    token1Symbol: swap.pair.token1.symbol,
+    token0Address: swap.pair.token0.id,
+    token1Address: swap.pair.token1.id,
+    amountUSD: parseFloat(swap.amountUSD),
+    amountToken0: parseFloat(swap.amount0In) - parseFloat(swap.amount0Out),
+    amountToken1: parseFloat(swap.amount1In) - parseFloat(swap.amount1Out),
+  }
+}
+
+interface PairResponse {
+  token0: {
+    id: string
+    symbol: string
+  }
+  token1: {
+    id: string
+    symbol: string
+  }
+}
+
+export interface MintResponse {
+  id: string
+  timestamp: string
+  pair: PairResponse
+  to: string
+  amount0: string
+  amount1: string
+  amountUSD: string
+}
+
+export interface SwapResponse {
+  id: string
+  timestamp: string
+  pair: PairResponse
+  from: string
+  amount0In: string
+  amount1In: string
+  amount0Out: string
+  amount1Out: string
+  amountUSD: string
+}
+
+export interface BurnResponse {
+  id: string
+  timestamp: string
+  pair: PairResponse
+  sender: string
+  amount0: string
+  amount1: string
+  amountUSD: string
+}
+
+interface TransactionResults {
+  mints: MintResponse[]
+  swaps: SwapResponse[]
+  burns: BurnResponse[]
+}
+
+export const fetchTopTransactions = async (): Promise<Transaction[] | undefined> => {
+  try {
+    const data = await request<TransactionResults>(infoClient, GLOBAL_TRANSACTIONS)
+
+    if (!data) {
+      return undefined
+    }
+
+    const mints = data.mints.map(mapMints)
+    const burns = data.burns.map(mapBurns)
+    // const swaps = data.swaps.map(mapSwaps)
+
+    return [...mints, ...burns].sort((a, b) => {
+      return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10)
+    })
+  } catch {
+    return undefined
+  }
+}

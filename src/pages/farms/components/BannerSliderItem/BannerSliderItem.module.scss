@@ -1,0 +1,62 @@
+.carousel {
+  //overflow: hidden;
+}
+
+.inner {
+  white-space: nowrap;
+  transition: transform 0.3s;
+}
+
+.carouselItem {
+  height: 200px;
+  color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 40px;
+  overflow: visible;
+
+  transition: opacity 0.5s ease-in-out, background 0.5s ease-in-out;
+
+  border-radius: 8px;
+
+  &.count0 {
+    background: linear-gradient(91.78deg, #C8E6E4 0%, #FBF3CC 43.38%, #FFBDAA 100%);
+  }
+
+  &.count1 {
+    background: linear-gradient(90.76deg, #FDE5BD -1.83%, #F6F2FF 43.75%, #CDEFFF 100%);
+  }
+
+  &.count2 {
+    background: linear-gradient(90.76deg, #F4D5DC -1.83%, #FDEDAD 43.75%, #BBE6A7 100%);
+  }
+
+  &.count3 {
+    background: linear-gradient(90.76deg, #D0F0FF 24.06%, #F1D0F4 67.33%, #D1EEFE 96%);
+  }
+
+  z-index: 1;
+  opacity: 0;
+
+  &.active {
+    z-index: 2;
+    opacity: 1;
+  }
+}
+
+.indicators {
+  display: flex;
+  justify-content: center;
+}
+
+.indicators > button {
+  margin: 5px;
+}
+
+.indicators > button.active {
+  background-color: green;
+  color: #fff;
+}

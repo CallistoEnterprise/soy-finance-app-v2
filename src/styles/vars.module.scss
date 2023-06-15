@@ -1,3 +1,26 @@
+
+$palette-colors: (
+  "green" : #6DA316,
+  "violet" : #716AC5,
+  "pink" : #CA7DEF,
+  "red" : #CD1515,
+  "orange" : #ED962F,
+  "blue" : #2F80ED,
+);
+
+$palette-dark-colors: (
+  "green" : #7CB819,
+  "violet" : #716AC5,
+  "pink" : #CA7DEF,
+  "red" : #AD1313,
+  "orange" : #E88B1F,
+  "blue" : #1A70E4,
+);
+
+@function HexToRGB($hex) {
+  @return red($hex), green($hex), blue($hex);
+}
+
 :root {
   --background-global: linear-gradient(311.09deg, #F5F3FC 0%, #F8FAFF 52.68%, #F6FDEF 99%);
 
@@ -12,16 +35,15 @@
   --hover-primary: #71AC0F;
   --hover-secondary: #E2E2E2;
 
-  --palette-green: #6DA316;
   --palette-green-saturated: #588D00;
-
-  --palette-violet: #716AC5;
-  --palette-pink: #CA7DEF;
-  --palette-red: #CD1515;
-  --palette-orange: #ED962F;
-  --palette-blue: #2F80ED;
   --palette-white: #FFFFFF;
   --palette-grey-light: #949494;
+
+  @each $key, $value in $palette-colors {
+    --palette-#{$key} : #{$value};
+    --palette-#{$key}__rgb : #{HexToRGB($value)};
+  }
+
 
   --transparent-primary: rgba(109, 163, 22, 0.1);
 
@@ -39,15 +61,14 @@
     --hover-primary: #71AC0F;
     --hover-secondary: #585858;
 
-    --palette-green: #7CB819;
     --palette-green-saturated: #588D00;
-    --palette-violet: #716AC5;
-    --palette-pink: #CA7DEF;
-    --palette-red: #AD1313;
-    --palette-orange: #E88B1F;
-    --palette-blue: #1A70E4;
     --palette-white: #FFFFFF;
     --palette-grey-light: #787878;
+
+    @each $key, $value in $palette-dark-colors {
+      --palette-#{$key} : #{$value};
+      --palette-#{$key}__rgb : #{HexToRGB($value)};
+    }
 
     --transparent-primary: rgba(124, 184, 25, 0.1);
   }

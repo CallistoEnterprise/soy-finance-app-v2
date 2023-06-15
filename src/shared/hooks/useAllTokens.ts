@@ -1,7 +1,7 @@
 import {useWeb3} from "../../processes/web3/hooks/useWeb3";
 import tokenListInCLO from "../constants/tokenLists/tokenlistInCLO.json";
-import tokenListInETC from "../constants/tokenLists/tokenlistInCLO.json";
-import tokenListInBTT from "../constants/tokenLists/tokenlistInCLO.json";
+import tokenListInETC from "../constants/tokenLists/tokenlistInETC.json";
+import tokenListInBTT from "../constants/tokenLists/tokenlistInBTT.json";
 import {useMemo} from "react";
 import {WrappedTokenInfo} from "../../pages/swap/hooks/useTrade";
 

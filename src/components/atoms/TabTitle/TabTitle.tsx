@@ -16,7 +16,7 @@ function TabTitle({ title, setSelectedTab, index, selectedTab, view, size = "def
   return (
     <li className={clsx(
       styles.listItem,
-      styles[view],
+      styles[view]
     )}>
       <button className={clsx(
         styles.tabButton,

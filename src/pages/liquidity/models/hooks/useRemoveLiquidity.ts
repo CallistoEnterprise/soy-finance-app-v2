@@ -3,7 +3,7 @@ import {useEvent, useStore} from "effector-react";
 import {
   $liquidityAmountA,
   $liquidityAmountB,
-  $liquidityInputTokens,
+  $liquidityInputTokens, $removeLiquidityAmountA, $removeLiquidityAmountB, $removeLiquidityAmountLP,
   $removeLiquidityInputTokens,
   setLiquidityAmountA,
   setLiquidityAmountB,
@@ -36,6 +36,9 @@ import routerABI from "../../../../shared/abis/interfaces/router.json";
 import {usePairs} from "../../../../shared/hooks/usePairs";
 import {useBalanceOf} from "../../../../shared/web3/hooks/useBalanceOf";
 import {useTotalSupply} from "../../../../shared/web3/hooks/useTotalSupply";
+import {usePairFragment, useRouterFragment} from "../../../../shared/config/fragments";
+import {PAIR_INTERFACE, ROUTER_INTERFACE} from "../../../../shared/config/interfaces";
+import {ERC_223_ABI} from "../../../../shared/abis";
 
 function wrappedCurrency(currency: Currency | undefined, chainId: ChainId | undefined): Token | undefined {
   return chainId && currency === ETHERS[chainId]
@@ -54,15 +57,19 @@ function wrappedCurrencyAmount(
 }
 
 export function tryParseAmount(value?: string, currency?: WrappedTokenInfo | Token | null, chainId?: number): CurrencyAmount | undefined {
+  console.log(value);
+  console.log(currency)
   if (!value || !currency) {
     return undefined
   }
   try {
     const typedValueParsed = parseUnits(value, currency.decimals).toString()
+    console.log(typedValueParsed);
     if (typedValueParsed !== '0') {
       return new TokenAmount(currency, JSBI.BigInt(typedValueParsed))
     }
   } catch (error) {
+    console.log("Error");
     // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
     console.debug(`Failed to parse input amount: "${value}"`, error)
   }
@@ -109,8 +116,9 @@ export function useRemoveLiquidity() {
   const setRemoveLiquidityAmountLPFn = useEvent(setRemoveLiquidityAmountLP);
   const setRemoveLiquidityAmountBFn = useEvent(setRemoveLiquidityAmountB);
 
-  const amountA = useStore($liquidityAmountA);
-  const amountB = useStore($liquidityAmountB);
+  const amountA = useStore($removeLiquidityAmountA);
+  const amountB = useStore($removeLiquidityAmountB);
+  const amountLP = useStore($removeLiquidityAmountLP);
 
   const bridgeAddress = useMemo(
     () => contracts.router[chainId],
@@ -137,6 +145,8 @@ export function useRemoveLiquidity() {
   const userPoolBalance = useBalanceOf(pairs?.[0]?.[1]?.liquidityToken || null);
 
   const totalPoolTokens = useTotalSupply(pairs?.[0]?.[1]?.liquidityToken);
+
+  const fragment = useRouterFragment("removeLiquidity");
 
   const handleLiquidityAmountLPChange = useCallback(async (amount: string) => {
     setRemoveLiquidityAmountLPFn(amount);
@@ -275,17 +285,16 @@ export function useRemoveLiquidity() {
   }, [chainId, lpToken, pairs, setRemoveLiquidityAmountAFn, setRemoveLiquidityAmountBFn, setRemoveLiquidityAmountLPFn, tokenB, totalPoolTokens, userPoolBalance]);
 
   const removeLiquidity = useCallback(async () => {
-    console.log(tokenA);
-    console.log(tokenB);
-
-    if(!tokenA || !tokenB || !chainId || !web3Provider || !account) {
+    if(!tokenA || !tokenB || !chainId || !web3Provider || !account || !fragment || !lpToken) {
       return;
     }
 
-    const parsedAmountA = tryParseAmount(amountA, tokenA, chainId);
-    const parsedAmountB = tryParseAmount(amountB, tokenB, chainId);
+    const parsedAmountA = tryParseAmount(amountA.toString(), tokenA, chainId);
+    const parsedAmountB = tryParseAmount(amountB.toString(), tokenB, chainId);
+    const parsedAmountLP = tryParseAmount(amountLP.toString(), lpToken, chainId);
 
-    if(!parsedAmountA || !parsedAmountB) {
+    if(!parsedAmountA || !parsedAmountB || !parsedAmountLP) {
+      console.log("No parsed amounts");
       return;
     }
 
@@ -295,39 +304,32 @@ export function useRemoveLiquidity() {
     }
 
     const args: any[] = [
-      tokenA.address, //"0xCc99C6635Fae4DAcF967a3fc2913ab9fa2b349C3"
-      tokenB.address, //"0xCC10A4050917f771210407DF7A4C048e8934332c"
-      parsedAmountA.raw.toString(), //"2000000000000000000"
-      parsedAmountB.raw.toString(), //"110574669940283"
-      amountsMin.a.toString(), //"1990000000000000000"
-      amountsMin.b.toString(),//"110021796590581"
-      account, //"0xF1602175601606E8ffEe38CE433A4DB4C6cf5d60"
-      deadline, //"0x645cc5f5"
-      {}
+      tokenA.address,
+      tokenB.address,
+      parsedAmountLP.raw.toString(),
+      amountsMin.a.toString(),
+      amountsMin.b.toString(),
+      account,
+      deadline,
     ];
 
-    console.log(args);
+    const callData = ROUTER_INTERFACE.encodeFunctionData(fragment, args);
 
-    const router = new Contract(
-      bridgeAddress,
-      routerABI,
+    const contract = new Contract(
+      lpToken.address,
+      ERC_223_ABI,
       await web3Provider.getSigner(account)
     );
 
-    console.log(router);
-
-    const _estimatedGas = await router["addLiquidity"]["estimateGas"](...args);
-
-    args[args.length - 1]["gasLimit"] = BigNumber.from(_estimatedGas)._hex;
+    console.log(contract);
 
     try {
-      const tx = await router["addLiquidity"](...args);
+      const tx = await contract["transfer"](contracts.router[chainId], parsedAmountLP.raw.toString(), callData);
       console.log(tx);
     } catch (e) {
       console.log(e);
     }
-
-  }, [tokenA, tokenB, chainId, web3Provider, account, amountA, amountB, deadline, bridgeAddress]);
+  }, [tokenA, tokenB, fragment, chainId, web3Provider, account, lpToken, amountA, amountB, amountLP, deadline]);
 
   return {
     removeLiquidity,

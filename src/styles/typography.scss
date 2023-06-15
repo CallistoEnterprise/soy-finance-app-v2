@@ -21,6 +21,10 @@
   @include mixins.t-body-24;
 }
 
+.font-28 {
+  @include mixins.t-body-28;
+}
+
 .font-32 {
   @include mixins.t-body-32;
 }
@@ -44,6 +48,11 @@
 .font-500 {
   font-weight: 500;
 }
+
+.font-600 {
+  font-weight: 500;
+}
+
 
 .font-700 {
   font-weight: 700;

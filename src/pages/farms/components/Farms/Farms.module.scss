@@ -1,4 +1,5 @@
 @use "src/styles/colors.module";
+@use "src/styles/mixins";
 
 .farmsContainer {
   display: flex;
@@ -7,10 +8,68 @@
 }
 
 .farm {
-  border: 1px solid colors.$border-primary;
+  //border: 1px solid colors.$border-primary;
   height: 60px;
-  border-radius: 8px;
   padding: 0 20px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 255fr 209fr 195fr 228fr 235fr 174fr 20fr;
   align-items: center;
+  gap: 30px;
+}
+
+.farmWrapper {
+  border-radius: 8px;
+  border: 1px solid colors.$border-primary;
+}
+
+.label {
+  height: 34px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 4px;
+  //background-color: withOpacity(#ccc);
+
+  &.supreme {
+    color: colors.$palette-green;
+    background-color: mixins.withOpacity(colors.$palette-green__rgb);
+  }
+
+  &.select {
+    color: colors.$palette-blue;
+    background-color: mixins.withOpacity(colors.$palette-blue__rgb);
+  }
+
+  &.standard {
+    color: colors.$palette-orange;
+    background-color: mixins.withOpacity(colors.$palette-orange__rgb);
+  }
+}
+
+.collapsed {
+  padding: 0 20px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.links,
+.earned,
+.stake {
+  background: colors.$background-secondary;
+  border-radius: 8px;
+  min-height: 110px;
+  padding: 14px 20px;
+}
+
+.linksContainer {
+  display: flex;
+  justify-content: space-between;
+
+  a {
+    color: colors.$palette-green;
+    @include mixins.t-body-16;
+  }
 }

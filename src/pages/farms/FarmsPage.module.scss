@@ -1,0 +1,65 @@
+@use "src/styles/colors.module";
+@use "src/styles/mixins";
+
+.farms {
+  display: grid;
+  gap: 10px;
+}
+
+.farm {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.tab {
+  height: 38px;
+  border-radius: 6px;
+  min-width: 100px;
+
+  &:not(.activeTab) {
+    &:hover {
+      background-color: mixins.withOpacity(colors.$palette-green__rgb);
+    }
+  }
+
+  &.activeTab {
+    background-color: colors.$palette-green;
+    color: colors.$palette-white;
+  }
+}
+
+.farmsHeader {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.leftPart {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.staked {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  @include mixins.t-body-14;
+}
+
+.tabs {
+  display: flex;
+  border: 1px solid colors.$border-primary;
+  padding: 1px;
+  align-items: center;
+  gap: 2px;
+  border-radius: 8px;
+}
+
+.activeSort {
+  background: colors.$palette-green;
+}

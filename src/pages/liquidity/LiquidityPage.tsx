@@ -4,15 +4,16 @@ import Layout from "../../shared/layouts/Layout";
 import Liquidity from "./components/Liquidity";
 import clsx from "clsx";
 import TradeHistory from "../swap/components/TradeHistory";
-import TradingChart from "../swap/components/TradingChart";
+import LiquidityChart from "./components/LiquidityChart";
+import LiquidityHistory from "./components/LiquidityHistory";
 
 export default function LiquidityPage() {
   return <Layout>
     <main className="container">
       <div className={clsx(styles.contentWrapper, "mb-20")}>
         <div className={styles.column}>
-          <div className="desktop"><TradingChart /></div>
-          <div className="desktop"><TradeHistory /></div>
+          <div className="desktop"><LiquidityChart /></div>
+          <div className="desktop"><LiquidityHistory /></div>
         </div>
         <div className={styles.column}>
           <Liquidity />

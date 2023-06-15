@@ -14,9 +14,7 @@ import {
   PointElement,
   ScriptableContext, TimeSeriesScale,
   Title,
-  Tooltip
-} from "chart.js";
-import {
+  Tooltip,
   Chart as ChartJS,
   CategoryScale
 } from "chart.js";

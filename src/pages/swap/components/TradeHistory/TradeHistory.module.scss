@@ -1,4 +1,5 @@
 @use "src/styles/colors.module";
+@use "src/styles/mixins";
 
 .tradeHistoryHeader {
   display: flex;
@@ -8,7 +9,7 @@
 
 .tableHeader {
   display: grid;
-  grid-template-columns: 180fr 100fr 60fr 140fr 66fr 160fr 141fr;
+  grid-template-columns: 194fr 94fr 147fr 185fr 137fr 65fr;
   padding: 20px;
   background-color: colors.$background-secondary;
   border-radius: 10px;
@@ -18,7 +19,7 @@
 
 .tableRow {
   display: grid;
-  grid-template-columns: 180fr 100fr 60fr 140fr 66fr 160fr 141fr;
+  grid-template-columns: 194fr 94fr 147fr 185fr 137fr 65fr;
   padding: 20px;
   color: colors.$text-primary;
 }
@@ -39,4 +40,39 @@
 .buttonWrapper {
   display: flex;
   justify-content: center;
+}
+
+.externalLink {
+  color: colors.$palette-green;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @include mixins.t-body-16;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.tabs {
+  display: inline-flex;
+  border: 1px solid colors.$border-primary;
+  gap: 2px;
+  padding: 1px;
+  border-radius: 8px;
+  margin-top: 22px;
+}
+
+.tab {
+  height: 36px;
+  padding: 0 16px;
+  color: colors.$text-primary;
+  border-radius: 6px;
+  min-width: 105px;
+
+  &.activeTab {
+    background: colors.$palette-green;
+    color: colors.$palette-white;
+  }
 }
