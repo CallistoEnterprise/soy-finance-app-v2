@@ -1,5 +1,5 @@
 import {Interface} from "ethers";
-import {PAIR_ABI, ERC_20_ABI, ROUTER_ABI, ERC_223_ABI, MASTERCHEF_ABI, LOCAL_FARM_ABI} from "../abis";
+import {PAIR_ABI, ERC_20_ABI, ROUTER_ABI, ERC_223_ABI, MASTERCHEF_ABI, LOCAL_FARM_ABI} from "../constants/abis";
 
 export const ERC_20_INTERFACE = new Interface(ERC_20_ABI);
 export const PAIR_INTERFACE = new Interface(PAIR_ABI);

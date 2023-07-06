@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./NoPoolYet.module.scss";
-import BigIconWrapper from "../../../../components/atoms/BigIconWrapper";
+import EmptyStateIcon from "../../../../components/atoms/EmptyStateIcon";
 import Text from "../../../../components/atoms/Text";
 import Button from "../../../../components/atoms/Button";
 import {Property} from "csstype";
@@ -13,7 +13,7 @@ interface Props {
 
 export default function NoPoolYet({height = 578, onClick}: Props) {
   return <div style={height && {height}} className={styles.noPool}>
-    <BigIconWrapper iconName="liquidity" />
+    <EmptyStateIcon iconName="liquidity" />
     <div className={styles.textWrapper}>
       <Text align="center" weight={700} variant={24}>
         No liquidity yet

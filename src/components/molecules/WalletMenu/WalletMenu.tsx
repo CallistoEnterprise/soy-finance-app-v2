@@ -44,7 +44,7 @@ export default function WalletMenu({expandDirection = "bottom"}) {
         });
       }
     },
-    [walletRef, isWalletMenuOpened]
+    [walletRef, expandDirection]
   );
 
   return <>

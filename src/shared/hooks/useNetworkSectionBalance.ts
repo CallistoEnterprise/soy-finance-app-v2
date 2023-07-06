@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {ethers, formatEther, formatUnits, JsonRpcProvider, Provider} from "ethers";
 import { useEvent, useStore } from "effector-react";
 import { pushBalance } from "../models";
-import WETH_ABI from "../abis/interfaces/weth.json";
+import WETH_ABI from "../constants/abis/interfaces/weth.json";
 import {isNativeToken} from "../utils";
 import {useWeb3} from "../../processes/web3/hooks/useWeb3";
 import {BigNumber} from "@ethersproject/bignumber";

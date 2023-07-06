@@ -1,93 +1,113 @@
-import React, {useCallback, useMemo, useState} from "react";
+import React, {useState} from "react";
 import styles from "./RemoveLiquidity.module.scss";
 import PageCardHeading from "../../../../components/molecules/PageCardHeading";
-import PageCard from "../../../../components/atoms/PageCard";
 import Button from "../../../../components/atoms/Button";
-import {useRouterContract} from "../../../../shared/web3/hooks/useRouterContract";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
-import useTransactionDeadline from "../../../swap/hooks/useTransactionDeadline";
-import {WrappedTokenInfo} from "../../../swap/hooks/useTrade";
-import {ChainId} from "@callisto-enterprise/soy-sdk";
 import TokenSelector from "../../../../components/organisms/TokenSelector";
 import IconButton from "../../../../components/atoms/IconButton";
 import Svg from "../../../../components/atoms/Svg/Svg";
-import {useEvent, useStore} from "effector-react";
+import {useStore} from "effector-react";
 import {
-  $liquidityAmountA,
-  $liquidityAmountB,
-  $liquidityInputTokens,
   $removeLiquidityAmountA,
   $removeLiquidityAmountB, $removeLiquidityAmountLP, $removeLiquidityInputTokens,
-  setRemoveLiquidityAmountA,
-  setRemoveLiquidityAmountB,
-  setRemoveLiquidityTokenA,
-  setRemoveLiquidityTokenB
 } from "../../../../shared/web3/models/init";
-import {useLiquidity} from "../../models/hooks/useLiquidity";
 import Text from "../../../../components/atoms/Text";
-import ButtonStepper from "../../../../components/molecules/ButtonStepper";
 import {useRemoveLiquidity} from "../../models/hooks/useRemoveLiquidity";
+import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
+import ConnectWalletButton from "../../../../processes/web3/ui/ConnectWalletButton";
+import clsx from "clsx";
+import {useBalanceOf} from "../../../../shared/web3/hooks/useBalanceOf";
 
-const methods = ['removeLiquidityCLOWithPermit', 'removeLiquidityCLOWithPermitSupportingFeeOnTransferTokens', "removeLiquidityWithPermit", 'removeLiquidity', 'removeLiquidityCLO', 'removeLiquidityCLOSupportingFeeOnTransferTokens'];
+function ActionButtons({isEnough}) {
+  const {isActive} = useWeb3();
 
-const tA = {
-  "decimals": 18,
-    "symbol": "ccBTT",
-    "name": "Wrapped BTT",
-    "chainId": 820,
-    "address": "0xCc99C6635Fae4DAcF967a3fc2913ab9fa2b349C3",
-    "tokenInfo": {
-    "name": "Wrapped BTT",
-      "symbol": "ccBTT",
-      "address": "0xCc99C6635Fae4DAcF967a3fc2913ab9fa2b349C3",
-      "chainId": 820,
-      "decimals": 18,
-      "logoURI": "images/coins/0xCc99C6635Fae4DAcF967a3fc2913ab9fa2b349C3.png"
-  },
-  "tags": []
-};
+  const {tokenA, tokenB, lpToken} = useStore($removeLiquidityInputTokens);
 
-const tB = {
-  "decimals": 18,
-  "symbol": "ccSHIB",
-  "name": "Wrapped SHIB",
-  "chainId": 820,
-  "address": "0xccA4F2ED7Fc093461c13f7F5d79870625329549A",
-  "tokenInfo": {
-  "name": "Wrapped SHIB",
-    "symbol": "ccSHIB",
-    "address": "0xccA4F2ED7Fc093461c13f7F5d79870625329549A",
-    "chainId": 820,
-    "decimals": 18,
-    "logoURI": "images/coins/0xccA4F2ED7Fc093461c13f7F5d79870625329549A.png"
-},
-  "tags": []
-};
+  const amountA = useStore($removeLiquidityAmountA);
+  const amountB = useStore($removeLiquidityAmountB);
+
+  const {
+    removeLiquidity,
+    onAttemptToApprove,
+    readyToRemove,
+    approving,
+    removing,
+  } = useRemoveLiquidity();
+
+  const {showMessage} = useSnackbar();
+
+  if(!isActive) {
+    return <ConnectWalletButton fullWidth/>;
+  }
+
+  if(!tokenA || !tokenB) {
+    return <Button fullWidth disabled>Select tokens to proceed</Button>
+  }
+
+  if(!amountA || !amountB) {
+    return <Button fullWidth disabled>Enter an amount to proceed</Button>
+  }
+
+  if(!isEnough) {
+    return <Button fullWidth disabled>Insufficient amount</Button>
+  }
+
+  return <div className={styles.actionButtons}>
+      <div className={styles.buttonRow}>
+        <div className={clsx(styles.step, readyToRemove && styles.passed)}>{readyToRemove ?
+          <Svg iconName="check"/> : 1}</div>
+        <Button loading={approving} fullWidth passed={readyToRemove} onClick={async () => {
+          try {
+            await onAttemptToApprove();
+          } catch (e) {
+            showMessage(e.message, "error");
+          } finally {
+          }
+        }}>
+          Approve
+        </Button>
+      </div>
+
+      <div className={styles.buttonRow}>
+        <div className={clsx(styles.step, !readyToRemove && styles.disabled)}>{2}</div>
+        <Button loading={removing} fullWidth disabled={!readyToRemove} onClick={async () => {
+          try {
+            await removeLiquidity();
+          } catch (e) {
+            showMessage(e.message, "error");
+          }
+        }}>Remove liquidity</Button>
+      </div>
+    </div>
+}
 
 export default function RemoveLiquidity() {
+
   const amountA = useStore($removeLiquidityAmountA);
   const amountB = useStore($removeLiquidityAmountB);
   const amountLP = useStore($removeLiquidityAmountLP);
 
   const {tokenA, tokenB, lpToken} = useStore($removeLiquidityInputTokens);
 
-  const [removeLiquidityStep, setRemoveLiquidityStep] = useState(0);
+  const balance = useBalanceOf(lpToken);
 
   const {
-    removeLiquidity,
     handleTokenAChange,
     handleTokenBChange,
     handleAmountAChange,
     handleAmountBChange,
-    handleLiquidityAmountLPChange
+    handleLiquidityAmountLPChange,
+    pair
   } = useRemoveLiquidity();
 
   const [isFromTokenPickDialogOpened, setFromTokenPickDialogOpened] = useState(false);
   const [isToTokenPickDialogOpened, setToTokenPickDialogOpened] = useState(false);
 
+  console.log(+amountLP, +balance?.toSignificant(6));
+
   return <div>
-    <PageCardHeading title="Remove liquidity" />
-    <div style={{marginBottom: 20}} />
+    <PageCardHeading title="Remove liquidity"/>
+    <div style={{marginBottom: 20}}/>
     <TokenSelector
       setDialogOpened={setFromTokenPickDialogOpened}
       isDialogOpened={isFromTokenPickDialogOpened}
@@ -101,6 +121,7 @@ export default function RemoveLiquidity() {
       handleTokenChange={(token) => {
         // handleTokenAChange(token);
       }}
+      balance={balance}
     />
 
     <div className={styles.changeOrder}>
@@ -148,30 +169,29 @@ export default function RemoveLiquidity() {
         <Text>Prices</Text>
       </div>
       <div className={styles.blockRows}>
-        <div className={styles.blockRow}>
-          <Text color="secondary">1 USDT</Text>
-          <Text color="secondary">131.2 ETH</Text>
-        </div>
-        <div className={styles.blockRow}>
-          <Text color="secondary">1 ETH</Text>
-          <Text color="secondary">1.92 USDT</Text>
-        </div>
+        {tokenA && tokenB && pair ? <>
+          <div className={styles.blockRow}>
+            <Text color="secondary">1 {tokenA.symbol}</Text>
+            <Text color="secondary">{pair.priceOf(tokenA).toSignificant(6)} {tokenB.symbol}</Text>
+          </div>
+          <div className={styles.blockRow}>
+            <Text color="secondary">1 {tokenB.symbol}</Text>
+            <Text color="secondary">{pair.priceOf(tokenB).toSignificant(6)} {tokenA.symbol}</Text>
+          </div>
+        </> : <>
+          <div className={styles.blockRow}>
+            <Text color="secondary">—</Text>
+            <Text color="secondary">—</Text>
+          </div>
+          <div className={styles.blockRow}>
+            <Text color="secondary">—</Text>
+            <Text color="secondary">—</Text>
+          </div>
+        </>}
       </div>
     </div>
-
-    <div style={{marginBottom: 40}} />
-    <ButtonStepper buttons={[{
-      label: "Approve",
-      onClick: () => {
-        setRemoveLiquidityStep(1);
-      }
-    },
-      {
-        label: "Remove",
-        onClick: () => {
-          removeLiquidity();
-        }
-      }
-    ]} step={removeLiquidityStep} />
+    <div className={styles.actionButtonsWrapper}>
+      <ActionButtons isEnough={+balance?.toSignificant(6) >= +amountLP} />
+    </div>
   </div>;
 }

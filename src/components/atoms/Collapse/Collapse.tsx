@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./Collapse.module.scss";
 import clsx from "clsx";
 
@@ -11,7 +11,7 @@ export default function Collapse({ children, open }) {
 
   const [overflow, setOverflow] = useState(false);
 
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
   const isChildrenChangeRef = useRef<boolean>(false);
 
   useEffect(
@@ -72,8 +72,6 @@ export default function Collapse({ children, open }) {
   return <div className={
     clsx(
       styles.collapse,
-      !open && styles.hidden,
-      open && styles.open,
       overflow && styles.overflow,
       Boolean(isChildrenChangeRef.current) && styles.noTransition
     )} style={{ height }}>

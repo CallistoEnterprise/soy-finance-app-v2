@@ -1,5 +1,5 @@
-@use "src/styles/colors.module";
-@use "src/styles/mixins";
+@use "../../shared/styles/colors.module";
+@use "../../shared/styles/mixins";
 
 .farms {
   display: grid;
@@ -62,4 +62,9 @@
 
 .activeSort {
   background: colors.$palette-green;
+}
+
+.noStaked {
+  display: grid;
+  gap: 4px;
 }

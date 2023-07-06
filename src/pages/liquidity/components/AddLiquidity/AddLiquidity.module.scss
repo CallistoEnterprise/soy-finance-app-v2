@@ -1,5 +1,5 @@
-@use "src/styles/colors.module";
-@use "src/styles/mixins";
+@use "../../../../shared/styles/colors.module";
+@use "../../../../shared/styles/mixins";
 
 .swapHeader {
   display: flex;

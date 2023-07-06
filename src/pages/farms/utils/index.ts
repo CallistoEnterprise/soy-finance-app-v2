@@ -139,7 +139,7 @@ export const fetchFarmsPrices = (farms) => {
   const soyPrice = soyBusdtFarm ? soyBusdtFarm.tokenPriceVsQuote : FixedZero;
   const cloPrice = soyCloFarm ? soyPrice.mul(soyCloFarm.tokenPriceVsQuote) : FixedZero;
 
-  const nativePriceBusdt = nativeBusdtFarm.tokenPriceVsQuote ? FixedNumber.fromValue(1).div(nativeBusdtFarm.tokenPriceVsQuote) : FixedZero
+  const nativePriceBusdt = nativeBusdtFarm?.tokenPriceVsQuote ? FixedNumber.fromValue(1).div(nativeBusdtFarm.tokenPriceVsQuote) : FixedZero
 
   const farmsWithPrices = farms.map((farm) => {
     const quoteTokenFarm = getFarmFromTokenSymbol(farms, farm.quoteToken.symbol)

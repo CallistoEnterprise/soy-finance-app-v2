@@ -1,7 +1,7 @@
 import {useCallback, useMemo} from "react";
 import {useSnackbar} from "../../../shared/providers/SnackbarProvider";
 import {BrowserProvider, Contract, ErrorCode, EthersError, parseUnits} from "ethers";
-import routerABI from "../../../shared/abis/interfaces/router.json";
+import routerABI from "../../../shared/constants/abis/interfaces/router.json";
 import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
 import {useEvent, useStore} from "effector-react";
 import {$swapDeadline, $swapInputData, $swapSlippage, $trade} from "../models/stores";
@@ -75,7 +75,7 @@ async function logWhenAwaited(tx, provider: BrowserProvider) {
     // console.log(receipt);
 
     const afterEnd = await provider.getTransactionReceipt(tx.hash);
-    console.log(afterEnd);
+    // console.log(afterEnd);
   } catch (e) {
 
   }

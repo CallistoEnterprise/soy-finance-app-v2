@@ -1,3 +1,5 @@
+import {WrappedTokenInfo} from "../hooks/useTrade";
+
 export type SwapToken = {
   token_address: string,
   original_name: string,
@@ -11,8 +13,8 @@ export enum SwapVariant {
 }
 
 export type SwapInputData = {
-  tokenFrom: SwapToken | null,
-  tokenTo: SwapToken | null,
+  tokenFrom: WrappedTokenInfo | null,
+  tokenTo: WrappedTokenInfo | null,
   amountIn: string,
   amountOut: string,
   swapType: SwapVariant

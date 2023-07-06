@@ -11,9 +11,8 @@ import {
   WETH
 } from "@callisto-enterprise/soy-sdk";
 import {Contract, FunctionFragment, Interface, parseUnits} from "ethers";
-import MULTICALL_ABI from "../../../shared/abis/interfaces/multicall.json";
+import MULTICALL_ABI from "../../../shared/constants/abis/interfaces/multicall.json";
 import {isNativeToken} from "../../../shared/utils";
-import IUniswapV2PairABI from "../../../shared/abis/interfaces/IUniswapV2Pair.json";
 import {useEvent, useStore} from "effector-react";
 import {$swapInputData, $trade} from "../models/stores";
 import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
@@ -261,7 +260,7 @@ const LOADING_CALL_STATE: CallState = { valid: true,
 function toCallState(
   callResult: CallResult | undefined,
   contractInterface: Interface | undefined,
-  fragment: FunctionFragment | undefined,
+  fragment: FunctionFragment | null,
   latestBlockNumber: number | undefined,
 ): CallState {
   if (!callResult) return INVALID_CALL_STATE;
@@ -327,7 +326,7 @@ export async function getPairs(tokens, chainId, web3Provider, blockNumber) {
     ) : undefined;
   });
 
-  console.log(swapPairAddresses);
+  // console.log(swapPairAddresses);
 
   const callData: string | undefined = fragment
     ? PAIR_INTERFACE.encodeFunctionData(fragment)
@@ -550,8 +549,7 @@ export function useTrade() {
       return null;
     }
 
-      const currencyIn = toCurrency(token, chainId);
-      const currencyOut = toCurrency(tokenTo, chainId);
+      const currencyOut = tokenTo;
 
 
       const typedValueParsed = parseUnits(
@@ -559,14 +557,14 @@ export function useTrade() {
         token.decimal_token
       ).toString();
 
-      const currencyAmountIn = toTokenAmount(currencyIn, typedValueParsed);
+      const currencyAmountIn = toTokenAmount(token, typedValueParsed);
 
-      const allowedPairs = await getAllowedPairs(currencyIn, currencyOut, web3Provider, blockNumber, chainId);
+      const allowedPairs = await getAllowedPairs(token, currencyOut, web3Provider, blockNumber, chainId);
 
       const trade1 = Trade.bestTradeExactIn(
         allowedPairs,
         currencyAmountIn,
-        currencyOut,
+        tokenTo,
         {
           maxHops: 3, maxNumResults: 1
         }
@@ -582,7 +580,7 @@ export function useTrade() {
     setTradeFn(null);
     setRouteFn(null);
 
-  }, [swapInputData.tokenTo, web3Provider, blockNumber]);
+  }, [swapInputData.tokenTo, web3Provider, blockNumber, chainId, setTradeFn, setRouteFn, setAmountOutFn]);
 
   const recalculateTradeOut = useCallback(async (amount, token, tokenB = null) => {
     const tokenFrom = tokenB || swapInputData.tokenFrom;
@@ -597,8 +595,8 @@ export function useTrade() {
       return null;
     }
 
-    const currencyIn = toCurrency(tokenFrom, chainId);
-    const currencyOut = toCurrency(token, chainId);
+    const currencyIn = tokenFrom;
+    const currencyOut = token;
 
     const typedValueParsed = parseUnits(
       amount,

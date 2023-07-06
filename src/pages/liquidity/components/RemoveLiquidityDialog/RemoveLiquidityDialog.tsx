@@ -6,7 +6,7 @@ import {closeRemoveLiquidityDialog} from "../../models";
 import {$isRemoveLiquidityDialogOpened} from "../../models/stores";
 import DialogHeader from "../../../../components/molecules/DialogHeader";
 import Text from "../../../../components/atoms/Text";
-import Switch from "../../../../components/atoms/Switch";
+import Switch from "../../../../components/atoms/primitive/Switch";
 import PercentageButtons from "../../../../components/molecules/PercentageButtons";
 import clsx from "clsx";
 import Button from "../../../../components/atoms/Button";

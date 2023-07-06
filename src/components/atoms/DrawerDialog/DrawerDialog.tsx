@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "./DrawerDialog.module.scss";
 import useMediaQuery from "../../../shared/hooks/useMediaQuery";
 import Drawer from "../Drawer/Drawer";
 import Dialog from "../../molecules/Dialog";

@@ -12,7 +12,6 @@ export default function useTransactionDeadline(userDeadline): number | undefined
   useEffect(
     () => {
       if(!web3Provider || !currentBlock) {
-        console.log("No webprovider or current block")
         return;
       }
 

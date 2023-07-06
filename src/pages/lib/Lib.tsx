@@ -3,7 +3,7 @@ import Button from "../../components/atoms/Button";
 import Preloader from "../../components/atoms/Preloader/Preloader";
 import {useSnackbar} from "../../shared/providers/SnackbarProvider";
 import SwitchTheme from "../../components/molecules/SwitchTheme";
-import {ChangeEvent, useState} from "react";
+import {useState} from "react";
 import Switch from "../../components/atoms/Switch";
 import Checkbox from "../../components/atoms/Checkbox";
 import PickButton from "../../components/atoms/PickButton";
@@ -11,6 +11,29 @@ import IconButton from "../../components/atoms/IconButton";
 import Svg from "../../components/atoms/Svg/Svg";
 import Tabs from "../../components/molecules/Tabs";
 import Tab from "../../components/atoms/Tab";
+import Select from "../../components/molecules/Select";
+import Divider from "../../components/atoms/Divider";
+import ExternalLink from "../../components/atoms/ExternalLink";
+import EmptyStateIcon from "../../components/atoms/EmptyStateIcon";
+import Flex from "../../components/layout/Flex";
+
+const selectOptions: {
+  id: string | number,
+  value: string | number
+}[] = [
+  {
+    id: 1,
+    value: "Value 1"
+  },
+  {
+    id: 2,
+    value: "Value 2"
+  },
+  {
+    id: 3,
+    value: "Value 3"
+  }
+]
 
 export default function Lib() {
   const {showMessage} = useSnackbar();
@@ -22,38 +45,65 @@ export default function Lib() {
   const [activeCardPickButton, setActiveCardPickButton] = useState("0");
   const [activePickersSet, setActivePickersSet] = useState<string[]>([]);
 
-  const [status, setStatus] = useState({
-    input: "0",
-    output: "0"
-  });
-
-  const [activeField, setActiveField] = useState("input");
-
-
-
+  const [option, setOption] = useState(1);
 
   return <>
     <header>
       <SwitchTheme />
     </header>
+    <div className={styles.newContent}>
+      <h2 className={styles.coreComponentTitle}>Atoms</h2>
 
-    <div>
-      <input type="text" value={status.input} onChange={(e: ChangeEvent<HTMLInputElement>) => {
-        setStatus({output: (+e.target.value * 2).toString(), input: e.target.value});
-        setActiveField("input");
-      }}/>
-      <input type="text" value={status.output} onChange={
-        (e: ChangeEvent<HTMLInputElement>) => {
-          setStatus({input: (+e.target.value / 2).toString(), output: e.target.value});
-          setActiveField("output");
-        }}/>
+      <div className={styles.newContentWrapper}>
+        <div>
+          <h3 className={styles.newContentComponentName}>Divider</h3>
+          <div className={styles.box}>
+            <Divider />
+          </div>
+        </div>
+
+        <div>
+          <h3 className={styles.newContentComponentName}>External link</h3>
+          <div className={styles.box}>
+            <ExternalLink href={"https://google.com"} text={"Link to google"} />
+          </div>
+        </div>
+
+        <div>
+          <h3 className={styles.newContentComponentName}>Empty state icon</h3>
+          <div className={styles.box}>
+            <EmptyStateIcon iconName="search" />
+          </div>
+        </div>
+
+        <div>
+          <h3 className={styles.newContentComponentName}>Icon buttons</h3>
+          <div className={styles.box}>
+            <Flex gap={10}>
+              <IconButton variant="menu">
+                <Svg iconName="add-token" />
+              </IconButton>
+              <IconButton variant="social">
+                <Svg iconName="add-token" />
+              </IconButton>
+
+              <IconButton variant="default">
+                <Svg iconName="add-token" />
+              </IconButton>
+              <IconButton variant="system">
+                <Svg iconName="add-token" />
+              </IconButton>
+              <IconButton variant="action">
+                <Svg iconName="add-token" />
+              </IconButton>
+
+            </Flex>
+          </div>
+        </div>
+      </div>
+
+
     </div>
-
-    <div>
-      Values: {JSON.stringify(status, null, 2)}
-      {activeField}
-    </div>
-
     <div className={styles.container}>
       <div className={styles.componentColumn}>
         <div className={styles.componentBox}>
@@ -98,6 +148,13 @@ export default function Lib() {
           <Button variant="popup">
             Click me
           </Button>
+        </div>
+        <div className={styles.componentBox}>
+          <h4 className={styles.title}>Selects</h4>
+          <h5 className={styles.componentLabel}>Text select</h5>
+          <Select options={selectOptions} selectedOption={option} defaultOption={null} setSelectedOption={(id) => {
+            setOption(id);
+          }} />
         </div>
       </div>
       <div className={styles.componentColumn}>
@@ -182,13 +239,13 @@ export default function Lib() {
           <h4 className={styles.title}>Icon buttons</h4>
           <div className={styles.snackbarsButtons}>
             <IconButton variant="default">
-              <Svg iconName="filters" />
+              <Svg iconName="wallet" />
             </IconButton>
             <IconButton variant="menu">
               <Svg iconName="wallet" />
             </IconButton>
             <IconButton variant="action">
-              <Svg iconName="plus" />
+              <Svg iconName="wallet" />
             </IconButton>
             <IconButton variant="social">
               <Svg iconName="wallet" />

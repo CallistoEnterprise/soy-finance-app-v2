@@ -1,6 +1,6 @@
-@use "src/styles/colors.module";
-@use "src/styles/mixins";
-@use "src/styles/media";
+@use "../../../../shared/styles/colors.module";
+@use "../../../../shared/styles/mixins";
+@use "../../../../shared/styles/media";
 
 .swapHeader {
   display: flex;
@@ -21,6 +21,7 @@
 .changeOrder {
   display: flex;
   justify-content: center;
+  margin: 20px 0;
 }
 
 .infoRow {

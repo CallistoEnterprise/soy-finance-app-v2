@@ -20,6 +20,7 @@ export default function Document() {
         <div id="dialog-root" />
         <div id="drawer-root" />
         <div id="dropdown-root" />
+        <div id="select-root" />
         <NextScript />
       </body>
     </Html>

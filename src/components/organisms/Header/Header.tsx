@@ -2,17 +2,16 @@ import React, {useState} from "react";
 import styles from "./Header.module.scss";
 import Image from "next/image";
 import HeaderNav from "../../molecules/HeaderNav";
-import SwitchLanguage from "../../molecules/SwitchLanguage";
 import { useStore } from "effector-react";
 import {$isActive} from "../../../processes/web3/models/stores";
 import dynamic from "next/dynamic";
 import ChangeWalletModal from "../../../processes/web3/ui/ChangeWalletModal";
 import ConnectWalletButton from "../../../processes/web3/ui/ConnectWalletButton";
-import SwitchTheme from "../../molecules/SwitchTheme";
 import {useColorMode} from "../../../shared/providers/ThemeProvider";
 import Drawer from "../../atoms/Drawer/Drawer";
 import IconButton from "../../atoms/IconButton";
 import Svg from "../../atoms/Svg/Svg";
+import SettingsMenu from "../../molecules/SettingsMenu";
 
 const DynamicHeaderNetwork = dynamic(() => import("../HeaderNetwork"), {
   ssr: false,
@@ -39,8 +38,7 @@ export default function Header() {
         <HeaderNav />
       </div>
       <div className={styles.headerSettings}>
-        <SwitchTheme />
-        <SwitchLanguage />
+        <SettingsMenu />
         {isActive && <DynamicHeaderNetwork />}
         {!isActive ? <>
           <ConnectWalletButton />

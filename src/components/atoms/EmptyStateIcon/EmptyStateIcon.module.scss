@@ -1,6 +1,6 @@
-@use "src/styles/colors.module";
+@use "../../../shared/styles/colors.module";
 
-.bigIconWrapper {
+.emptyStateIcon {
   display: flex;
   align-items: center;
   justify-content: center;

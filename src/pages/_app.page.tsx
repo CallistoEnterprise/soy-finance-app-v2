@@ -1,4 +1,4 @@
-import '../styles/globals.scss';
+import '../shared/styles/globals.scss';
 import type { AppProps } from 'next/app';
 import {useScope} from "../shared/models/useScope";
 import "/src/shared/models/init";

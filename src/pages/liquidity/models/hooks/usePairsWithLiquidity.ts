@@ -1,6 +1,6 @@
 import {useEvent, useStore} from "effector-react";
 import {$pairsWithLiquidity} from "../stores";
-import {useEffect, useMemo} from "react";
+import {useEffect, useMemo, useRef} from "react";
 import {WrappedTokenInfo} from "../../../swap/hooks/useTrade";
 import {Pair, Token} from "@callisto-enterprise/soy-sdk";
 import {isAddress} from "ethers";
@@ -12,6 +12,7 @@ import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 export function usePairsWithLiquidity(): {pairsWithLiquidity: Pair[], loading: boolean} {
   const {pairs, loading} = useStore($pairsWithLiquidity);
   const trackedTokenPairs = useTrackedTokenPairs();
+
   const {chainId} = useWeb3();
 
   console.log("TRACKED PAIRS");
@@ -53,18 +54,32 @@ export function usePairsWithLiquidity(): {pairsWithLiquidity: Pair[], loading: b
 
   const v2Pairs = usePairs(mapped);
 
+  const ps = useMemo(() => {
+    if(!v2Pairs) {
+      return [];
+    }
+
+    return v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair));
+  }, [v2Pairs]);
+
+  const pairsRef = useRef(pairs);
+
+  useEffect(() => {
+    pairsRef.current = pairs;
+  }, [pairs]);
+
   useEffect(() => {
     if(!chainId) {
       return;
     }
 
-    if(!v2Pairs) {
-      return;
+    if (ps.length && !pairsRef.current.length) {
+      setPairsWithLiquidityFn(ps);
     }
 
-    const pairs = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair));
-
-    setPairsWithLiquidityFn(pairs);
+    if (!ps.length && !pairsRef.current.length) {
+      setPairsWithLiquidityFn([]);
+    }
 
     const t = setTimeout(() => {
       setPairsWithLiquidityLoadingFn(false);
@@ -73,7 +88,7 @@ export function usePairsWithLiquidity(): {pairsWithLiquidity: Pair[], loading: b
     return () => {
       clearTimeout(t);
     }
-  }, [chainId, setPairsWithLiquidityFn, setPairsWithLiquidityLoadingFn, trackedTokenPairs, v2Pairs])
+  }, [chainId, ps, setPairsWithLiquidityFn, setPairsWithLiquidityLoadingFn, trackedTokenPairs, v2Pairs])
 
   return {
     pairsWithLiquidity: pairs,

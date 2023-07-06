@@ -1,10 +1,10 @@
 import React, {ButtonHTMLAttributes, useEffect, useRef, useState} from "react";
 import clsx from "clsx";
 import styles from "./Button.module.scss";
-import Preloader from "../Preloader/Preloader";
-import Svg from "../Svg/Svg";
-import {IconName} from "../Svg/svgIconsMap";
 import {useDebounce} from "../../../shared/hooks/useDebounce";
+import {IconName} from "../Svg/svgIconsMap";
+import Svg from "../Svg";
+import Preloader from "../Preloader/Preloader";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: any,
@@ -18,6 +18,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?:boolean,
   mode?: "default" | "error",
   active?: boolean,
+  passed?: boolean,
   disableRipple?: boolean
 }
 
@@ -38,6 +39,7 @@ export default function Button({
   mode = "default",
   active = false,
   disableRipple = false,
+  passed = false,
   ...props
 }: Props) {
   const ref = useRef<HTMLButtonElement>();
@@ -60,6 +62,7 @@ export default function Button({
       startIcon && styles.startIcon,
       fullWidth && styles.fullWidth,
       active && styles.active,
+      passed && styles.passed,
       className
     )
   } onClick={e => {

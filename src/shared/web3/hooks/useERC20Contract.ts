@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Contract } from "ethers";
 import { useWeb3 } from "../../../processes/web3/hooks/useWeb3";
 import { IIFE } from "../functions/iife";
-import { ERC_20_ABI } from "../../abis";
+import { ERC_20_ABI } from "../../constants/abis";
 
 export function useERC20Contract({address}) {
   const { web3Provider, account } = useWeb3();

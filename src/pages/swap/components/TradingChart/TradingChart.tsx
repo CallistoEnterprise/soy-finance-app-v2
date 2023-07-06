@@ -33,7 +33,7 @@ import {
 import 'chartjs-adapter-date-fns';
 import Svg from "../../../../components/atoms/Svg/Svg";
 import {sub} from "../../../../shared/fetcher";
-import Preloader from "../../../../components/atoms/Preloader/Preloader";
+import Preloader from "../../../../components/atoms/Preloader";
 import Text from "../../../../components/atoms/Text";
 import {isNativeToken} from "../../../../shared/utils";
 import {WCLO_ADDRESS} from "../../hooks/useTrade";
@@ -371,10 +371,8 @@ export const options = (timeline): ChartOptions => ({
       display: false
     },
     tooltip: {
-      // Disable the on-canvas tooltip
       enabled: false,
       external: externalTooltipHandler,
-      // position: "nearest",
       mode: "index",
       intersect: false,
       yAlign: "bottom",
@@ -404,24 +402,13 @@ export const options = (timeline): ChartOptions => ({
         unit: timeline === "day" ? "hour" : 'day'
       },
       grid: {
-        // color: "transparent",
         tickColor: "black",
         drawTicks: true,
-
         display: false,
-        // display: false,
-        // drawBorder: false
-        // offset: true
       },
-      // type: "timeseries",
       ticks: {
-        // padding: 30,
-        // stepSize: 44440000
         maxTicksLimit: timeline === "year" ? 10 : 7,
         labelOffset: 10
-        // autoSkip: false,
-        // autoSkipPadding: 50,
-        // align: "inner"
       }
     },
     y: {
@@ -475,9 +462,7 @@ export const getData = (mode, data, labels): ChartData => ({
       pointBackgroundColor: "rgba(0, 0, 0, 0)",
       pointHoverBackgroundColor: color,
       pointHoverBorderColor: "#fff",
-      pointRadius: 4,
-      // cubicInterpolationMode: 'monotone'
-      // tension: 0.2
+      pointRadius: 4
     }
   ],
 });
@@ -492,8 +477,8 @@ export default function TradingChart() {
 
   const [currentGraph, setCurrentGraph] = useState<"first" | "second">("first");
 
-  const [firstToken, setFirstToken] = useState<SwapToken>({
-    "token_address": "0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65",
+  const [firstToken, setFirstToken] = useState<any>({
+    "address": "0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65",
     "original_name": "SOY",
     "decimal_token": 18,
     "imgUri": "https://app.soy.finance/images/coins/0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65.png"
@@ -512,34 +497,54 @@ export default function TradingChart() {
 
   const [loading, setIsLoading] = useState(true);
 
-  const [secondToken, setSecondToken] = useState<SwapToken>(null);
+  const [secondToken, setSecondToken] = useState<any>(null);
 
   useEffect(() => {
     if (swapInputData.tokenFrom) {
-      if(isNativeToken(swapInputData.tokenFrom.token_address)) {
-        return setFirstToken({...swapInputData.tokenFrom, token_address: WCLO_ADDRESS});
+      if(isNativeToken(swapInputData.tokenFrom.address)) {
+        return setFirstToken({
+          original_name: swapInputData.tokenFrom.name,
+          decimal_token: swapInputData.tokenFrom.decimals,
+          imgUri: swapInputData.tokenFrom.logoURI,
+          address: WCLO_ADDRESS
+        });
       }
 
-      setFirstToken(swapInputData.tokenFrom);
+      return setFirstToken({
+        original_name: swapInputData.tokenFrom.name,
+        decimal_token: swapInputData.tokenFrom.decimals,
+        imgUri: swapInputData.tokenFrom.logoURI,
+        address: swapInputData.tokenFrom.address
+      });
     }
   }, [swapInputData.tokenFrom]);
 
   useEffect(() => {
     if (swapInputData.tokenTo) {
-      if(isNativeToken(swapInputData.tokenTo.token_address)) {
-        return setSecondToken({...swapInputData.tokenTo, token_address: WCLO_ADDRESS});
+      if(isNativeToken(swapInputData.tokenTo.address)) {
+        return setSecondToken({
+          original_name: swapInputData.tokenTo.name,
+          decimal_token: swapInputData.tokenTo.decimals,
+          imgUri: swapInputData.tokenTo.logoURI,
+          address: WCLO_ADDRESS
+        });
       }
 
-      setSecondToken(swapInputData.tokenTo);
+      return setSecondToken({
+        original_name: swapInputData.tokenTo.name,
+        decimal_token: swapInputData.tokenTo.decimals,
+        imgUri: swapInputData.tokenTo.logoURI,
+        address: swapInputData.tokenTo.address
+      });
     }
   }, [swapInputData.tokenTo]);
 
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const price = await fetchTokenPriceData(currentGraph === "first" ? firstToken.token_address.toLowerCase() : secondToken.token_address.toLowerCase(), time.interval, time.startTimestamp);
+      const price = await fetchTokenPriceData(currentGraph === "first" ? firstToken.address.toLowerCase() : secondToken.address.toLowerCase(), time.interval, time.startTimestamp);
 
-      const candlePrice = await fetchTokenPriceData(currentGraph === "first" ? firstToken.token_address.toLowerCase() : secondToken.token_address.toLowerCase(), time.interval, time.startTimestamp);
+      const candlePrice = await fetchTokenPriceData(currentGraph === "first" ? firstToken.address.toLowerCase() : secondToken.address.toLowerCase(), time.interval, time.startTimestamp);
 
       const dataResult = [];
       const labelsResult = [];
@@ -588,7 +593,6 @@ export default function TradingChart() {
   const [priceChange, setPriceChange] = useState(0);
 
   return <div className="paper">
-
     <>
       <div className={styles.blockHeader}>
         <div className={styles.tokensInfo}>
@@ -616,16 +620,6 @@ export default function TradingChart() {
 
             </button>
           </div>
-          {/*<button onClick={() => {*/}
-          {/*  setView(view === "candlestick" ? "line" : "candlestick");*/}
-          {/*}}><Svg iconName="roadmap" /></button>*/}
-          {/*<Text variant={24} weight={700} color="primary">{firstToken.original_name}</Text>*/}
-          {/*<IconButton onClick={() => {*/}
-          {/*  setFirstToken(secondToken);*/}
-          {/*  setSecondToken(firstToken);*/}
-          {/*}}>*/}
-          {/*  <Svg iconName="swap"/>*/}
-          {/*</IconButton>*/}
         </div>
         <div className={styles.chartSettings}>
           <div className={styles.tabs}>

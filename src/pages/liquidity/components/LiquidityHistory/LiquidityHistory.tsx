@@ -8,6 +8,7 @@ import Divider from "../../../../components/atoms/Divider";
 import tokenListInCLO from "../../../../shared/constants/tokenLists/tokenlistInCLO.json";
 import Svg from "../../../../components/atoms/Svg/Svg";
 import clsx from "clsx";
+import ExternalLink from "../../../../components/atoms/ExternalLink";
 
 const itemsPerPage = 10;
 
@@ -38,7 +39,7 @@ export default function LiquidityHistory() {
     }
   }, [data]);
 
-  console.log(data);
+  // console.log(data);
 
   const addTransactions = useMemo(() => {
     if(!data) {
@@ -56,8 +57,8 @@ export default function LiquidityHistory() {
     return data.filter(i => i.type === 2);
   }, [data]);
 
-  console.log(addTransactions);
-  console.log(removeTransactions);
+  // console.log(addTransactions);
+  // console.log(removeTransactions);
 
   const getSymbol = useCallback((symbol, address) => {
     if (symbol !== "unknown") {
@@ -99,21 +100,19 @@ export default function LiquidityHistory() {
           return <React.Fragment key={index}>
             <div className={styles.tableRow}>
               <div>
-                <a target="_blank" className={styles.externalLink}
-                   href={`https://explorer.callisto.network/tx/${item.hash}/token-transfers`}>
-                  {getSymbol(item.token0Symbol, item.token0Address)} and {getSymbol(item.token1Symbol, item.token1Address)}
-                  <Svg iconName="arrow-popup"/>
-                </a>
+                <ExternalLink
+                  href={`https://explorer.callisto.network/tx/${item.hash}/token-transfers`}
+                  text={`${getSymbol(item.token0Symbol, item.token0Address)} and ${getSymbol(item.token1Symbol, item.token1Address)}`}
+                />
               </div>
               <div>${item.amountUSD.toFixed(2)}</div>
               <div>{item.amountToken0.toFixed(2)} {getSymbol(item.token0Symbol, item.token0Address)}</div>
               <div>{item.amountToken1.toFixed(2)} {getSymbol(item.token1Symbol, item.token1Address)}</div>
               <div>
-                <a target="_blank" className={styles.externalLink}
-                   href={`https://explorer.callisto.network/address/${item.sender}/transactions`}>
-                  {item.sender.slice(0, 4)}...{item.sender.slice(-4)}
-                  <Svg iconName="arrow-popup"/>
-                </a>
+                <ExternalLink
+                  href={`https://explorer.callisto.network/address/${item.sender}/transactions`}
+                  text={`${item.sender.slice(0, 4)}...${item.sender.slice(-4)}`}
+                />
               </div>
               <div>{(new Date(Date.now() - item.timestamp)).getMinutes()} min</div>
             </div>
@@ -141,21 +140,19 @@ export default function LiquidityHistory() {
           return <React.Fragment key={index}>
             <div className={styles.tableRow}>
               <div>
-                <a target="_blank" className={styles.externalLink}
-                   href={`https://explorer.callisto.network/tx/${item.hash}/token-transfers`}>
-                  {getSymbol(item.token0Symbol, item.token0Address)} and {getSymbol(item.token1Symbol, item.token1Address)}
-                  <Svg iconName="arrow-popup"/>
-                </a>
+                <ExternalLink
+                  href={`https://explorer.callisto.network/tx/${item.hash}/token-transfers`}
+                  text={`${getSymbol(item.token0Symbol, item.token0Address)} and ${getSymbol(item.token1Symbol, item.token1Address)}`}
+                />
               </div>
               <div>${item.amountUSD.toFixed(2)}</div>
               <div>{item.amountToken0.toFixed(2)} {getSymbol(item.token0Symbol, item.token0Address)}</div>
               <div>{item.amountToken1.toFixed(2)} {getSymbol(item.token1Symbol, item.token1Address)}</div>
               <div>
-                <a target="_blank" className={styles.externalLink}
-                   href={`https://explorer.callisto.network/address/${item.sender}/transactions`}>
-                  {item.sender.slice(0, 4)}...{item.sender.slice(-4)}
-                  <Svg iconName="arrow-popup"/>
-                </a>
+                <ExternalLink
+                  href={`https://explorer.callisto.network/address/${item.sender}/transactions`}
+                  text={`${item.sender.slice(0, 4)}...${item.sender.slice(-4)}`}
+                />
               </div>
               <div>{(new Date(Date.now() - item.timestamp)).getMinutes()} min</div>
             </div>

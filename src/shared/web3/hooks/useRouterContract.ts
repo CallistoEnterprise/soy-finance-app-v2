@@ -1,6 +1,6 @@
 import {useMemo} from "react";
 import {Contract} from "ethers";
-import WETH_ABI from "../../abis/interfaces/weth.json";
+import WETH_ABI from "../../constants/abis/interfaces/weth.json";
 import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
 
 const routerAddresses = {

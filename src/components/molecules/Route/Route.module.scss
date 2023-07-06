@@ -1,5 +1,5 @@
-@use "src/styles/mixins";
-@use "src/styles/media";
+@use "../../../shared/styles/mixins";
+@use "../../../shared/styles/media";
 
 .route {
   display: flex;

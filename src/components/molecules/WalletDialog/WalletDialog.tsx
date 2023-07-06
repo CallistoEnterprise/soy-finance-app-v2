@@ -2,7 +2,6 @@ import React, {useEffect} from "react";
 import styles from "./WalletDialog.module.scss";
 import DialogHeader from "../DialogHeader";
 import {useEvent, useStore} from "effector-react";
-import Dialog from "../Dialog";
 import Tabs from "../Tabs";
 import Tab from "../../atoms/Tab";
 import {$isWalletDialogOpened, $recentTransactions} from "../../../shared/models/stores";
@@ -11,7 +10,7 @@ import CopyArea from "../CopyArea";
 import Svg from "../../atoms/Svg/Svg";
 import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
 import Button from "../../atoms/Button";
-import Preloader from "../../atoms/Preloader/Preloader";
+import Preloader from "../../atoms/Preloader";
 import InfoRow from "../../atoms/InfoRow";
 import DrawerDialog from "../../atoms/DrawerDialog";
 

@@ -33,7 +33,6 @@ import {useSwapAction} from "../../hooks/useSwapAction";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import {useSwapApprove} from "../../hooks/useSwapApprove";
 import ConnectWalletButton from "../../../../processes/web3/ui/ConnectWalletButton";
-import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
 import useNetworkSectionBalance from "../../../../shared/hooks/useNetworkSectionBalance";
 import SwapSettingsDialog from "../SwapSettingsDialog";
 import ConfirmSwapDialog from "../ConfirmSwapDialog";
@@ -41,8 +40,6 @@ import InfoRow from "../../../../components/atoms/InfoRow";
 import PageCard from "../../../../components/atoms/PageCard";
 import PageCardHeading from "../../../../components/molecules/PageCardHeading";
 import Route from "../../../../components/molecules/Route";
-import Text from "../../../../components/atoms/Text";
-import Switch from "../../../../components/atoms/Switch";
 
 export const ONE_BIPS = new Percent(JSBI.BigInt(1), JSBI.BigInt(10000));
 
@@ -120,14 +117,9 @@ export function computeSlippageAdjustedAmountsOut(
 export default function Swap() {
   const { isActive, chainId, isSupportedSwapNetwork, changeNetwork } = useWeb3();
   const swapInputData = useStore($swapInputData);
-
-  useEffect(() => {
-    resetInputDataFn();
-  }, [chainId]);
-
   const [tradeType, setTradeType] = useState(TradeType.EXACT_INPUT);
   const [showInverted, setShowInverted] = useState(false);
-  const { handleApprove, approved } = useSwapApprove({ token: swapInputData.tokenFrom });
+  const { handleApprove, approved } = useSwapApprove({ token: swapInputData.tokenFrom, amount: swapInputData.amountIn });
   const setTokenFromFn = useEvent(setTokenFrom);
   const setTokenToFn = useEvent(setTokenTo);
   const setAmountInFn = useEvent(setAmountIn);
@@ -168,8 +160,6 @@ export default function Swap() {
   const [isFromTokenPickDialogOpened, setFromTokenPickDialogOpened] = useState(false);
   const [isToTokenPickDialogOpened, setToTokenPickDialogOpened] = useState(false);
 
-  const [checked, setChecked] = useState(true);
-
   const {
     recalculateTradeOut,
     recalculateTradeIn
@@ -180,9 +170,9 @@ export default function Swap() {
       return false;
     }
 
-    const balance = isNativeToken(swapInputData.tokenFrom.token_address)
+    const balance = isNativeToken(swapInputData.tokenFrom.address)
       ? network?.balance
-      : contracts?.find(c => c.symbol === swapInputData.tokenFrom?.original_name)?.balance;
+      : contracts?.find(c => c.symbol === swapInputData.tokenFrom?.symbol)?.balance;
 
     if(!+balance) {
       return false;
@@ -323,7 +313,7 @@ export default function Swap() {
           {isEnoughBalance && <>
             {!approved
               ? <Button fullWidth variant="outlined"
-                        onClick={(handleApprove)}>Enable {swapInputData.tokenFrom.original_name}</Button>
+                        onClick={(handleApprove)}>Enable {swapInputData.tokenFrom.symbol}</Button>
               : <Button fullWidth onClick={() => setSwapConfirmDialogOpenedFn(true)}>Swap</Button>}
           </>}
         </>}

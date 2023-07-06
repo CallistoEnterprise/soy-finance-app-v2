@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./SelectTokenToFindLiquidity.module.scss";
-import BigIconWrapper from "../../../../components/atoms/BigIconWrapper";
+import EmptyStateIcon from "../../../../components/atoms/EmptyStateIcon";
 import Text from "../../../../components/atoms/Text";
 import {Property} from "csstype";
 import Height = Property.Height;
@@ -11,7 +11,7 @@ interface Props {
 
 export default function SelectTokenToFindLiquidity({height}: Props) {
   return <div style={height && {height}} className={styles.noPool}>
-    <BigIconWrapper iconName="drop" />
+    <EmptyStateIcon iconName="drop" />
     <div className={styles.spacer} />
     <div className={styles.textWrapper}>
       <Text align="center" weight={700} variant={24}>

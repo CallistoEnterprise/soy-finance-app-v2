@@ -1,10 +1,11 @@
 import {createStore} from "effector";
-import {SwapInputData, SwapToken, SwapVariant} from "./types";
+import {SwapInputData, SwapVariant} from "./types";
 import {Route, Trade} from "@callisto-enterprise/soy-sdk";
+import {WrappedTokenInfo} from "../hooks/useTrade";
 
 export const $swapTokens = createStore<{
-  tokenFrom: SwapToken | null,
-  tokenTo: SwapToken | null
+  tokenFrom: WrappedTokenInfo | null,
+  tokenTo: WrappedTokenInfo | null
 }>({
   tokenFrom: null,
   tokenTo: null

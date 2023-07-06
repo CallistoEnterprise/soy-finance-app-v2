@@ -1,4 +1,4 @@
-@use "../../../styles/colors.module";
+@use "../../../shared/styles/colors.module";
 
 .icon {
   width: 40px;
@@ -10,6 +10,7 @@
   transition-duration: 0.2s;
   color: colors.$text-secondary;
   background-color: transparent;
+  border-radius: 50%;
 
   &.menu {
     border-radius: 8px;
@@ -23,7 +24,6 @@
   }
 
   &.action {
-    border-radius: 50%;
     color: colors.$palette-green;
     background-color: colors.$background-secondary;
 
@@ -34,7 +34,6 @@
 
   &.social {
     color: colors.$text-secondary;
-    border-radius: 50%;
     border: 1px solid colors.$palette-green;
 
     &:hover {
@@ -43,11 +42,16 @@
   }
 
   &.default {
-    //color: colors.$palette-green;
-    border-radius: 50%;
+    color: colors.$palette-green;
 
     &:hover {
       background-color: colors.$transparent-primary;
+    }
+  }
+
+  &.system {
+    &:hover {
+      background-color: colors.$background-secondary;
     }
   }
 }

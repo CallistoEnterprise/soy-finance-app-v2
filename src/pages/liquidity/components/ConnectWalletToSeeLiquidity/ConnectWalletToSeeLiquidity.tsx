@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./ConnectWalletToSeeLiquidity.module.scss";
-import BigIconWrapper from "../../../../components/atoms/BigIconWrapper";
+import EmptyStateIcon from "../../../../components/atoms/EmptyStateIcon";
 import Text from "../../../../components/atoms/Text";
 import {Property} from "csstype";
 import Height = Property.Height;
@@ -12,7 +12,7 @@ interface Props {
 
 export default function ConnectWalletToSeeLiquidity({height = 578}: Props) {
   return <div style={height && {height}} className={styles.noPool}>
-    <BigIconWrapper iconName="wallet" />
+    <EmptyStateIcon iconName="wallet" />
     <div className={styles.textWrapper}>
       <Text align="center" weight={700} variant={24}>
         Connect to a wallet to view your liquidity</Text>

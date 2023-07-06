@@ -1,4 +1,4 @@
-@use "../../../styles/colors.module";
+@use "../../../shared/styles/colors.module";
 
 .circularProgress {
   display: flex;
@@ -100,8 +100,6 @@
     opacity: 0.3;
   }
 }
-
-
 
 @keyframes flicker3 {
   0% {

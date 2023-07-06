@@ -1,7 +1,7 @@
 import {BrowserProvider, Contract, isAddress, Signer} from "ethers";
 import {AddressZero} from "@ethersproject/constants";
 import {ChainId} from "@callisto-enterprise/soy-sdk";
-import routerABI from "../abis/interfaces/router.json";
+import routerABI from "../constants/abis/interfaces/router.json";
 
 type ProviderOrSigner = BrowserProvider | Signer | undefined;
 

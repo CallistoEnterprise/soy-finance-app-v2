@@ -1,12 +1,12 @@
-import {TokenAmount} from "@callisto-enterprise/soy-sdk";
+import {Token, TokenAmount} from "@callisto-enterprise/soy-sdk";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {isNativeToken} from "../../../../shared/utils";
 import {Contract, MaxInt256, parseUnits} from "ethers";
-import WETH_ABI from "../../../../shared/abis/interfaces/weth.json";
+import WETH_ABI from "../../../../shared/constants/abis/interfaces/weth.json";
 import {ROUTER_ADDRESS} from "../../../../shared/web3/contracts";
 import {WrappedTokenInfo} from "../../../swap/hooks/useTrade";
-import {ERC_20_ABI} from "../../../../shared/abis";
+import {ERC_20_ABI} from "../../../../shared/constants/abis";
 
 export enum ApprovalState {
   UNKNOWN,
@@ -15,7 +15,7 @@ export enum ApprovalState {
   APPROVED,
 }
 
-function useTokenAllowance(token: WrappedTokenInfo | null, pendingApproval: boolean): TokenAmount | null {
+function useTokenAllowance(token: WrappedTokenInfo | Token | null, pendingApproval: boolean): TokenAmount | null {
   const { web3Provider, isSupportedSwapNetwork, isChangingWallet, isChangingNetwork, chainId, account } = useWeb3();
   const [allowance, setAllowance] = useState<TokenAmount | null>(null);
 
@@ -66,7 +66,7 @@ function useTokenAllowance(token: WrappedTokenInfo | null, pendingApproval: bool
 
 
 export function useApproveCallback(
-  token: WrappedTokenInfo | null,
+  token: WrappedTokenInfo | Token | null,
   amountToApprove: string,
 ): [ApprovalState, () => Promise<void>] {
   const { account, chainId, web3Provider } = useWeb3();
@@ -87,8 +87,8 @@ export function useApproveCallback(
     }
 
     const tokenAmount = new TokenAmount(token, parseUnits(amountToApprove, token.decimals));
-    console.log("CURRENT ALLOWANCE");
-    console.log(currentAllowance);
+    // console.log("CURRENT ALLOWANCE");
+    // console.log(currentAllowance);
 
     if (!+amountToApprove || tokenAmount.greaterThan(currentAllowance)) {
       return ApprovalState.NOT_APPROVED
@@ -123,7 +123,7 @@ export function useApproveCallback(
 
           // editTransactionStatusFn({chainId, status: "succeed", hash: tx.hash});
 
-          console.log(receipt);
+          // console.log(receipt);
           // setApproved(true);
           return receipt.status;
         } catch (e) {

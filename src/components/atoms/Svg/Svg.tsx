@@ -1,20 +1,25 @@
-import React from "react";
-import {IconName} from "./svgIconsMap";
+import React, { SVGProps } from "react";
+import { IconName } from "./svgIconsMap";
 
-interface Props {
-  sprite?: "sprite" | "social",
+interface Props extends SVGProps<SVGSVGElement>{
   iconName: IconName,
+  sprite?: "sprite" | "social",
   size?: number,
-  style?: React.CSSProperties,
-  [key: string]: any
+  style?: React.CSSProperties
 }
 
-export default function Svg({ iconName, size = 24, style, sprite = "sprite", ...rest }: Props) {
+export default function Svg({
+                              iconName,
+                              size = 24,
+                              style,
+                              sprite = "sprite",
+                              ...rest
+                            }: Props) {
   return <svg style={{
     width: size,
     height: size,
     ...style
   }} {...rest}>
-    <use xlinkHref={`/${sprite}.svg#${iconName}`} />
+    <use xlinkHref={`/${sprite}.svg#${iconName}`}/>
   </svg>;
 }

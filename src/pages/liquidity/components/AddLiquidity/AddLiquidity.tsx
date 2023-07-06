@@ -42,8 +42,8 @@ export default function AddLiquidity() {
 
 
 
-  console.log(balanceA?.toSignificant());
-  console.log(balanceB?.toSignificant());
+  // console.log(balanceA?.toSignificant());
+  // console.log(balanceB?.toSignificant());
 
   return <div>
       <div className={styles.settings}>
@@ -124,8 +124,8 @@ function Action() {
 
   const balanceA = useBalanceOf(tokenA);
   const balanceB = useBalanceOf(tokenB);
-
-  console.log(balanceA);
+  //
+  // console.log(balanceA);
 
   const isEnoughBalanceA = useEnoughBalance({token: tokenA, amount: amountA, balance: balanceA});
   const isEnoughBalanceB = useEnoughBalance({token: tokenB, amount: amountB, balance: balanceB});
@@ -147,7 +147,7 @@ function Action() {
     }
   }, [approveStatusB]);
 
-  console.log(approveStatusA);
+  // console.log(approveStatusA);
 
   if(!isActive) {
     return <ConnectWalletButton fullWidth />

@@ -9,6 +9,7 @@ export interface PriceChartEntry {
   low: number
 }
 
+
 export const multiQuery = async (
   queryConstructor: (subqueries: string[]) => string,
   subqueries: string[],

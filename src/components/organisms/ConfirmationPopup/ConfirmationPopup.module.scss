@@ -1,6 +1,6 @@
-@use "../../../styles/mixins";
-@use "../../../styles/colors.module";
-@use "src/styles/media";
+@use "../../../shared/styles/mixins";
+@use "../../../shared/styles/colors.module";
+@use "../../../shared/styles/media";
 
 .confirmationPopup {
   display: flex;

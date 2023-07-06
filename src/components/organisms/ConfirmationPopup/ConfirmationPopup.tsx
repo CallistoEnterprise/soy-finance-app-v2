@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Dialog from "../../molecules/Dialog";
 import styles from "./ConfirmationPopup.module.scss";
 import { useWeb3 } from "../../../processes/web3/hooks/useWeb3";
-import Preloader from "../../atoms/Preloader/Preloader";
+import Preloader from "../../atoms/Preloader";
 import DrawerDialog from "../../atoms/DrawerDialog";
 
 interface Props {

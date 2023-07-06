@@ -9,7 +9,7 @@ interface Props {
   disabled?: boolean
 }
 
-export default function Switch({ checked, setChecked, small = false, disabled = false, color = "orange" }: Props) {
+export default function Switch({ checked, setChecked, small = false, disabled = false }: Props) {
   return <label className={clsx(
     styles.switch,
     small && styles.small,

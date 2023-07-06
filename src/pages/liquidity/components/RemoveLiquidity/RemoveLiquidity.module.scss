@@ -1,4 +1,4 @@
-@use "src/styles/colors.module";
+@use "../../../../shared/styles/colors.module";
 
 .changeOrder {
   display: flex;
@@ -37,3 +37,58 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.actionButtonsWrapper {
+  margin-top: 20px;
+}
+
+.actionButtons {
+  margin-top: 20px;
+  display: grid;
+  gap: 10px;
+
+  & :nth-child(1) .step {
+    &:before  {
+      content: "";
+      position: absolute;
+      top: 100%;
+      width: 1px;
+      height: 12px;
+      left: 50%;
+      background: colors.$border-primary;
+      transform: translateX(-50%);
+    }
+  }
+}
+
+.buttonRow {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 20px;
+
+}
+
+.step {
+  height: 40px;
+  width: 40px;
+  border: 1px solid colors.$palette-green;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  color: colors.$text-primary;
+
+  &.passed {
+    background-color: rgba(109, 163, 22, 0.20);
+    color: colors.$palette-green;
+  }
+
+  &.disabled {
+    color: #949494;
+    border-color: #949494;
+  }
+}
+
+
+

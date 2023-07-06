@@ -1,6 +1,6 @@
-@use "../../../styles/colors.module";
-@use "../../../styles/mixins";
-@use "src/styles/media";
+@use "../../../shared/styles/colors.module";
+@use "../../../shared/styles/mixins";
+@use "../../../shared/styles/media";
 
 .pickTokenDialog {
   width: 480px;

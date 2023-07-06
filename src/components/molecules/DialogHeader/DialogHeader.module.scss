@@ -1,12 +1,16 @@
-@use "../../../styles/mixins";
-@use "../../../styles/colors.module";
-@use "src/styles/media";
+@use "../../../shared/styles/mixins";
+@use "../../../shared/styles/colors.module";
+@use "../../../shared/styles/media";
 
 .dialogHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 12px 12px 40px;
+
+  &.dropdown {
+    padding: 12px 12px 12px 20px;
+  }
 
   @include media.for-mobile {
     padding: 8px 8px 8px 16px;

@@ -5,7 +5,7 @@ import {useEvent, useStore} from "effector-react";
 import {$isWalletChangeModalOpened} from "../../models/stores";
 import {setWalletChangeModalOpen} from "../../models";
 import dynamic from "next/dynamic";
-import Preloader from "../../../../components/atoms/Preloader/Preloader";
+import Preloader from "../../../../components/atoms/Preloader";
 import DialogHeader from "../../../../components/molecules/DialogHeader";
 import DrawerDialog from "../../../../components/atoms/DrawerDialog";
 

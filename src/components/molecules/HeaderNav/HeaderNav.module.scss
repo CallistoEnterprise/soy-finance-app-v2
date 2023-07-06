@@ -1,20 +1,161 @@
-@use "../../../styles/colors.module";
-@use "src/styles/media";
+@use "src/shared/styles/colors.module";
+@use "src/shared/styles/media";
 
 .menu {
   display: flex;
+  align-items: center;
   gap: 6px;
 
-  @include media.for-mobile {
+  @media screen and (max-width: 1150px){
     display: none;
   }
 }
 
+.navLinkWrapper {
+  position: relative;
+}
+
 .navLink {
   color: colors.$text-primary;
-  padding: 7px;
+  padding: 0 7px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition-duration: 0.2s;
 
   &:hover {
+    cursor: pointer;
     color: colors.$palette-green;
+
+    + .walletMenuDropdown {
+      display: block;
+      opacity: 1;
+      visibility: visible;
+    }
   }
 }
+
+
+.buttonContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.pickedNetworkName {
+  margin-left: 4px;
+}
+
+.walletIcon {
+  width: 24px;
+  height: 24px;
+  color: colors.$text-secondary;
+  margin-right: 4px;
+}
+
+.iconWrapper {
+  width: 24px;
+  height: 24px;
+  color: colors.$text-secondary;
+}
+
+.dropdownWrapper {
+  position: relative;
+}
+
+.dialogContainer {
+  --transition-speed: 0.3s;
+}
+
+.walletMenuDropdown {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  background: colors.$background-primary;
+  border: 1px solid colors.$border-primary;
+  border-radius: 8px;
+  padding: 4px 0;
+  z-index: 1000;
+  top: calc(100% + 27px);
+  transition-duration: 0.3s;
+
+  &:hover {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &:after {
+    content: "";
+    width: 100%;
+    position: absolute;
+    height: 30px;
+    bottom: 100%;
+  }
+}
+
+.backdrop {
+  visibility: hidden;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: fixed;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.dialogContainer.in.open {
+  .backdrop {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 999;
+  }
+
+  .networksDropdown {
+    opacity: 1;
+  }
+
+  .walletMenuDropdown {
+    opacity: 1;
+  }
+}
+
+.dropdownButton {
+  height: 40px;
+  border-radius: 8px;
+  background: colors.$background-secondary;
+  padding: 0 12px 0 16px;
+  font-size: 16px;
+  line-height: 20px;
+  color: colors.$text-primary;
+
+  &:hover {
+    background: colors.$hover-secondary;
+  }
+}
+
+.walletMenuList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.walletMenuItem {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 8px;
+  white-space: nowrap;
+  color: colors.$text-primary;
+
+  &:hover {
+    background: colors.$background-secondary;
+    cursor: pointer;
+  }
+}
+

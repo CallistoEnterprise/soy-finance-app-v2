@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: any,
-  variant?: "menu" | "action" | "social" | "default"
+  variant?: "menu" | "action" | "social" | "default" | "system"
 }
 
 export default function IconButton({ children, variant = "default", ...props }: Props) {

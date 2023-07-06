@@ -1,0 +1,134 @@
+@use "../../../shared/styles/colors.module";
+
+.buttonContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.pickedNetworkName {
+  margin-left: 4px;
+}
+
+.walletIcon {
+  width: 24px;
+  height: 24px;
+  color: colors.$text-secondary;
+  margin-right: 4px;
+}
+
+.iconWrapper {
+  width: 24px;
+  height: 24px;
+  color: colors.$text-secondary;
+}
+
+.dropdownWrapper {
+  position: relative;
+}
+
+.dialogContainer {
+  --transition-speed: 0.3s;
+}
+
+.walletMenuDropdown {
+  opacity: 0;
+  position: absolute;
+  background: colors.$background-primary;
+  border: 1px solid colors.$border-primary;
+  border-radius: 8px;
+  width: 400px;
+  transition: opacity var(--transition-speed) ease;
+  z-index: 1000;
+}
+
+.content {
+  padding: 20px;
+}
+
+.list {
+  display: grid;
+  gap: 10px;
+
+  > li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    background-color: colors.$background-secondary;
+    border-radius: 8px;
+    padding: 12px 12px 12px 20px;
+  }
+}
+
+.backdrop {
+  visibility: hidden;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: fixed;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.dialogContainer.in.open {
+  .backdrop {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 999;
+  }
+
+  .networksDropdown {
+    opacity: 1;
+  }
+
+  .walletMenuDropdown {
+    opacity: 1;
+  }
+}
+
+.dropdownButton {
+  height: 40px;
+  border-radius: 8px;
+  background: colors.$background-secondary;
+  padding: 0 12px 0 16px;
+  font-size: 16px;
+  line-height: 20px;
+  color: colors.$text-primary;
+
+  &:hover {
+    background: colors.$hover-secondary;
+  }
+}
+
+.walletMenuList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.walletMenuItem {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 8px;
+  white-space: nowrap;
+  color: colors.$text-primary;
+
+  &:hover {
+    background: colors.$background-secondary;
+    cursor: pointer;
+  }
+}
+
+.lang {
+  &:hover {
+    cursor: pointer;
+    background-color: colors.$hover-secondary;
+  }
+}

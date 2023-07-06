@@ -1,10 +1,11 @@
-@use "../../../styles/colors.module";
+@use "../../../shared/styles/colors.module";
 
 .switch {
   position: relative;
   display: inline-block;
   width: 56px;
   height: 32px;
+
 
   input:checked + .slider {
     border-color: colors.$palette-green;
@@ -89,6 +90,8 @@ input:checked + .slider:before {
 }
 
 .switch.disabled {
+  pointer-events: none;
+
   input,
   .slider {
     pointer-events: none;

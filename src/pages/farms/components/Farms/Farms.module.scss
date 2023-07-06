@@ -1,5 +1,5 @@
-@use "src/styles/colors.module";
-@use "src/styles/mixins";
+@use "../../../../shared/styles/colors.module";
+@use "../../../../shared/styles/mixins";
 
 .farmsContainer {
   display: flex;
@@ -71,5 +71,18 @@
   a {
     color: colors.$palette-green;
     @include mixins.t-body-16;
+  }
+}
+
+.noStaked {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  padding: 40px;
+  align-items: center;
+
+  &:nth-child(1) {
+    margin-bottom: 6px;
   }
 }

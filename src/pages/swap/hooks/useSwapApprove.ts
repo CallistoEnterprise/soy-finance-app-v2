@@ -7,7 +7,7 @@ import {isNativeToken} from "../../../shared/utils";
 import {SwapToken} from "../models/types";
 import {$swapInputData, $tokenSpendApproved, $tokenSpendEnabling, $tokenSpendRequesting} from "../models/stores";
 import {setTokenSpendApproved, setTokenSpendEnabling, setTokenSpendRequesting} from "../models";
-import WETH_ABI from "../../../shared/abis/interfaces/weth.json";
+import WETH_ABI from "../../../shared/constants/abis/interfaces/weth.json";
 import {addRecentTransaction, editTransactionStatus} from "../../../shared/models";
 import {WrappedTokenInfo} from "./useTrade";
 

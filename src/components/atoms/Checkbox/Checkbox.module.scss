@@ -1,5 +1,5 @@
 //@use "src/styles/typography";
-@use "../../../styles/colors.module";
+@use "../../../shared/styles/colors.module";
 
 .wrapper {
   color: colors.$palette-white;

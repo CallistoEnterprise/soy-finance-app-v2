@@ -13,9 +13,9 @@ export function useEnoughBalance({token, amount, balance}) {
 
       const tokenAmount = new TokenAmount(token, JSBI.BigInt(amountParsed));
 
-      console.log("BALANCE CHECK");
-      console.log(balance.toSignificant());
-      console.log(tokenAmount.toSignificant());
+      // console.log("BALANCE CHECK");
+      // console.log(balance.toSignificant());
+      // console.log(tokenAmount.toSignificant());
 
       return balance.greaterThan(tokenAmount);
 

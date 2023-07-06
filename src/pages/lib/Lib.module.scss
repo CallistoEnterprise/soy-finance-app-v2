@@ -1,4 +1,4 @@
-@use "src/styles/colors.module";
+@use "../../shared/styles/colors.module";
 
 .container {
   display: grid;
@@ -60,4 +60,39 @@
 .bordered {
   padding: 20px;
   border: 1px solid colors.$border-primary;
+}
+
+.newContent {
+  min-height: 400px;
+  padding: 30px;
+}
+
+.coreComponentTitle {
+  font-size: 30px;
+  margin-bottom: 30px;
+}
+
+.dividerBox {
+  display: grid;
+  gap: 20px;
+  width: 300px;
+  padding: 10px;
+  border: 1px solid colors.$border-primary;
+  background: colors.$background-primary;
+}
+
+.box {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid colors.$border-primary;
+  background: colors.$background-primary;
+}
+
+.newContentWrapper {
+  display: grid;
+  gap: 20px;
+}
+
+.newContentComponentName {
+  margin-bottom: 5px;
 }

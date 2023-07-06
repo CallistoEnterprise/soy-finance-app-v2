@@ -1,5 +1,5 @@
-@use "../../../styles/colors.module";
-@use "../../../styles/mixins";
+@use "../../../shared/styles/colors.module";
+@use "../../../shared/styles/mixins";
 
 .button {
   border-radius: 8px;
@@ -70,7 +70,9 @@
   }
 
   &[disabled] {
-    background: colors.$palette-grey-light;
+    color: colors.$palette-grey-light;
+    border: 1px solid colors.$text-secondary;
+    background: transparent;
   }
 
   .ripple {
@@ -79,6 +81,13 @@
     transform: scale(0);
     animation: ripple 900ms linear;
     background-color: rgba(255, 255, 255, 0.4);
+  }
+
+  &.passed {
+    pointer-events: none;
+    background: rgba(109, 163, 22, 0.20);
+    color: colors.$palette-green;
+    border: 1px solid colors.$palette-green;
   }
 }
 
@@ -142,9 +151,9 @@
     color: colors.$palette-white;
   }
 
-  svg {
-    color: colors.$palette-green;
-  }
+  //svg {
+  //  color: colors.$palette-green;
+  //}
 
   &.error {
     border: 1px solid colors.$palette-red;

@@ -15,7 +15,7 @@ import {useErc20Fragment} from "../../../../shared/config/fragments";
 import {useMultiCallBalanceOf} from "../../../../shared/web3/hooks/useMultiCallBalanceOf";
 import {toCallState} from "../../../../shared/toCallState";
 import {ERC_20_INTERFACE} from "../../../../shared/config/interfaces";
-import Preloader from "../../../../components/atoms/Preloader/Preloader";
+import Preloader from "../../../../components/atoms/Preloader";
 import PageCardHeading from "../../../../components/molecules/PageCardHeading";
 import NoPool from "../NoPool";
 import SelectTokenToFindLiquidity from "../SelectTokenToFindLiquidity";
@@ -28,6 +28,7 @@ import {$importTokenA, $importTokenB} from "../../models/stores";
 import {setImportTokenA, setImportTokenB} from "../../models";
 import Divider from "../../../../components/atoms/Divider";
 import {useBalanceOf} from "../../../../shared/web3/hooks/useBalanceOf";
+import tokensListInClo from "../../../../shared/constants/tokenLists/tokenlistInCLO.json";
 
 const BASES_TO_TRACK_LIQUIDITY_FOR = {
   820: [
@@ -58,6 +59,33 @@ const BASES_TO_TRACK_LIQUIDITY_FOR = {
   ]
 }
 
+function getPairOfWrappedTokensByAddress(addressPair: [string, string]) {
+  const [addressA, addressB] = addressPair;
+
+  const tokenA = tokensListInClo.tokens.find((t) => t.address === addressA);
+  const tokenB = tokensListInClo.tokens.find((t) => t.address === addressB);
+
+  const wrappedTokenA = new WrappedTokenInfo({
+    address: addressA,
+    decimals: tokenA.decimals,
+    chainId: 820,
+    name: tokenA.name,
+    symbol: tokenA.symbol,
+    logoURI: tokenA.logoURI
+  }, []);
+
+  const wrappedTokenB = new WrappedTokenInfo({
+    address: addressB,
+    decimals: tokenA.decimals,
+    chainId: 820,
+    name: tokenB.name,
+    symbol: tokenB.symbol,
+    logoURI: tokenB.logoURI
+  }, []);
+
+  return [[wrappedTokenA, wrappedTokenB]];
+}
+
 export function useTrackedTokenPairs(): [WrappedTokenInfo, WrappedTokenInfo][] {
   const {chainId} = useWeb3();
 
@@ -86,8 +114,31 @@ export function useTrackedTokenPairs(): [WrappedTokenInfo, WrappedTokenInfo][] {
     [wrappedTokens, chainId],
   )
 
+  const savedSerializedPairs = useMemo(() => {
+    return localStorage.getItem("trackedTokenPairs");
+  }, []);
+
+  console.log(savedSerializedPairs);
+
+  const userPairs = useMemo(() => {
+    if(!savedSerializedPairs) {
+      return [];
+    }
+
+    console.log(JSON.parse(savedSerializedPairs)[0]);
+
+    return getPairOfWrappedTokensByAddress(JSON.parse(savedSerializedPairs)["820"][0]);
+  }, [savedSerializedPairs]);
+
+  const combinedList = useMemo(
+    () => userPairs.concat(generatedPairs),
+    [generatedPairs, userPairs],
+  );
+
+  console.log(combinedList);
+
   return useMemo(() => {
-    const keyed = generatedPairs.reduce<{ [key: string]: [WrappedTokenInfo, WrappedTokenInfo] }>((memo, [tokenA, tokenB]) => {
+    const keyed = combinedList.reduce<{ [key: string]: [WrappedTokenInfo, WrappedTokenInfo] }>((memo, [tokenA, tokenB]) => {
       const sorted = tokenA.sortsBefore(tokenB)
       const key = sorted ? `${tokenA.address}:${tokenB.address}` : `${tokenB.address}:${tokenA.address}`
       if (memo[key]) return memo
@@ -96,7 +147,7 @@ export function useTrackedTokenPairs(): [WrappedTokenInfo, WrappedTokenInfo][] {
     }, {})
 
     return Object.keys(keyed).map((key) => keyed[key])
-  }, [generatedPairs])
+  }, [combinedList])
 }
 
 export function toV2LiquidityToken([tokenA, tokenB]: [WrappedTokenInfo, WrappedTokenInfo]): Token {
@@ -149,6 +200,8 @@ export default function YourLiquidity({setActiveTab}) {
   const [content, setContent] = useState<"pools" | "import">("pools");
 
   const {pairsWithLiquidity, loading} = usePairsWithLiquidity();
+
+  console.log(pairsWithLiquidity);
 
   const tokens = useAllTokens();
 
@@ -221,8 +274,7 @@ export default function YourLiquidity({setActiveTab}) {
 
   return <div>
     {content === "pools" && <>
-      <>
-        {pairsWithLiquidity.length ? <div>
+       <div>
           <PageCardHeading title="Your active liquidity"/>
           <div className={styles.cards}>{
             pairsWithLiquidity.map((pair) => {
@@ -235,9 +287,7 @@ export default function YourLiquidity({setActiveTab}) {
             <br/>Or in case you have staked your LP tokens in the farm, you can unstake them to view them in this
             section.
           </Text>
-        </div> : <NoPoolYet onClick={() => setContent("import")}/>
-        }
-      </>
+        </div>
     </>}
 
     {content === "import" && <>
@@ -273,9 +323,12 @@ export default function YourLiquidity({setActiveTab}) {
           Your pool tokens: {userPoolBalance?.toSignificant(6)}
         </div>
 
-        <Button fullWidth>Import pool</Button>
+        <Button fullWidth onClick={() => {
+          localStorage.setItem("trackedTokenPairs", JSON.stringify({
+            820: [[importTokenA?.address, importTokenB?.address]]
+          }))
+        }}>Import pool</Button>
       </div> : null}
-
     </>}
   </div>;
 }

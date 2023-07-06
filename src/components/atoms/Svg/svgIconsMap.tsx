@@ -81,7 +81,10 @@ export const svgIconsNames = [
   "history",
   "wallet",
   "candle",
-  "trading"
+  "trading",
+  "line",
+  "table",
+  "sound"
 ] as const;
 
 export type IconName = typeof svgIconsNames[number];

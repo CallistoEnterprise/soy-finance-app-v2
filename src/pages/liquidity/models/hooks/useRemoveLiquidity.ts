@@ -1,21 +1,18 @@
-import {useCallback, useMemo} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {useEvent, useStore} from "effector-react";
 import {
-  $liquidityAmountA,
-  $liquidityAmountB,
-  $liquidityInputTokens, $removeLiquidityAmountA, $removeLiquidityAmountB, $removeLiquidityAmountLP,
+  $removeLiquidityAmountA,
+  $removeLiquidityAmountB,
+  $removeLiquidityAmountLP,
   $removeLiquidityInputTokens,
-  setLiquidityAmountA,
-  setLiquidityAmountB,
-  setLiquidityTokenA,
-  setLiquidityTokenB,
   setRemoveLiquidityAmountA,
-  setRemoveLiquidityAmountB, setRemoveLiquidityAmountLP,
+  setRemoveLiquidityAmountB,
+  setRemoveLiquidityAmountLP, setRemoveLiquidityLPToken,
   setRemoveLiquidityTokenA,
   setRemoveLiquidityTokenB
 } from "../../../../shared/web3/models/init";
-import {TokenMetadata} from "../../../../shared/web3/models/types";
-import {getPairs, toCurrency, WrappedTokenInfo} from "../../../swap/hooks/useTrade";
+import IUniswapV2PairABI from "../../../../shared/constants/abis/interfaces/IUniswapV2Pair.json";
+import {WrappedTokenInfo} from "../../../swap/hooks/useTrade";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import {
   ChainId,
@@ -28,17 +25,17 @@ import {
   TokenAmount,
   WETH
 } from "@callisto-enterprise/soy-sdk";
-import {useBlockNumber} from "../../../../shared/hooks/useBlockNumber";
 import {Contract, parseUnits} from "ethers";
 import useTransactionDeadline from "../../../swap/hooks/useTransactionDeadline";
 import {BigNumber} from "@ethersproject/bignumber";
-import routerABI from "../../../../shared/abis/interfaces/router.json";
 import {usePairs} from "../../../../shared/hooks/usePairs";
 import {useBalanceOf} from "../../../../shared/web3/hooks/useBalanceOf";
 import {useTotalSupply} from "../../../../shared/web3/hooks/useTotalSupply";
-import {usePairFragment, useRouterFragment} from "../../../../shared/config/fragments";
-import {PAIR_INTERFACE, ROUTER_INTERFACE} from "../../../../shared/config/interfaces";
-import {ERC_223_ABI} from "../../../../shared/abis";
+import {useRouterFragment} from "../../../../shared/config/fragments";
+import {ROUTER_ABI} from "../../../../shared/constants/abis";
+import {ROUTER_ADDRESS} from "../../../../shared/web3/contracts";
+import {ApprovalState, useApproveCallback} from "./useApprove";
+import {splitSignature} from "@ethersproject/bytes";
 
 function wrappedCurrency(currency: Currency | undefined, chainId: ChainId | undefined): Token | undefined {
   return chainId && currency === ETHERS[chainId]
@@ -57,14 +54,14 @@ function wrappedCurrencyAmount(
 }
 
 export function tryParseAmount(value?: string, currency?: WrappedTokenInfo | Token | null, chainId?: number): CurrencyAmount | undefined {
-  console.log(value);
-  console.log(currency)
+  // console.log(value);
+  // console.log(currency)
   if (!value || !currency) {
     return undefined
   }
   try {
     const typedValueParsed = parseUnits(value, currency.decimals).toString()
-    console.log(typedValueParsed);
+    // console.log(typedValueParsed);
     if (typedValueParsed !== '0') {
       return new TokenAmount(currency, JSBI.BigInt(typedValueParsed))
     }
@@ -104,13 +101,13 @@ const contracts = {
 };
 
 export function useRemoveLiquidity() {
-  const {chainId, web3Provider, account} = useWeb3();
-  const blockNumber = useBlockNumber();
+  const {chainId, web3Provider, account, provider} = useWeb3();
 
   const deadline = useTransactionDeadline(20);
   const {tokenA, tokenB, lpToken} = useStore($removeLiquidityInputTokens);
   const setRemoveLiquidityTokenAFn = useEvent(setRemoveLiquidityTokenA);
   const setRemoveLiquidityTokenBFn = useEvent(setRemoveLiquidityTokenB);
+  const setRemoveLiquidityTokenLPFn = useEvent(setRemoveLiquidityLPToken);
 
   const setRemoveLiquidityAmountAFn = useEvent(setRemoveLiquidityAmountA);
   const setRemoveLiquidityAmountLPFn = useEvent(setRemoveLiquidityAmountLP);
@@ -120,19 +117,22 @@ export function useRemoveLiquidity() {
   const amountB = useStore($removeLiquidityAmountB);
   const amountLP = useStore($removeLiquidityAmountLP);
 
-  const bridgeAddress = useMemo(
-    () => contracts.router[chainId],
-    [chainId]
+  const [approving, setApproving] = useState(false);
+  const [removing, setRemoving] = useState(false);
+
+  const [approval, approveCallback] = useApproveCallback(
+    lpToken,
+    amountLP,
   );
 
   const pairArray = useMemo(() => {
     return [[tokenA, tokenB]]
   }, [tokenA, tokenB]);
 
+  console.log("LP TOKEN");
+  console.log(lpToken);
+
   const pairs = usePairs(pairArray);
-
-
-  console.log(pairs);
 
   const handleTokenAChange = useCallback((token: WrappedTokenInfo) => {
     setRemoveLiquidityTokenAFn(token);
@@ -141,6 +141,17 @@ export function useRemoveLiquidity() {
   const handleTokenBChange = useCallback((token: WrappedTokenInfo) => {
     setRemoveLiquidityTokenBFn(token);
   }, [setRemoveLiquidityTokenBFn]);
+
+  useEffect(() => {
+    if(pairs) {
+      const [, pair] = pairs[0];
+
+      if(pair) {
+        console.log("Setting lp");
+        setRemoveLiquidityTokenLPFn(pair.liquidityToken);
+      }
+    }
+  }, [pairs, setRemoveLiquidityTokenLPFn]);
 
   const userPoolBalance = useBalanceOf(pairs?.[0]?.[1]?.liquidityToken || null);
 
@@ -151,7 +162,7 @@ export function useRemoveLiquidity() {
   const handleLiquidityAmountLPChange = useCallback(async (amount: string) => {
     setRemoveLiquidityAmountLPFn(amount);
 
-    if(!amount) {
+    if (!amount) {
       setRemoveLiquidityAmountBFn("");
       setRemoveLiquidityAmountAFn("");
       return;
@@ -164,7 +175,7 @@ export function useRemoveLiquidity() {
 
     const [pairState, pair] = pairs[0];
 
-    if(!pair) {
+    if (!pair) {
       console.log("NO piar");
       return;
     }
@@ -185,10 +196,10 @@ export function useRemoveLiquidity() {
     const price1 = pair.getLiquidityValue(pair.token0, totalPoolTokens, wrappedIndependentAmount, false);
     const price2 = pair.getLiquidityValue(pair.token1, totalPoolTokens, wrappedIndependentAmount, false);
 
-
-    console.log("PRICE IS WHAT YOU GET");
-    console.log(price1);
-    console.log(price2);
+    //
+    // console.log("PRICE IS WHAT YOU GET");
+    // console.log(price1);
+    // console.log(price2);
     // console.log(price3.toSignificant(6));
 
     setRemoveLiquidityAmountAFn(price1.toSignificant(6));
@@ -199,7 +210,7 @@ export function useRemoveLiquidity() {
   const handleAmountAChange = useCallback(async (amount: string) => {
     setRemoveLiquidityAmountAFn(amount);
 
-    if(!amount) {
+    if (!amount) {
       setRemoveLiquidityAmountBFn("");
       setRemoveLiquidityAmountLPFn("");
       return;
@@ -211,7 +222,7 @@ export function useRemoveLiquidity() {
 
     const [pairState, pair] = pairs[0];
 
-    if(!pair) {
+    if (!pair) {
       return;
     }
 
@@ -242,7 +253,7 @@ export function useRemoveLiquidity() {
   const handleAmountBChange = useCallback(async (amount: string) => {
     setRemoveLiquidityAmountBFn(amount);
 
-    if(!amount) {
+    if (!amount) {
       setRemoveLiquidityAmountAFn("");
       setRemoveLiquidityAmountLPFn("");
       return;
@@ -254,7 +265,7 @@ export function useRemoveLiquidity() {
 
     const [pairState, pair] = pairs[0];
 
-    if(!pair) {
+    if (!pair) {
       return;
     }
 
@@ -276,7 +287,6 @@ export function useRemoveLiquidity() {
 
     const price1 = new TokenAmount(lpToken, percentage.multiply(userPoolBalance.raw).quotient)
 
-
     const price = pair.priceOf(tokenB).quote(wrappedIndependentAmount);
 
     setRemoveLiquidityAmountAFn(price.toSignificant(6));
@@ -284,8 +294,103 @@ export function useRemoveLiquidity() {
 
   }, [chainId, lpToken, pairs, setRemoveLiquidityAmountAFn, setRemoveLiquidityAmountBFn, setRemoveLiquidityAmountLPFn, tokenB, totalPoolTokens, userPoolBalance]);
 
+  const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
+
+  async function onAttemptToApprove() {
+
+    if (!account || !web3Provider || !deadline || !chainId || !lpToken) throw new Error('missing dependencies')
+
+    const parsedAmountLP = tryParseAmount(amountLP.toString(), lpToken, chainId);
+
+    if (!parsedAmountLP) {
+      return;
+    }
+
+
+
+    const pairContract = new Contract(lpToken.address, IUniswapV2PairABI, await web3Provider.getSigner(account))
+
+    console.log(pairContract);
+    if (!pairContract) {
+      console.log("No contract");
+      return;
+    }
+
+
+    // try to gather a signature for permission
+    const nonce = await pairContract["nonces"](account)
+
+    console.log(nonce);
+
+    const EIP712Domain = [
+      {name: 'name', type: 'string'},
+      {name: 'version', type: 'string'},
+      {name: 'chainId', type: 'uint256'},
+      {name: 'verifyingContract', type: 'address'},
+    ]
+    const domain = {
+      name: 'SoyFinance LPs',
+      version: '1',
+      chainId,
+      verifyingContract: lpToken?.address,
+    }
+    const Permit = [
+      {name: 'owner', type: 'address'},
+      {name: 'spender', type: 'address'},
+      {name: 'value', type: 'uint256'},
+      {name: 'nonce', type: 'uint256'},
+      {name: 'deadline', type: 'uint256'},
+    ]
+    const message = {
+      owner: account,
+      spender: ROUTER_ADDRESS[chainId ?? 820].toString(),
+      value: parsedAmountLP.raw.toString(),
+      nonce: "0x" + nonce.toString() + "0",
+      deadline: +deadline,
+    }
+    const data = JSON.stringify({
+      types: {
+        EIP712Domain,
+        Permit,
+      },
+      domain,
+      primaryType: 'Permit',
+      message,
+    });
+
+    setApproving(true);
+    provider
+      .send('eth_signTypedData_v4', [account, data])
+      .then((data) => {
+        console.log("ETH SIGN");
+        console.log(data);
+        return splitSignature(data.result);
+      })
+      .then((signature) => {
+        console.log(signature);
+
+        setSignatureData({
+          v: signature.v,
+          r: signature.r,
+          s: signature.s,
+          deadline: +deadline,
+        });
+      })
+      .catch(async (err) => {
+        console.log(err);
+        console.log(err.code);
+        // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
+        if (err?.code !== 4001 && err?.code !== -32603) {
+          await approveCallback();
+        }
+      }).finally(() => {
+      setApproving(false);
+    });
+  }
+
   const removeLiquidity = useCallback(async () => {
-    if(!tokenA || !tokenB || !chainId || !web3Provider || !account || !fragment || !lpToken) {
+    if (!tokenA || !tokenB || !chainId || !web3Provider || !account || !fragment || !lpToken || !deadline) {
+      console.log("Not enough data");
       return;
     }
 
@@ -293,7 +398,7 @@ export function useRemoveLiquidity() {
     const parsedAmountB = tryParseAmount(amountB.toString(), tokenB, chainId);
     const parsedAmountLP = tryParseAmount(amountLP.toString(), lpToken, chainId);
 
-    if(!parsedAmountA || !parsedAmountB || !parsedAmountLP) {
+    if (!parsedAmountA || !parsedAmountB || !parsedAmountLP) {
       console.log("No parsed amounts");
       return;
     }
@@ -303,33 +408,122 @@ export function useRemoveLiquidity() {
       b: calculateSlippageAmount(parsedAmountB, 1)[0],
     }
 
-    const args: any[] = [
-      tokenA.address,
-      tokenB.address,
-      parsedAmountLP.raw.toString(),
-      amountsMin.a.toString(),
-      amountsMin.b.toString(),
-      account,
-      deadline,
-    ];
+    let methodNames: string[]
+    let args: Array<string | string[] | number | boolean>
 
-    const callData = ROUTER_INTERFACE.encodeFunctionData(fragment, args);
+    const currencyBIsETH = tokenA === ETHERS[chainId]
+    const oneCurrencyIsETH = tokenB === ETHERS[chainId] || currencyBIsETH
+
+    if (approval === ApprovalState.APPROVED) {
+      // removeLiquidityCLO
+      if (oneCurrencyIsETH) {
+        methodNames = ['removeLiquidityCLO', 'removeLiquidityCLOSupportingFeeOnTransferTokens']
+        args = [
+          currencyBIsETH ? tokenA.address : tokenB.address,
+          parsedAmountLP.raw.toString(),
+          amountsMin.a.toString(),
+          amountsMin.b.toString(),
+          account,
+          deadline,
+        ]
+      }
+      // removeLiquidity
+      else {
+        methodNames = ['removeLiquidity']
+        args = [
+          tokenA.address,
+          tokenB.address,
+          parsedAmountLP.raw.toString(),
+          amountsMin.a.toString(),
+          amountsMin.b.toString(),
+          account,
+          deadline,
+        ]
+      }
+    }
+    // we have a signataure, use permit versions of remove liquidity
+    else if (signatureData !== null) {
+      // removeLiquidityCLOWithPermit
+      if (oneCurrencyIsETH) {
+        methodNames = ['removeLiquidityCLOWithPermit', 'removeLiquidityCLOWithPermitSupportingFeeOnTransferTokens']
+        args = [
+          currencyBIsETH ? tokenA.address : tokenB.address,
+          parsedAmountLP.raw.toString(),
+          amountsMin.a.toString(),
+          amountsMin.b.toString(),
+          account,
+          signatureData.deadline,
+          false,
+          signatureData.v,
+          signatureData.r,
+          signatureData.s,
+        ]
+      }
+      // removeLiquidityWithPermit
+      else {
+        methodNames = ['removeLiquidityWithPermit']
+        args = [
+          tokenA.address,
+          tokenB.address,
+          parsedAmountLP.raw.toString(),
+          amountsMin.a.toString(),
+          amountsMin.b.toString(),
+          account,
+          signatureData.deadline,
+          false,
+          signatureData.v,
+          signatureData.r,
+          signatureData.s,
+        ]
+      }
+    } else {
+      throw new Error('Attempting to confirm without approval or a signature. Please contact support.')
+    }
 
     const contract = new Contract(
-      lpToken.address,
-      ERC_223_ABI,
+      ROUTER_ADDRESS[chainId],
+      ROUTER_ABI,
       await web3Provider.getSigner(account)
     );
 
     console.log(contract);
 
+    setRemoving(true);
     try {
-      const tx = await contract["transfer"](contracts.router[chainId], parsedAmountLP.raw.toString(), callData);
-      console.log(tx);
+      const safeGasEstimates: (BigNumber | undefined)[] = await Promise.all(
+        methodNames.map((methodName) => {
+          console.log(methodName);
+            return contract[methodName]["estimateGas"](...args)
+              .then(data => BigNumber.from(data)._hex)
+              .catch((err) => {
+                console.error(`estimateGas failed`, methodName, args, err)
+                return undefined
+              })
+          }
+        ),
+      )
+
+      console.log(safeGasEstimates);
+
+      const indexOfSuccessfulEstimation = 0;
+
+      if (indexOfSuccessfulEstimation === -1) {
+        console.error('This transaction would fail. Please contact support.')
+      } else {
+        const methodName = methodNames[indexOfSuccessfulEstimation]
+        const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
+
+        const tx = await contract[methodName](...args, {
+          gasLimit: safeGasEstimate,
+        });
+        console.log(tx);
+      }
     } catch (e) {
       console.log(e);
+    } finally {
+      setRemoving(false);
     }
-  }, [tokenA, tokenB, fragment, chainId, web3Provider, account, lpToken, amountA, amountB, amountLP, deadline]);
+  }, [tokenA, tokenB, chainId, web3Provider, account, fragment, lpToken, deadline, amountA, amountB, amountLP, approval, signatureData]);
 
   return {
     removeLiquidity,
@@ -337,6 +531,11 @@ export function useRemoveLiquidity() {
     handleTokenBChange,
     handleAmountAChange,
     handleAmountBChange,
-    handleLiquidityAmountLPChange
+    handleLiquidityAmountLPChange,
+    onAttemptToApprove,
+    approving,
+    removing,
+    pair: pairs?.[0][1],
+    readyToRemove: approval === ApprovalState.APPROVED || signatureData !== null
   };
 }

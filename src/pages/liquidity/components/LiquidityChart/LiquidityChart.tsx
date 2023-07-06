@@ -14,8 +14,8 @@ import {
 } from "chart.js";
 import 'chartjs-adapter-date-fns';
 import PageCardHeading from "../../../../components/molecules/PageCardHeading";
-import {data} from "../TradingChart/TradingChart";
 import Text from "../../../../components/atoms/Text";
+import Preloader from "../../../../components/atoms/Preloader";
 
 const tooltipLine = {
   id: 'tooltipLine',
@@ -319,6 +319,7 @@ export default function LiquidityChart() {
   const [overviewChartData, setOverviewChartData] = useState<string[]>([]);
   const [labels, setLabels] = useState<Date[]>([]);
   const [error, setError] = useState(false)
+  const [loading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetch = async () => {
@@ -337,19 +338,25 @@ export default function LiquidityChart() {
       } else {
         setError(true)
       }
+      setIsLoading(false);
     }
     if (!overviewChartData?.length && !error) {
       fetch()
     }
-  }, [overviewChartData, error])
+  }, [overviewChartData, error]);
 
   return <div className="paper">
     <PageCardHeading title="Liquidity analytics" />
-    <div className={styles.lastDayData}>
-      {labels.length && overviewChartData.length && <Text variant={20} weight={500} color="secondary">
-        {labels[labels.length - 1].toLocaleString('en-US', {year: "numeric", day: "numeric", month: "short"})} — {(overviewChartData[overviewChartData.length - 1] / 1000).toFixed(2)}K
-      </Text>}
+    <div className={styles.chartContainer}>
+      {labels.length && overviewChartData.length && !loading ?
+      <div className={styles.lastDayData}>
+
+          <Text variant={20} weight={500} color="secondary">
+            {labels[labels.length - 1].toLocaleString('en-US', {year: "numeric", day: "numeric", month: "short"})} — {(overviewChartData[overviewChartData.length - 1] / 1000).toFixed(2)}K
+          </Text>
+      </div> : null}
+      {loading && <div className={styles.loading}><Preloader withLogo={false} size={100} /></div>}
+      {overviewChartData.length && <Line options={financialOptions()} type="line" data={getData("light", overviewChartData, labels)} />}
     </div>
-    {overviewChartData.length && <Line options={financialOptions()} type="line" data={getData("light", overviewChartData, labels)} />}
   </div>;
 }

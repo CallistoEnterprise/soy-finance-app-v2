@@ -5,7 +5,7 @@ import Swap from "./components/Swap";
 import SafeTrading from "./components/SafeTrading";
 import GrowthPoll from "./components/GrowthPoll";
 import clsx from "clsx";
-import Layout from "../../shared/layouts/Layout";
+import Layout from "../../components/layout/Layout";
 import Head from "next/head";
 import Drawer from "../../components/atoms/Drawer/Drawer";
 import {useEvent, useStore} from "effector-react";
@@ -36,7 +36,7 @@ export default function SwapPage() {
               </div>
             </div>
             <div className={styles.column}>
-              {/*<Swap />*/}
+              <Swap />
               <div className="desktop"><SafeTrading /></div>
               <GrowthPoll />
             </div>

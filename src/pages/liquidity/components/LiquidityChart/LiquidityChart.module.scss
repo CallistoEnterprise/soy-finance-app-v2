@@ -1,4 +1,28 @@
+@use "../../../../shared/styles/media";
+
 .lastDayData {
   margin-top: 4px;
   margin-bottom: 20px;
+}
+
+.loading {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+}
+
+.chartContainer {
+  position: relative;
+  height: 498px;
+
+  @include media.for-mobile {
+    height: unset;
+    min-height: 200px;
+  }
 }

@@ -14,7 +14,7 @@ import {useBlockNumber} from "../../../../shared/hooks/useBlockNumber";
 import {Contract, parseUnits} from "ethers";
 import useTransactionDeadline from "../../../swap/hooks/useTransactionDeadline";
 import {BigNumber} from "@ethersproject/bignumber";
-import routerABI from "../../../../shared/abis/interfaces/router.json";
+import routerABI from "../../../../shared/constants/abis/interfaces/router.json";
 import {usePairs} from "../../../../shared/hooks/usePairs";
 
 function wrappedCurrency(currency: Currency | undefined, chainId: ChainId | undefined): Token | undefined {
