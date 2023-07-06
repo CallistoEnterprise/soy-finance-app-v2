@@ -97,16 +97,16 @@ export function useSwapAction() {
   const trade = useStore($trade);
 
   const functionName = useMemo(() => {
-    if(swapInputData.tokenFrom && isNativeToken(swapInputData.tokenFrom?.token_address)) {
+    if(swapInputData.tokenFrom && isNativeToken(swapInputData.tokenFrom?.address)) {
       return "swapExactCLOForTokens";
     }
 
-    if(swapInputData.tokenTo && isNativeToken(swapInputData.tokenTo?.token_address)) {
+    if(swapInputData.tokenTo && isNativeToken(swapInputData.tokenTo?.address)) {
       return "swapExactTokensForCLO";
     }
 
     return "swapExactTokensForTokens";
-  }, [swapInputData.tokenTo, swapInputData.tokenFrom, swapInputData.amountIn]);
+  }, [swapInputData.tokenTo, swapInputData.tokenFrom]);
 
   const slippage = useStore($swapSlippage);
 
@@ -127,7 +127,7 @@ export function useSwapAction() {
 
         const _parsedAmountIn = parseUnits(
           swapInputData.amountIn.toString(),
-          swapInputData.tokenFrom?.decimal_token
+          swapInputData.tokenFrom?.decimals
         );
 
         const _path = trade.route.path.map((token) => {
@@ -151,7 +151,7 @@ export function useSwapAction() {
           deadline
         ];
 
-        if (!isNativeToken(swapInputData.tokenFrom.token_address)) {
+        if (!isNativeToken(swapInputData.tokenFrom.address)) {
           args.unshift(BigNumber.from(_parsedAmountIn)._hex);
           args.push({
             from: account,
@@ -170,7 +170,7 @@ export function useSwapAction() {
 
         const tx = await contract[functionName](...args);
 
-        addRecentTransactionFn({chainId, hash: tx.hash, summary: `Swap ${swapInputData.amountIn} ${swapInputData.tokenFrom.original_name} to ${swapInputData.amountOut} ${swapInputData.tokenTo.original_name}`})
+        addRecentTransactionFn({chainId, hash: tx.hash, summary: `Swap ${swapInputData.amountIn} ${swapInputData.tokenFrom.symbol} to ${swapInputData.amountOut} ${swapInputData.tokenTo.symbol}`})
 
         return tx;
       } catch (error: EthersError) {

@@ -588,7 +588,32 @@ const GLOBAL_TRANSACTIONS = gql`
       amountUSD
     }
   }
-`
+`;
+
+const SWAP_TRANSACTIONS = gql`
+  query overviewTransactions {
+    swaps: swaps(first: 50, orderBy: timestamp, orderDirection: desc) {
+      id
+      timestamp
+      pair {
+        token0 {
+          id
+          symbol
+        }
+        token1 {
+          id
+          symbol
+        }
+      }
+      from
+      amount0In
+      amount1In
+      amount0Out
+      amount1Out
+      amountUSD
+    }
+  }
+`;
 
 export const mapMints = (mint: MintResponse) => {
   return {
@@ -697,9 +722,27 @@ export const fetchTopTransactions = async (): Promise<Transaction[] | undefined>
 
     const mints = data.mints.map(mapMints)
     const burns = data.burns.map(mapBurns)
-    // const swaps = data.swaps.map(mapSwaps)
 
     return [...mints, ...burns].sort((a, b) => {
+      return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10)
+    })
+  } catch {
+    return undefined
+  }
+}
+
+export const fetchTopSwapTransactions = async (): Promise<Transaction[] | undefined> => {
+  try {
+    const data = await request<TransactionResults>(infoClient, SWAP_TRANSACTIONS)
+
+    if (!data) {
+      return undefined
+    }
+
+    const swaps = data.swaps.map(mapSwaps)
+
+
+    return [...swaps].sort((a, b) => {
       return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10)
     })
   } catch {

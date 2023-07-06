@@ -1,12 +1,11 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {fetchTopTransactions, getUnixTime, startOfHour, sub, utcCurrentTime} from "../../../../shared/fetcher";
+import {fetchTopTransactions} from "../../../../shared/fetcher";
 import PageCard from "../../../../components/atoms/PageCard";
 import PageCardHeading from "../../../../components/molecules/PageCardHeading";
 import Button from "../../../../components/atoms/Button";
 import styles from "../../../swap/components/TradeHistory/TradeHistory.module.scss";
 import Divider from "../../../../components/atoms/Divider";
 import tokenListInCLO from "../../../../shared/constants/tokenLists/tokenlistInCLO.json";
-import Svg from "../../../../components/atoms/Svg/Svg";
 import clsx from "clsx";
 import ExternalLink from "../../../../components/atoms/ExternalLink";
 

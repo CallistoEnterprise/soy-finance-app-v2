@@ -16,6 +16,7 @@ import useTransactionDeadline from "../../../swap/hooks/useTransactionDeadline";
 import {BigNumber} from "@ethersproject/bignumber";
 import routerABI from "../../../../shared/constants/abis/interfaces/router.json";
 import {usePairs} from "../../../../shared/hooks/usePairs";
+import {useTotalSupply} from "../../../../shared/web3/hooks/useTotalSupply";
 
 function wrappedCurrency(currency: Currency | undefined, chainId: ChainId | undefined): Token | undefined {
   return chainId && currency === ETHERS[chainId]
@@ -101,6 +102,51 @@ export function useLiquidity() {
 
   const pairs = usePairs(pairArray);
 
+  const pair = useMemo(() => {
+    if(!pairs) {
+      return null;
+    }
+
+    const [pairState, pair] = pairs[0];
+
+    if(pair) {
+      return pair;
+    }
+
+    return null
+  }, [pairs]);
+
+  const totalPoolTokens = useTotalSupply(pair?.liquidityToken);
+
+  const priceA = useMemo(() => {
+    if(!pairs || !tokenB) {
+      return null;
+    }
+
+    const [pairState, pair] = pairs[0];
+
+    if(pair) {
+      return pair.priceOf(tokenB);
+    }
+
+    return null;
+  }, [pairs, tokenB]);
+
+
+  const priceB = useMemo(() => {
+    if(!pairs || !tokenA) {
+      return null;
+    }
+
+    const [pairState, pair] = pairs[0];
+
+    if(pair) {
+      return pair.priceOf(tokenA);
+    }
+
+    return null;
+
+  }, [pairs, tokenA]);
   const handleTokenAChange = useCallback((token: WrappedTokenInfo) => {
     setLiquidityTokenAFn(token);
   }, [setLiquidityTokenAFn]);
@@ -227,6 +273,8 @@ export function useLiquidity() {
     handleTokenAChange,
     handleTokenBChange,
     handleAmountAChange,
-    handleAmountBChange
+    handleAmountBChange,
+    priceA,
+    priceB
   };
 }

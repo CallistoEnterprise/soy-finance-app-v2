@@ -38,7 +38,7 @@ export default function SwapPage() {
             <div className={styles.column}>
               <Swap />
               <div className="desktop"><SafeTrading /></div>
-              <GrowthPoll />
+              {/*<GrowthPoll />*/}
             </div>
           </div>
         </div>

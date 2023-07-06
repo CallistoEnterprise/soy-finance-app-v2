@@ -57,8 +57,8 @@ export default function ConfirmSwapDialog() {
       <div className={styles.tokens}>
         <div className={styles.tokenBlock}>
           <div className={styles.tokenName}>
-            <img width={24} height={24} src={swapInputData.tokenFrom?.imgUri} alt={swapInputData.tokenFrom?.original_name} />
-            {swapInputData.tokenFrom?.original_name}
+            <img width={24} height={24} src={swapInputData.tokenFrom?.logoURI} alt={swapInputData.tokenFrom?.name} />
+            {swapInputData.tokenFrom?.symbol}
           </div>
           <span className="font-700 font-20">
             {formatBalanceToEight(swapInputData.amountIn)}
@@ -69,8 +69,8 @@ export default function ConfirmSwapDialog() {
         </div>
         <div className={styles.tokenBlock}>
           <div className={styles.tokenName}>
-            <img width={24} height={24} src={swapInputData.tokenTo?.imgUri} alt={swapInputData.tokenTo?.original_name} />
-            {swapInputData.tokenTo?.original_name}
+            <img width={24} height={24} src={swapInputData.tokenTo?.logoURI} alt={swapInputData.tokenTo?.name} />
+            {swapInputData.tokenTo?.symbol}
           </div>
           <span className="font-700 font-20">
             {formatBalanceToEight(swapInputData.amountOut)}
@@ -83,13 +83,13 @@ export default function ConfirmSwapDialog() {
 
       <div className={styles.bottomInfo}>
         <div className={styles.infoRow}>
-          <span>1 {swapInputData.tokenTo?.original_name} price</span>
-          <span>{priceOut} {swapInputData.tokenFrom?.original_name}</span>
+          <span>1 {swapInputData.tokenTo?.symbol} price</span>
+          <span>{priceOut} {swapInputData.tokenFrom?.symbol}</span>
         </div>
 
         <div className={styles.infoRow}>
-          <span>1 {swapInputData.tokenFrom?.original_name} price</span>
-          <span>{priceIn} {swapInputData.tokenTo?.original_name}</span>
+          <span>1 {swapInputData.tokenFrom?.symbol} price</span>
+          <span>{priceIn} {swapInputData.tokenTo?.symbol}</span>
         </div>
 
         <div className={styles.infoRow}>
@@ -99,8 +99,8 @@ export default function ConfirmSwapDialog() {
           <span>
           {!trade && "—"}
             {trade?.tradeType === TradeType.EXACT_INPUT
-              ? `${computeSlippageAdjustedAmounts(trade, slippage)} ${swapInputData.tokenTo?.original_name}`
-              : `${computeSlippageAdjustedAmountsOut(trade || undefined, slippage)} ${swapInputData.tokenTo?.original_name}`
+              ? `${computeSlippageAdjustedAmounts(trade, slippage)} ${swapInputData.tokenTo?.symbol}`
+              : `${computeSlippageAdjustedAmountsOut(trade || undefined, slippage)} ${swapInputData.tokenTo?.symbol}`
             }
         </span>
         </div>
@@ -113,18 +113,12 @@ export default function ConfirmSwapDialog() {
         <div className={styles.infoRow}>
           <span>Route</span>
           <Route route={route} />
-
         </div>
       </div>
-
-
-
       <div className={styles.buttons}>
         <Button fullWidth variant="outlined" onClick={() => setSwapConfirmDialogOpenedFn(false)}>Cancel</Button>
         <Button fullWidth onClick={handleSwap}>Swap</Button>
       </div>
-
-
     </div>
 
   </DrawerDialog>;

@@ -5,7 +5,7 @@ import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
 import {CallState} from "../../types";
 import {IIFE} from "../functions/iife";
 
-export function useTotalSupply(token?: Token): TokenAmount | null {
+export function useTotalSupply(token?: Token | undefined): TokenAmount | null {
   const {account} = useWeb3();
   const [callState, setCallState] = useState<CallState>(CallState.INITIAL);
   const [result, setResult] = useState<TokenAmount | null>(null);

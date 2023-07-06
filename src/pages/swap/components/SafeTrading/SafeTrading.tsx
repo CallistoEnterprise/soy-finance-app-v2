@@ -53,19 +53,19 @@ export default function SafeTrading() {
   return <PageCard>
     <PageCardHeading title="Safe trading" />
     <div className="mb-20" />
-    <SemiCircleProgress percentage={66} />
+    <SemiCircleProgress percentage={90} />
     <div className="mb-20" />
     <Text tag="p">Security audit score</Text>
     <div className="mb-10" />
     <Progress percents={90} color="green" />
-    <div className="mb-10" />
-    <Text tag="p">Decentralized insurance fund</Text>
-    <div className="mb-10" />
-    <Progress percents={70} color="purple" />
-    <div className="mb-10" />
-    <Text tag="p">Community trust</Text>
-    <div className="mb-10" />
-    <Progress percents={60} color="pink" />
+    {/*<div className="mb-10" />*/}
+    {/*<Text tag="p">Decentralized insurance fund</Text>*/}
+    {/*<div className="mb-10" />*/}
+    {/*<Progress percents={70} color="purple" />*/}
+    {/*<div className="mb-10" />*/}
+    {/*<Text tag="p">Community trust</Text>*/}
+    {/*<div className="mb-10" />*/}
+    {/*<Progress percents={60} color="pink" />*/}
     <div className="center mt-20">
       <Button variant="outlined">Learn more</Button>
     </div>
