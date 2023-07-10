@@ -15,15 +15,12 @@ import IUniswapV2PairABI from "../../../../shared/constants/abis/interfaces/IUni
 import {WrappedTokenInfo} from "../../../swap/hooks/useTrade";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import {
-  ChainId,
-  Currency,
   CurrencyAmount,
   ETHERS,
   JSBI,
   Percent,
   Token,
-  TokenAmount,
-  WETH
+  TokenAmount
 } from "@callisto-enterprise/soy-sdk";
 import {Contract, parseUnits} from "ethers";
 import useTransactionDeadline from "../../../swap/hooks/useTransactionDeadline";
@@ -36,22 +33,7 @@ import {ROUTER_ABI} from "../../../../shared/constants/abis";
 import {ROUTER_ADDRESS} from "../../../../shared/web3/contracts";
 import {ApprovalState, useApproveCallback} from "./useApprove";
 import {splitSignature} from "@ethersproject/bytes";
-
-function wrappedCurrency(currency: Currency | undefined, chainId: ChainId | undefined): Token | undefined {
-  return chainId && currency === ETHERS[chainId]
-    ? WETH[chainId]
-    : currency instanceof Token
-      ? currency
-      : undefined;
-}
-
-function wrappedCurrencyAmount(
-  currencyAmount: CurrencyAmount | undefined,
-  chainId: ChainId | undefined,
-): TokenAmount | undefined {
-  const token = currencyAmount && chainId ? wrappedCurrency(currencyAmount.currency, chainId) : undefined
-  return token && currencyAmount ? new TokenAmount(token, currencyAmount.raw) : undefined
-}
+import {wrappedCurrencyAmount} from "../../../../shared/web3/functions/wrappedCurrency";
 
 export function tryParseAmount(value?: string, currency?: WrappedTokenInfo | Token | null, chainId?: number): CurrencyAmount | undefined {
   // console.log(value);
@@ -135,12 +117,20 @@ export function useRemoveLiquidity() {
   const pairs = usePairs(pairArray);
 
   const handleTokenAChange = useCallback((token: WrappedTokenInfo) => {
+    if(tokenB && tokenB.equals(token)) {
+      setRemoveLiquidityTokenBFn(tokenA);
+    }
+
     setRemoveLiquidityTokenAFn(token);
-  }, [setRemoveLiquidityTokenAFn]);
+  }, [setRemoveLiquidityTokenAFn, setRemoveLiquidityTokenBFn, tokenA, tokenB]);
 
   const handleTokenBChange = useCallback((token: WrappedTokenInfo) => {
+    if(tokenA && tokenA.equals(token)) {
+      setRemoveLiquidityTokenAFn(tokenB);
+    }
+
     setRemoveLiquidityTokenBFn(token);
-  }, [setRemoveLiquidityTokenBFn]);
+  }, [setRemoveLiquidityTokenAFn, setRemoveLiquidityTokenBFn, tokenA, tokenB]);
 
   useEffect(() => {
     if(pairs) {
@@ -254,7 +244,10 @@ export function useRemoveLiquidity() {
 
     const wrappedIndependentAmount = wrappedCurrencyAmount(parsedAmount, chainId);
 
-    if (!tokenA || !wrappedIndependentAmount) {
+    // console.log("FUUUUCK");
+    // console.log(userPoolBalance.equalTo());
+
+    if (!tokenA || !wrappedIndependentAmount || userPoolBalance.raw.toString() === '0') {
       return;
     }
 

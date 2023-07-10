@@ -246,6 +246,10 @@ export default function Swap() {
         recalculateTradeIn(amount, swapInputData.tokenFrom);
       }}
       handleTokenChange={(token) => {
+        if(swapInputData.tokenTo && token.equals(swapInputData.tokenTo)) {
+          setTokenToFn(swapInputData.tokenFrom);
+        }
+
         setTokenFromFn(token);
         if(tradeType === TradeType.EXACT_INPUT) {
           if (swapInputData.amountIn && swapInputData.tokenTo) {
@@ -283,6 +287,10 @@ export default function Swap() {
         recalculateTradeOut(amount, swapInputData.tokenTo);
       }}
       handleTokenChange={(token) => {
+        if(swapInputData.tokenFrom && token.equals(swapInputData.tokenFrom)) {
+          setTokenFromFn(swapInputData.tokenTo);
+        }
+
         setTokenToFn(token);
         if(tradeType === TradeType.EXACT_INPUT) {
           if(swapInputData.amountIn && swapInputData.tokenFrom) {
@@ -295,7 +303,6 @@ export default function Swap() {
             recalculateTradeOut(swapInputData.amountOut, token, swapInputData.tokenFrom);
           }
         }
-
       }}
     />
 
@@ -321,7 +328,7 @@ export default function Swap() {
           {isEnoughBalance && <>
             {!approved
               ? <Button fullWidth variant="outlined"
-                        onClick={(handleApprove)}>Enable {swapInputData.tokenFrom.symbol}</Button>
+                        onClick={handleApprove}>Enable {swapInputData.tokenFrom.symbol}</Button>
               : <Button fullWidth onClick={() => setSwapConfirmDialogOpenedFn(true)}>Swap</Button>}
           </>}
         </>}

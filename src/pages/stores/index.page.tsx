@@ -1,21 +1,19 @@
-import styles from "./styles.module.scss";
-import {useTradeHistory} from "../../stores/trade-history/useTradeHistory";
-import {useTokenBalance} from "../../stores/balance/useTokenBalance";
 import ConnectWalletButton from "../../processes/web3/ui/ConnectWalletButton";
 import ChangeWalletModal from "../../processes/web3/ui/ChangeWalletModal";
+import {useWeb3} from "../../processes/web3/hooks/useWeb3";
+import Header from "../../components/organisms/Header";
 
 export default function StoresPage() {
-  // const {swap, add, remove, loading} = useTradeHistory();
-
-  const {loading, tokenBalance, updateBalanceNetwork} = useTokenBalance({address: "0x1eAa43544dAa399b87EEcFcC6Fa579D5ea4A6187", chainId: 820});
-
+  const {chainId, changeNetwork} = useWeb3();
 
   return <div>
+    <Header />
     <ConnectWalletButton />
-    {loading && <div>LOADING</div>}
-    <pre>{tokenBalance}</pre>
 
-    <button onClick={() => updateBalanceNetwork(820)}>Update</button>
+    Chain: {chainId}
+
+    {/*<Button onClick={() => changeNetwork(820)}>Change to Callisto</Button>*/}
+    {/*<Button onClick={() => changeNetwork(199)}>Change to Btt</Button>*/}
 
     <ChangeWalletModal />
   </div>;

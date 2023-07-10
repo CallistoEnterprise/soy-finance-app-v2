@@ -26,7 +26,7 @@ export function useTradeHistory() {
       if (!isTradeHistoryLoaded) {
         fetch();
       }
-  }, [isTradeHistoryLoaded, setTradeHistoryLoadedFn, tradeHistory]);
+  }, [isTradeHistoryLoaded, setTradeHistoryFn, setTradeHistoryLoadedFn, tradeHistory]);
 
   return {
     loading: !isTradeHistoryLoaded,

@@ -281,7 +281,11 @@ export function useWeb3() {
       }
 
     },
-    [provider, setChainIdFn, setChangingNetworkFn]
+    [
+      provider,
+      setChainIdFn,
+      setChangingNetworkFn
+    ]
   );
 
   const disconnect = useCallback(
@@ -300,9 +304,16 @@ export function useWeb3() {
         setWeb3ProviderFn(null);
       }
     },
-    [provider, setIsActiveFn, setProviderFn, setWalletNameFn, setWeb3ProviderFn, walletName]
+    [
+      provider,
+      setAccountFn,
+      setChainIdFn,
+      setIsActiveFn,
+      setProviderFn,
+      setWalletNameFn,
+      setWeb3ProviderFn
+    ]
   );
-
 
   return {
     chainId,

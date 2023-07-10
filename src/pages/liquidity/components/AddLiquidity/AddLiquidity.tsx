@@ -15,6 +15,7 @@ import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import ConnectWalletButton from "../../../../processes/web3/ui/ConnectWalletButton";
 import {setLiquidityChartOpened, setLiquidityHistoryOpened} from "../../models";
 import {useTokenBalance} from "../../../../stores/balance/useTokenBalance";
+import {setSwapSettingsDialogOpened} from "../../../swap/models";
 
 export default function AddLiquidity() {
   const {chainId} = useWeb3();
@@ -42,7 +43,7 @@ export default function AddLiquidity() {
 
   const setMobileChartOpenedFn = useEvent(setLiquidityChartOpened);
   const setSwapHistoryOpenedFn = useEvent(setLiquidityHistoryOpened);
-
+  const setSwapSettingsDialogOpenedFn = useEvent(setSwapSettingsDialogOpened);
 
   return <div>
       <PageCardHeading title="Add liquidity" content={
@@ -62,7 +63,7 @@ export default function AddLiquidity() {
             </IconButton>
           </span>
 
-          <IconButton onClick={null}>
+          <IconButton onClick={setSwapSettingsDialogOpenedFn}>
             <Svg iconName="filter"/>
           </IconButton>
         </div>
@@ -145,7 +146,11 @@ function Action() {
   const isEnoughBalanceA = useEnoughBalance({token: tokenA, amount: amountA, balance: balanceA});
   const isEnoughBalanceB = useEnoughBalance({token: tokenB, amount: amountB, balance: balanceB});
 
-  const {addLiquidity} = useLiquidity();
+  console.log("BLS")
+  console.log(isEnoughBalanceA);
+  console.log(isEnoughBalanceB);
+
+  const { addLiquidity } = useLiquidity();
 
   const [wasApprovingTokenA, setWasApprovingTokenA] = useState(false);
   const [wasApprovingTokenB, setWasApprovingTokenB] = useState(false);

@@ -9,15 +9,12 @@ export function useEnoughBalance({token, amount, balance}) {
         return false;
       }
 
+      console.log(balance);
+
       const amountParsed = parseUnits(amount, token.decimals).toString();
 
       const tokenAmount = new TokenAmount(token, JSBI.BigInt(amountParsed));
-
-      // console.log("BALANCE CHECK");
-      // console.log(balance.toSignificant());
-      // console.log(tokenAmount.toSignificant());
-
-      return balance.greaterThan(tokenAmount);
+      return +balance >= tokenAmount.toSignificant();
 
     }, [token, amount, balance]);
 }

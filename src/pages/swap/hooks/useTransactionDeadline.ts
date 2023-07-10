@@ -24,9 +24,8 @@ export default function useTransactionDeadline(userDeadline): number | undefined
         }
       )();
     },
-    [chainId, currentBlock]
+    [chainId, currentBlock, web3Provider]
   );
-
 
   return useMemo(
     () => {

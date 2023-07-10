@@ -1,6 +1,6 @@
 export const headersNetworks = [
   {
-    chainId:1,
+    chainId: 1,
     name: "Ethereum",
     image: "/images/tokens/ethereum-46.png"
   },

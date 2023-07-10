@@ -1,4 +1,4 @@
-import {useCallback, useMemo} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {useEvent, useStore} from "effector-react";
 import {
   $liquidityAmountA, $liquidityAmountB,
@@ -9,30 +9,13 @@ import {
 } from "../../../../shared/web3/models/init";
 import {WrappedTokenInfo} from "../../../swap/hooks/useTrade";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
-import {ChainId, Currency, CurrencyAmount, ETHERS, JSBI, Token, TokenAmount, WETH} from "@callisto-enterprise/soy-sdk";
-import {useBlockNumber} from "../../../../shared/hooks/useBlockNumber";
+import {CurrencyAmount, JSBI, TokenAmount } from "@callisto-enterprise/soy-sdk";
 import {Contract, parseUnits} from "ethers";
 import useTransactionDeadline from "../../../swap/hooks/useTransactionDeadline";
 import {BigNumber} from "@ethersproject/bignumber";
 import routerABI from "../../../../shared/constants/abis/interfaces/router.json";
 import {usePairs} from "../../../../shared/hooks/usePairs";
-import {useTotalSupply} from "../../../../shared/web3/hooks/useTotalSupply";
-
-function wrappedCurrency(currency: Currency | undefined, chainId: ChainId | undefined): Token | undefined {
-  return chainId && currency === ETHERS[chainId]
-    ? WETH[chainId]
-    : currency instanceof Token
-      ? currency
-      : undefined;
-}
-
-function wrappedCurrencyAmount(
-  currencyAmount: CurrencyAmount | undefined,
-  chainId: ChainId | undefined,
-): TokenAmount | undefined {
-  const token = currencyAmount && chainId ? wrappedCurrency(currencyAmount.currency, chainId) : undefined
-  return token && currencyAmount ? new TokenAmount(token, currencyAmount.raw) : undefined
-}
+import {wrappedCurrencyAmount} from "../../../../shared/web3/functions/wrappedCurrency";
 
 export function tryParseAmount(value?: string, currency?: WrappedTokenInfo | null, chainId?: number): CurrencyAmount | undefined {
   if (!value || !currency) {
@@ -91,6 +74,8 @@ export function useLiquidity() {
   const amountA = useStore($liquidityAmountA);
   const amountB = useStore($liquidityAmountB);
 
+  const [tokenChanged, setTokenChanged] = useState(false);
+
   const bridgeAddress = useMemo(
     () => contracts.router[chainId],
     [chainId]
@@ -101,22 +86,6 @@ export function useLiquidity() {
   }, [tokenA, tokenB]);
 
   const pairs = usePairs(pairArray);
-
-  const pair = useMemo(() => {
-    if(!pairs) {
-      return null;
-    }
-
-    const [pairState, pair] = pairs[0];
-
-    if(pair) {
-      return pair;
-    }
-
-    return null
-  }, [pairs]);
-
-  const totalPoolTokens = useTotalSupply(pair?.liquidityToken);
 
   const priceA = useMemo(() => {
     if(!pairs || !tokenB) {
@@ -147,17 +116,99 @@ export function useLiquidity() {
     return null;
 
   }, [pairs, tokenA]);
-  const handleTokenAChange = useCallback((token: WrappedTokenInfo) => {
-    setLiquidityTokenAFn(token);
-  }, [setLiquidityTokenAFn]);
+
+  useEffect(() => {
+    if(!tokenChanged) {
+      return;
+    }
+
+    if(!amountA && !amountB) {
+      setLiquidityAmountBFn("");
+      setLiquidityAmountAFn("");
+    }
+
+    if(amountA && !amountB) {
+      if (!chainId || !pairs) {
+        return;
+      }
+
+      const [pairState, pair] = pairs[0];
+
+      if(!pair) {
+        return;
+      }
+
+      const parsedAmount: CurrencyAmount | undefined = tryParseAmount(
+        amountA.toString(),
+        tokenA,
+        chainId,
+      );
+
+      const wrappedIndependentAmount = wrappedCurrencyAmount(parsedAmount, chainId);
+
+      if (!tokenA || !wrappedIndependentAmount) {
+        return;
+      }
+
+      const price = pair.priceOf(tokenA).quote(wrappedIndependentAmount);
+
+      setLiquidityAmountBFn(price.toSignificant(6));
+    }
+
+    if(!amountA && amountB) {
+      if (!chainId || !pairs) {
+        return;
+      }
+
+      const [pairState, pair] = pairs[0];
+
+      if(!pair) {
+        return;
+      }
+
+      const parsedAmount: CurrencyAmount | undefined = tryParseAmount(
+        amountB.toString(),
+        tokenB,
+        chainId,
+      );
+
+      const wrappedIndependentAmount = wrappedCurrencyAmount(parsedAmount, chainId);
+
+      if (!tokenB || !wrappedIndependentAmount) {
+        return;
+      }
+
+      const price = pair.priceOf(tokenB).quote(wrappedIndependentAmount);
+
+      setLiquidityAmountAFn(price.toSignificant(6));
+    }
+
+    setTokenChanged(false);
+  }, [amountA, amountB, chainId, pairs, setLiquidityAmountAFn, setLiquidityAmountBFn, tokenA, tokenB, tokenChanged]);
 
   const handleTokenBChange = useCallback((token: WrappedTokenInfo) => {
+    if(tokenA && token.equals(tokenA)) {
+      setLiquidityTokenAFn(tokenB);
+    }
+
     setLiquidityTokenBFn(token);
-  }, [setLiquidityTokenBFn]);
+    setTokenChanged(true);
+  }, [setLiquidityTokenAFn, setLiquidityTokenBFn, tokenA, tokenB]);
+
+  const handleTokenAChange = useCallback((token: WrappedTokenInfo) => {
+    if(tokenB && token.equals(tokenB)) {
+      setLiquidityTokenBFn(tokenA);
+    }
+
+    setLiquidityTokenAFn(token);
+    setTokenChanged(true);
+  }, [setLiquidityTokenAFn, setLiquidityTokenBFn, tokenA, tokenB]);
 
   const handleAmountAChange = useCallback(async (amount: string) => {
     setLiquidityAmountAFn(amount);
-    if (!chainId || !pairs) {
+
+    if (!chainId || !pairs || !amount) {
+      setLiquidityAmountBFn("");
       return;
     }
 
@@ -186,7 +237,8 @@ export function useLiquidity() {
 
   const handleAmountBChange = useCallback(async (amount: string) => {
     setLiquidityAmountBFn(amount);
-    if (!chainId || !pairs) {
+    if (!chainId || !pairs || !amount) {
+      setLiquidityAmountAFn("");
       return;
     }
 
@@ -263,13 +315,8 @@ export function useLiquidity() {
 
   }, [tokenA, tokenB, chainId, web3Provider, account, amountA, amountB, deadline, bridgeAddress]);
 
-  const removeLiquidity = useCallback(() => {
-
-  }, []);
-
   return {
     addLiquidity,
-    removeLiquidity,
     handleTokenAChange,
     handleTokenBChange,
     handleAmountAChange,

@@ -30,57 +30,6 @@ const contracts = {
   }
 };
 
-async function setTransactionFinished(hash: string) {
-  const currentTransactions = localStorage.getItem("recentTransactions");
-
-  if(currentTransactions) {
-    const updatedValue = JSON.parse(currentTransactions);
-
-    updatedValue[hash]["status"] = "completed";
-
-    localStorage.setItem(
-      "recentTransactions",
-      JSON.stringify(updatedValue)
-    );
-  }
-}
-
-async function awaitTransaction(hash: string, provider: BrowserProvider) {
-  const receipt = await provider.getTransactionReceipt(hash);
-
-  if(!receipt) {
-    const transaction = await provider.getTransaction(hash);
-    const _receipt = await transaction?.wait();
-
-    if(_receipt) {
-      setTransactionFinished(hash)
-    }
-  }
-}
-
-async function logWhenAwaited(tx, provider: BrowserProvider) {
-  try {
-    const beforeEnd = await provider.getTransactionReceipt(tx.hash);
-    const transaction = await provider.getTransaction(tx.hash);
-
-    if(transaction) {
-      console.log(transaction);
-      const receipt = await transaction.wait();
-      console.log("Tx finished");
-      console.log(receipt);
-    }
-
-    // const receipt = await tx.wait();
-
-    // console.log(receipt);
-
-    const afterEnd = await provider.getTransactionReceipt(tx.hash);
-    // console.log(afterEnd);
-  } catch (e) {
-
-  }
-}
-
 export function useSwapAction() {
   const {chainId, web3Provider, account} = useWeb3();
   const {showMessage} = useSnackbar();

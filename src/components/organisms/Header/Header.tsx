@@ -12,6 +12,7 @@ import Drawer from "../../atoms/Drawer/Drawer";
 import IconButton from "../../atoms/IconButton";
 import Svg from "../../atoms/Svg/Svg";
 import SettingsMenu from "../../molecules/SettingsMenu";
+import {socialLinks} from "../../../shared/constants/links/socials";
 
 const DynamicHeaderNetwork = dynamic(() => import("../HeaderNetwork"), {
   ssr: false,
@@ -57,7 +58,84 @@ export default function Header() {
           <Svg iconName="menu" />
         </IconButton>
         <Drawer isOpen={menuOpen} onClose={() => setMenuOpen(false)} position="left">
-          Swap
+            <div className={styles.drawerContent}>
+              <div>
+                <h3 className={styles.blockTitle}>Exchange</h3>
+                <div className={styles.links}>
+                  <a className={styles.link} href="#">
+                    <Svg iconName="swap" />
+                    Swap
+                  </a>
+                  <a className={styles.link} href="#">
+                    <Svg iconName="orders" />
+                    Orders
+                  </a>
+                  <a className={styles.link} href="#">
+                    <Svg iconName="liquidity" />
+                    Liquidity
+                  </a>
+                  <a className={styles.link} href="#">
+                    <Svg iconName="dex-stats" />
+                    Dex stats
+                  </a>
+                </div>
+              </div>
+              <div>
+                <h3 className={styles.blockTitle}>Farming</h3>
+                <div className={styles.links}>
+                  <a className={styles.link} href="#">
+                    <Svg iconName="boost" />
+                    Boost token
+                  </a>
+                  <a className={styles.link} href="#">
+                    <Svg iconName="burn" />
+                    Burn & Boost
+                  </a>
+                </div>
+              </div>
+              <div>
+                <h3 className={styles.blockTitle}>Safety On Yields</h3>
+                <div className={styles.links}>
+                  <a className={styles.link} href="#">
+                    <Svg iconName="safe-trading" />
+                    Safe trading
+                  </a>
+                  <a className={styles.link} href="#">
+                    <Svg iconName="listing" />
+                    Safelisting
+                  </a>
+                </div>
+              </div>
+              <div>
+                <h3 className={styles.blockTitle}>More</h3>
+                <div className={styles.links}>
+                  <a className={styles.link} href="#">
+                    <Svg iconName="staked" />
+                    Staking
+                  </a>
+                  <a className={styles.link} href="#">
+                    <Svg iconName="futures" />
+                    Futures
+                  </a>
+                  <a className={styles.link} href="#">
+                    <Svg iconName="bridge" />
+                    Bridge
+                  </a>
+                </div>
+              </div>
+              <div>
+                <h3 className={styles.blockTitle}>Social media</h3>
+                <div className={styles.socials}>
+                  {socialLinks.map((item, index) => {
+                    return <a key={item.icon} target="_blank" href={item.link}>
+                      <IconButton variant="social" key={index}>
+                        <Svg sprite="social" iconName={item.icon} />
+                      </IconButton>
+                    </a>
+                  })}
+                </div>
+              </div>
+            </div>
         </Drawer>
       </div>
     </div>

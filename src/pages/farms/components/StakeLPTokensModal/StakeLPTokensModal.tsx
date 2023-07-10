@@ -7,10 +7,12 @@ import DialogHeader from "../../../../components/molecules/DialogHeader";
 import TokenSelector from "../../../../components/organisms/TokenSelector";
 import Button from "../../../../components/atoms/Button";
 import {Farm} from "../../FarmsPage";
-import {Contract, parseUnits} from "ethers";
+import {Contract, EthersError, parseUnits} from "ethers";
 import {LP_TOKEN_ABI} from "../../../../shared/constants/abis";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import DrawerDialog from "../../../../components/atoms/DrawerDialog";
+import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
+import {useEthersError} from "../../../swap/hooks/useEthersError";
 
 export default function StakeLPTokensModal() {
   const {web3Provider, account} = useWeb3();
@@ -24,6 +26,8 @@ export default function StakeLPTokensModal() {
   const handleClose = useCallback(() => {
     closeStakeLPTokensDialogFn();
   }, [closeStakeLPTokensDialogFn])
+
+  const {handleError} = useEthersError();
 
   const handleStake = useCallback(async () => {
     if(!farmToStake || !account) {
@@ -42,12 +46,18 @@ export default function StakeLPTokensModal() {
     console.log(contract);
     console.log(args);
 
-    const gas = await contract["transfer"]["estimateGas"](...args);
 
-    const tx = await contract["transfer"](...args, {gasLimit: gas});
 
-    console.log(tx);
-  }, [account, farmToStake, value, web3Provider]);
+    try {
+      const gas = await contract["transfer"]["estimateGas"](...args);
+
+      const tx = await contract["transfer"](...args, {gasLimit: gas});
+      console.log(tx);
+    } catch (e: EthersError) {
+      handleError(e);
+    }
+
+  }, [account, farmToStake, handleError, value, web3Provider]);
 
   return <DrawerDialog isOpen={isOpened} onClose={handleClose}>
     <div className={styles.stakeLpTokensModal}>

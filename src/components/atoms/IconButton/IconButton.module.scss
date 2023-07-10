@@ -54,8 +54,11 @@
       background-color: colors.$background-secondary;
     }
   }
-}
 
-.readonly {
-  pointer-events: none;
+  &.readonly {
+    pointer-events: none;
+    background-color: transparent;
+    border: 1px solid colors.$background-secondary;
+    color: colors.$text-secondary;
+  }
 }

@@ -7,7 +7,7 @@ import Collapse from "../../../../components/atoms/Collapse";
 import IconButton from "../../../../components/atoms/IconButton";
 import Text from "../../../../components/atoms/Text";
 import Button from "../../../../components/atoms/Button";
-import {Contract, FixedNumber, parseUnits} from "ethers";
+import {Contract, EthersError, FixedNumber, parseUnits} from "ethers";
 import {useEvent} from "effector-react";
 import {openStakeLPTokensDialog, openUnStakeLPTokensDialog, setLpTokenToStake, setLpTokenToUnStake} from "../../models";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
@@ -20,6 +20,8 @@ import Preloader from "../../../../components/atoms/Preloader";
 import {getLogo} from "../../../../shared/utils";
 import Image from "next/image";
 import Divider from "../../../../components/atoms/Divider";
+import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
+import {useEthersError} from "../../../swap/hooks/useEthersError";
 
 interface Props {
   farms: Farm[],
@@ -59,6 +61,7 @@ function Farm({farm, index, staked}: {farm: Farm, index: number, staked: any}) {
 
   const setLpTokenToStakeFn = useEvent(setLpTokenToStake);
   const setLpTokenToUnStakeFn = useEvent(setLpTokenToUnStake);
+  const {handleError} = useEthersError();
 
   const handleHarvest = useCallback(async () => {
     if(!farm || !account) {
@@ -74,15 +77,14 @@ function Farm({farm, index, staked}: {farm: Farm, index: number, staked: any}) {
       _amount
     ];
 
-    console.log(contract);
-    console.log(args);
-
-    const gas = await contract["transfer"]["estimateGas"](...args);
-
-    const tx = await contract["transfer"](...args, {gasLimit: gas});
-
-    console.log(tx);
-  }, [account, farm, web3Provider]);
+    try {
+      const gas = await contract["transfer"]["estimateGas"](...args);
+      const tx = await contract["transfer"](...args, {gasLimit: gas});
+      console.log(tx);
+    } catch (e: EthersError) {
+      handleError(e);
+    }
+  }, [account, farm, handleError, web3Provider]);
 
   return <div className={styles.farmWrapper} key={farm.pid}>
     <div key={farm.pid} className={styles.farm}>

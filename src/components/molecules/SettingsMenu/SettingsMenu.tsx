@@ -70,7 +70,7 @@ export default function SettingsMenu({expandDirection = "bottom"}) {
                   <Svg iconName="night" />
                   Dark mode
                 </Flex>
-                <div className={styles.switchWrapper}>
+                <div>
                   <Switch checked={mode === "dark"} setChecked={toggleTheme} />
                 </div>
               </li>

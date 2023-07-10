@@ -25,14 +25,16 @@ export const nativeTokens = {
     address: '0xF5AD6F6EDeC824C7fD54A66d241a227F6503aD3a',
     symbol: "ETC",
     name: "ETC",
-    decimals: 18
+    decimals: 18,
+    logoURI: "/images/all-tokens/ETC.svg"
   }, []),
   199: new WrappedTokenInfo({
     chainId: 199,
     address: '0x33e85f0e26600a6644b6c910639B0bc7a99fd34e',
     symbol: "BTT",
     name: "BitTorrent",
-    decimals: 18
+    decimals: 18,
+    logoURI: "/images/all-tokens/BTT.svg"
   }, []),
 }
 

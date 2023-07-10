@@ -473,22 +473,6 @@ export async function getAllowedPairs(currencyIn, currencyOut, web3Provider, blo
   return allowedPairs;
 }
 
-export function toCurrency(token, chainId) {
-  if(!token) {
-    return;
-  }
-
-  return new WrappedTokenInfo({
-      chainId,
-      address: getAddress(token.token_address, chainId),
-      decimals: token.decimal_token,
-      symbol: token.original_name,
-      name: token.original_name,
-    },
-    []
-  );
-}
-
 function toTokenAmount(currency, value) {
   return new TokenAmount(
     currency, value
@@ -496,6 +480,7 @@ function toTokenAmount(currency, value) {
 }
 
 export function useTrade() {
+  // console.log("RENDEEER");
   const { web3Provider, chainId } = useWeb3();
   const blockNumber = useBlockNumber();
   const swapInputData = useStore($swapInputData);
@@ -626,7 +611,7 @@ export function useTrade() {
     setTradeFn(null);
     setRouteFn(null);
 
-  }, [swapInputData.tokenFrom, web3Provider, blockNumber]);
+  }, [swapInputData.tokenFrom, web3Provider, blockNumber, chainId, setTradeFn, setRouteFn, setAmountInFn]);
 
   return {recalculateTradeIn, recalculateTradeOut};
 }

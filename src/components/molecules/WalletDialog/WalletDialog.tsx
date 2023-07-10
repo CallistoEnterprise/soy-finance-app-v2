@@ -65,15 +65,6 @@ function Transaction({transaction}) {
   </div>
 }
 
-const clo = new WrappedTokenInfo({
-  chainId: 820,
-  address: '0xF5AD6F6EDeC824C7fD54A66d241a227F6503aD3a',
-  symbol: "CLO",
-  name: "CLO",
-  decimals: 18,
-  logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2757.png"
-}, []);
-
 const soy = new WrappedTokenInfo({
   chainId: 820,
   address: '0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65',

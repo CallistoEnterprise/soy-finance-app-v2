@@ -8,10 +8,13 @@ import TokenSelector from "../../../../components/organisms/TokenSelector";
 import Button from "../../../../components/atoms/Button";
 import {WrappedTokenInfo} from "../../../swap/hooks/useTrade";
 import {Farm} from "../../FarmsPage";
-import {Contract, parseUnits} from "ethers";
+import {Contract, EthersError, isError, parseUnits} from "ethers";
 import {LOCAL_FARM_ABI} from "../../../../shared/constants/abis";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import DrawerDialog from "../../../../components/atoms/DrawerDialog";
+import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
+import {ErrorCode} from "@ethersproject/logger";
+import {useEthersError} from "../../../swap/hooks/useEthersError";
 
 export default function UnStakeLPTokensModal() {
   const isOpened = useStore($isUnStakeLPTokensDialogOpened);
@@ -60,6 +63,8 @@ export default function UnStakeLPTokensModal() {
     }, [])
   }, [farmToUnStake]);
 
+  const {handleError} = useEthersError();
+
   const handleWithdraw = useCallback(async () => {
     if(!farmToUnStake || !account || !farmToUnStake.localFarmAddresses) {
       return;
@@ -74,12 +79,15 @@ export default function UnStakeLPTokensModal() {
       valueToSend
     ];
 
-    const gas = await contract["withdraw"]["estimateGas"](...args);
+    try {
+      const gas = await contract["withdraw"]["estimateGas"](...args);
 
-    const tx = await contract["withdraw"](...args, {gasLimit: gas});
-
-    console.log(tx);
-  }, [account, farmToUnStake, value, web3Provider]);
+      const tx = await contract["withdraw"](...args, {gasLimit: gas});
+      console.log(tx);
+    } catch (e: EthersError) {
+      handleError(e);
+    }
+  }, [account, farmToUnStake, handleError, value, web3Provider]);
 
   return <DrawerDialog isOpen={isOpened} onClose={handleClose}>
     <div className={styles.stakeLpTokensModal}>

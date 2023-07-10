@@ -7,6 +7,28 @@ import clsx from "clsx";
 import Svg from "../../atoms/Svg";
 import tokenListInCLO from "../../../shared/constants/tokenLists/tokenlistInCLO.json";
 
+function getTimeElapsed(timestamp) {
+  const currentTime = Math.floor(Date.now() / 1000); // Convert current time to seconds
+  const timeDifference = currentTime - timestamp;
+  const secondsPerMinute = 60;
+  const secondsPerHour = 3600;
+  const secondsPerDay = 86400;
+
+  if (timeDifference < secondsPerHour) {
+    // Less than an hour ago
+    const minutes = Math.floor(timeDifference / secondsPerMinute);
+    return `${minutes} min`;
+  } else if (timeDifference < secondsPerDay) {
+    // Between 1 hour and 24 hours ago
+    const hours = Math.floor(timeDifference / secondsPerHour);
+    return `${hours} hours`;
+  } else {
+    // More than a day ago
+    const days = Math.floor(timeDifference / secondsPerDay);
+    return `${days} days`;
+  }
+}
+
 export default function TradeHistoryRows({transactions, visibleItems, showMore, loading}) {
   const getSymbol = useCallback((symbol, address) => {
     if (symbol !== "unknown") {
@@ -92,7 +114,7 @@ export default function TradeHistoryRows({transactions, visibleItems, showMore, 
                 text={`${item.sender.slice(0, 4)}...${item.sender.slice(-4)}`}
               />
             </div>
-            <div className={clsx(styles.mobileColumn, styles.timeCell)}><span className={styles.internalLabel}>Time</span>{(new Date(Date.now() - item.timestamp)).getMinutes()} min</div>
+            <div className={clsx(styles.mobileColumn, styles.timeCell)}><span className={styles.internalLabel}>Time</span>{getTimeElapsed(item.timestamp)}</div>
             <div className={styles.amountInternalWrapper}>
               <div>{item.amountToken0.toFixed(2)} {getSymbol(item.token0Symbol, item.token0Address)}</div>
               <Svg iconName="arrow-right" />

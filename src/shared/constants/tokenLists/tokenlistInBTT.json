@@ -16,7 +16,7 @@
       "address": "0xCcbf1C9E8b4f2cDF3Bfba1098b8f56f97d219D53",
       "chainId": 199,
       "decimals": 18,
-      "logoURI": "images/coins/199/0xCcbf1C9E8b4f2cDF3Bfba1098b8f56f97d219D53.png"
+      "logoURI": "/images/all-tokens/CLO.svg"
     },
     {
       "name": "Wrapped SOY",
@@ -24,7 +24,7 @@
       "address": "0xcC00860947035a26Ffe24EcB1301ffAd3a89f910",
       "chainId": 199,
       "decimals": 18,
-      "logoURI": "images/coins/199/0xcC00860947035a26Ffe24EcB1301ffAd3a89f910.png"
+      "logoURI": "/images/all-tokens/SOY.svg"
     },
     {
       "name": "Tether",
@@ -32,7 +32,7 @@
       "address": "0xCC78D0A86B0c0a3b32DEBd773Ec815130F9527CF",
       "chainId": 199,
       "decimals": 18,
-      "logoURI": "https://app.soy.finance/images/coins/0xbf6c50889d3a620eb42C0F188b65aDe90De958c4.png"
+      "logoURI": "/images/all-tokens/BUSDT.svg"
     },
     {
       "name": "Wrapped BNB",
@@ -40,7 +40,7 @@
       "address": "0x185a4091027E2dB459a2433F85f894dC3013aeB5",
       "chainId": 199,
       "decimals": 18,
-      "logoURI": "images/coins/199/0x185a4091027E2dB459a2433F85f894dC3013aeB5.png"
+      "logoURI": "/images/all-tokens/BNB.svg"
     },
     {
       "name": "Wrapped ETH",
@@ -48,7 +48,7 @@
       "address": "0x1249C65AfB11D179FFB3CE7D4eEDd1D9b98AD006",
       "chainId": 199,
       "decimals": 18,
-      "logoURI": "images/coins/199/0x1249C65AfB11D179FFB3CE7D4eEDd1D9b98AD006.png"
+      "logoURI": "/images/all-tokens/ETH.svg"
     },
     {
       "name": "Wrapped ETC",
@@ -56,7 +56,7 @@
       "address": "0xCc944bF3e76d483e41CC6154d5196E2e5d348fB0",
       "chainId": 199,
       "decimals": 18,
-      "logoURI": "images/coins/199/0xCc944bF3e76d483e41CC6154d5196E2e5d348fB0.png"
+      "logoURI": "/images/all-tokens/ETC.svg"
     },
     {
       "name": "Wrapped CLOE",
@@ -64,7 +64,7 @@
       "address": "0xCC20d1B86bf1b80d4b9F0C19B138E17034457271",
       "chainId": 199,
       "decimals": 18,
-      "logoURI": "images/coins/199/0xCC20d1B86bf1b80d4b9F0C19B138E17034457271.png"
+      "logoURI": "/images/all-tokens/CLOE.svg"
     }
   ]
 }
