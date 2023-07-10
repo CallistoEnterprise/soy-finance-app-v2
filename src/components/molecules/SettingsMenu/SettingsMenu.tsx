@@ -40,7 +40,7 @@ export default function SettingsMenu({expandDirection = "bottom"}) {
         });
       }
     },
-    [walletRef, expandDirection]
+    [walletRef, expandDirection, isWalletMenuOpened]
   );
   const {showMessage} = useSnackbar();
 

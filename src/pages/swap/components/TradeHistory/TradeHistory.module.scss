@@ -1,5 +1,6 @@
 @use "../../../../shared/styles/colors.module";
 @use "../../../../shared/styles/mixins";
+@use "../../../../shared/styles/media";
 
 .tradeHistoryHeader {
   display: flex;
@@ -15,6 +16,24 @@
   border-radius: 10px;
   margin-top: 20px;
   color: colors.$text-primary;
+
+  @include media.for-desktop-low {
+    display: none;
+  }
+}
+
+.paper {
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid colors.$border-primary;
+  background-color: colors.$background-primary;
+
+  @media screen and (max-width: 1150px) {
+    border-radius: 0;
+    border-right: 0;
+    border-left: 0;
+    padding: 16px;
+  }
 }
 
 .tableRow {
@@ -22,11 +41,75 @@
   grid-template-columns: 194fr 94fr 147fr 185fr 137fr 65fr;
   padding: 20px;
   color: colors.$text-primary;
+
+  @include media.for-desktop-low {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    //grid-template-columns: repeat(4, 1fr);
+    background-color: colors.$background-secondary;
+    border-radius: 8px;
+  }
+
+  @include media.for-large-mobile {
+    gap: 8px;
+  }
+}
+
+.divider {
+  @include media.for-desktop-low {
+   display: none;
+  }
 }
 
 .tableRows {
   display: flex;
   flex-direction: column;
+
+  @include media.for-desktop-low {
+    gap: 10px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+
+  @media screen and (max-width: 1150px) {
+    max-height: 70vh;
+    overflow: scroll;
+  }
+
+  @include media.for-mobile {
+    margin: 0;
+  }
+}
+
+.mobileColumn {
+  @include media.for-desktop-low {
+    display: grid;
+    gap: 10px;
+  }
+
+  @include media.for-large-mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 26px;
+  }
+}
+
+.historyRows {
+  @media screen and (max-width: 1150px) {
+    max-height: 70vh;
+    overflow: scroll;
+  }
+}
+
+.internalLabel {
+  display: none;
+
+  @include media.for-desktop-low {
+    display: inline;
+  }
 }
 
 .buy {
@@ -55,24 +138,53 @@
   }
 }
 
-.tabs {
-  display: inline-flex;
-  border: 1px solid colors.$border-primary;
-  gap: 2px;
-  padding: 1px;
-  border-radius: 8px;
-  margin-top: 22px;
+.amount {
+  @include media.for-desktop-low {
+    display: none;
+  }
 }
 
-.tab {
-  height: 36px;
-  padding: 0 16px;
-  color: colors.$text-primary;
-  border-radius: 6px;
-  min-width: 105px;
+.amountInternalWrapper {
+  display: none;
+  background-color: colors.$background-primary;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  padding: 0 20px;
+  width: 100%;
+  grid-column-start: 1;
+  grid-column-end: 5;
+  margin-top: 20px;
+  border-radius: 8px;
+  order: 5;
 
-  &.activeTab {
-    background: colors.$palette-green;
-    color: colors.$palette-white;
+  @include media.for-desktop-low {
+    display: flex;
+  }
+
+  @include media.for-large-mobile {
+    margin-top: 0;
+  }
+}
+
+.timeCell {
+  @include media.for-desktop-low {
+    width: 80px;
+  }
+
+  @include media.for-large-mobile {
+    width: 100%;
+  }
+}
+
+.actionCell {
+  @include media.for-desktop-low {
+    order: -2;
+  }
+}
+
+.accountCell {
+  @include media.for-desktop-low {
+    order: -1;
   }
 }

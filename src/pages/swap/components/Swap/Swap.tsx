@@ -15,31 +15,28 @@ import styles from "./Swap.module.scss";
 import IconButton from "../../../../components/atoms/IconButton";
 import Svg from "../../../../components/atoms/Svg/Svg";
 import Button from "../../../../components/atoms/Button";
-import {$swapInputData, $swapRoute, $swapSlippage, $trade} from "../../models/stores";
+import { $swapInputData, $swapRoute, $swapSlippage, $trade} from "../../models/stores";
 import {
   changeOrder,
-  resetInputData,
   setAmountIn,
-  setAmountOut, setMobileChartOpened,
-  setSwapConfirmDialogOpened,
+  setAmountOut, setMobileChartOpened, setSafeTradingOpened,
+  setSwapConfirmDialogOpened, setSwapHistoryOpened,
   setSwapSettingsDialogOpened,
   setTokenFrom,
   setTokenTo
 } from "../../models";
-import {isNativeToken} from "../../../../shared/utils";
 import TokenSelector from "../../../../components/organisms/TokenSelector";
 import {useTrade} from "../../hooks/useTrade";
-import {useSwapAction} from "../../hooks/useSwapAction";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import {useSwapApprove} from "../../hooks/useSwapApprove";
 import ConnectWalletButton from "../../../../processes/web3/ui/ConnectWalletButton";
-import useNetworkSectionBalance from "../../../../shared/hooks/useNetworkSectionBalance";
 import SwapSettingsDialog from "../SwapSettingsDialog";
 import ConfirmSwapDialog from "../ConfirmSwapDialog";
 import InfoRow from "../../../../components/atoms/InfoRow";
 import PageCard from "../../../../components/atoms/PageCard";
 import PageCardHeading from "../../../../components/molecules/PageCardHeading";
 import Route from "../../../../components/molecules/Route";
+import {useTokenBalance} from "../../../../stores/balance/useTokenBalance";
 
 export const ONE_BIPS = new Percent(JSBI.BigInt(1), JSBI.BigInt(10000));
 
@@ -124,15 +121,12 @@ export default function Swap() {
   const setTokenToFn = useEvent(setTokenTo);
   const setAmountInFn = useEvent(setAmountIn);
   const setAmountOutFn = useEvent(setAmountOut);
-  const resetInputDataFn = useEvent(resetInputData);
 
   const setSwapSettingsDialogOpenedFn = useEvent(setSwapSettingsDialogOpened);
 
   const trade = useStore($trade);
   const route = useStore($swapRoute);
   const slippage = useStore($swapSlippage);
-
-  const {contracts, network} = useNetworkSectionBalance({chainId});
 
   const setSwapConfirmDialogOpenedFn = useEvent(setSwapConfirmDialogOpened);
 
@@ -156,6 +150,9 @@ export default function Swap() {
 
   const changeOrderFn = useEvent(changeOrder);
   const setMobileChartOpenedFn = useEvent(setMobileChartOpened);
+  const setSafeTradingOpenedFn = useEvent(setSafeTradingOpened);
+  const setSwapHistoryOpenedFn = useEvent(setSwapHistoryOpened);
+
 
   const [isFromTokenPickDialogOpened, setFromTokenPickDialogOpened] = useState(false);
   const [isToTokenPickDialogOpened, setToTokenPickDialogOpened] = useState(false);
@@ -165,26 +162,18 @@ export default function Swap() {
     recalculateTradeIn
   } = useTrade();
 
+  const {tokenBalance: balanceFrom} = useTokenBalance({address: swapInputData.tokenFrom?.address, chainId});
+  const {tokenBalance: balanceTo} = useTokenBalance({address: swapInputData.tokenTo?.address, chainId});
+
   const isEnoughBalance = useMemo(() => {
-    if(!swapInputData.tokenFrom) {
+    if(!swapInputData.tokenFrom || !+balanceFrom) {
       return false;
     }
 
-    const balance = isNativeToken(swapInputData.tokenFrom.address)
-      ? network?.balance
-      : contracts?.find(c => c.symbol === swapInputData.tokenFrom?.symbol)?.balance;
-
-    if(!+balance) {
-      return false;
-    }
+    return +balanceFrom >= +swapInputData.amountIn;
 
 
-    if(+balance < +swapInputData.amountIn) {
-      return false;
-    }
-
-    return true;
-  }, [swapInputData.tokenFrom, swapInputData.amountIn, contracts, network]);
+  }, [swapInputData.tokenFrom, swapInputData.amountIn, balanceFrom]);
 
   const receiveOrSold = useMemo(() => {
     if(!trade) {
@@ -211,13 +200,29 @@ export default function Swap() {
       {/*<Text variant={14}>PRO mode</Text>*/}
       <>
         {/*<Switch checked={checked} setChecked={() => setChecked(!checked)} />*/}
-        <span className="mobile">
+        <span className={styles.onlyTablet}>
+          <IconButton onClick={() => {
+            setSafeTradingOpenedFn(true);
+          }}>
+            <Svg iconName="safe-trading" />
+          </IconButton>
+        </span>
+        <span className={styles.onlyTablet}>
+          <IconButton onClick={() => {
+            setSwapHistoryOpenedFn(true);
+          }}>
+            <Svg iconName="history" />
+          </IconButton>
+        </span>
+        <span className={styles.onlyTablet}>
           <IconButton onClick={() => {
             setMobileChartOpenedFn(true);
           }}>
             <Svg iconName="trading" />
           </IconButton>
         </span>
+
+
         <IconButton onClick={() => {
           setSwapSettingsDialogOpenedFn(true);
         }}>
@@ -227,7 +232,9 @@ export default function Swap() {
     </div>} />
     <SwapSettingsDialog />
 
+    <div style={{marginBottom: 16}} />
     <TokenSelector
+      balance={balanceFrom}
       setDialogOpened={setFromTokenPickDialogOpened}
       isDialogOpened={isFromTokenPickDialogOpened}
       pickedToken={swapInputData.tokenFrom}
@@ -264,6 +271,7 @@ export default function Swap() {
     </div>
 
     <TokenSelector
+      balance={balanceTo}
       setDialogOpened={setToTokenPickDialogOpened}
       isDialogOpened={isToTokenPickDialogOpened}
       pickedToken={swapInputData.tokenTo}

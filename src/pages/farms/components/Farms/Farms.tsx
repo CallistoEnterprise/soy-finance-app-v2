@@ -17,6 +17,9 @@ import ExternalLink from "../../../../components/atoms/ExternalLink";
 import {LP_TOKEN_ABI} from "../../../../shared/constants/abis";
 import EmptyStateIcon from "../../../../components/atoms/EmptyStateIcon";
 import Preloader from "../../../../components/atoms/Preloader";
+import {getLogo} from "../../../../shared/utils";
+import Image from "next/image";
+import Divider from "../../../../components/atoms/Divider";
 
 interface Props {
   farms: Farm[],
@@ -57,13 +60,10 @@ function Farm({farm, index, staked}: {farm: Farm, index: number, staked: any}) {
   const setLpTokenToStakeFn = useEvent(setLpTokenToStake);
   const setLpTokenToUnStakeFn = useEvent(setLpTokenToUnStake);
 
-  console.log(staked);
-
   const handleHarvest = useCallback(async () => {
     if(!farm || !account) {
       return;
     }
-
 
     const contract = new Contract(farm.lpAddresses[820]!, LP_TOKEN_ABI, await web3Provider?.getSigner(account));
 
@@ -86,15 +86,28 @@ function Farm({farm, index, staked}: {farm: Farm, index: number, staked: any}) {
 
   return <div className={styles.farmWrapper} key={farm.pid}>
     <div key={farm.pid} className={styles.farm}>
-      <div>{farm.token.symbol} - {farm.quoteToken.symbol}</div>
-      <div><Label type={["standard", "supreme", "select", ""][index % 4]}/></div>
-      <div>Earned: 0</div>
-      <div>APR: {totalApr.toFixed(2).toString()}%</div>
-      <div>Liquidity: {`$${farm.liquidity.round(2).toString()}`}</div>
-      <div>Multiplier: {farm.multiplier?.toString()}X</div>
+      <div className={styles.meta}>
+        <Image width={35} height={35} src={getLogo({address: farm.token.address?.[820]?.toLowerCase()})} alt=""/>
+        <Image width={35} height={35} className={styles.secondImg} src={getLogo({address: farm.quoteToken.address?.[820]?.toLowerCase()})} alt=""/>
+        {farm.token.symbol} - {farm.quoteToken.symbol}
+      </div>
+      {/*<div><Label type={["standard", "supreme", "select", ""][index % 4]}/></div>*/}
+      <div className={styles.earnedCell}><span>Earned: </span><span>0</span></div>
+      <div className={styles.aprCell}><span>APR: </span><span>{totalApr.toFixed(2).toString()}%</span></div>
+      <div className={styles.liquidityCell}><span>Liquidity:</span> <span>{`$${farm.liquidity.round(2).toString()}`}</span></div>
+      <div className={styles.multiplierCell}><span>Multiplier:</span> <span>{farm.multiplier?.toString()}X</span></div>
       <IconButton onClick={() => setIsOpen(!isOpen)}>
         <Svg iconName="arrow-bottom"/>
       </IconButton>
+    </div>
+    <div className={styles.mobileInternal}>
+      <Divider />
+      <div className={styles.internalCellsWrapper}>
+        <div className={styles.earnedCellInternal}><span>Earned: </span><span>0</span></div>
+        <div className={styles.aprCellInternal}><span>APR: </span><span>{totalApr.toFixed(2).toString()}%</span></div>
+        <div className={styles.liquidityCellInternal}><span>Liquidity:</span> <span>{`$${farm.liquidity.round(2).toString()}`}</span></div>
+        <div className={styles.multiplierCellInternal}><span>Multiplier:</span> <span>{farm.multiplier?.toString()}X</span></div>
+      </div>
     </div>
     <Collapse open={isOpen}>
       <div className={styles.collapsed}>
@@ -144,6 +157,10 @@ function Farm({farm, index, staked}: {farm: Farm, index: number, staked: any}) {
               }} fullWidth variant="outlined"><Svg iconName="add-token" /></Button>
             </Flex>}
           </div>
+        </div>
+        <div className={styles.mobileFarmExternalLinks}>
+          <ExternalLink href={`https://explorer.callisto.network/address/${farm.lpAddresses?.["820"]}/transactions`} text="Get SOY LP" />
+          <ExternalLink href={`https://explorer.callisto.network/address/${farm.lpAddresses?.["820"]}/transactions`} text="View contract" />
         </div>
       </div>
     </Collapse>

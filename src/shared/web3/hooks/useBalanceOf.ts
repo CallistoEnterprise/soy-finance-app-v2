@@ -21,9 +21,13 @@ export function useBalanceOf(token: Token | null): TokenAmount | null {
 
     try {
       IIFE(async () => {
-        const balance = await erc20Contract["balanceOf"](account);
+        try {
+          const balance = await erc20Contract["balanceOf"](account);
 
-        setResult(new TokenAmount(token, balance.toString()));
+          setResult(new TokenAmount(token, balance.toString()));
+        } catch (e) {
+          console.log(e);
+        }
       });
     } catch (e) {
       console.log(e);

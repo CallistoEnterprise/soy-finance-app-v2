@@ -1,16 +1,12 @@
-import React, {useMemo} from "react";
+import React from "react";
 import styles from "./TokenSelector.module.scss";
-import {formatBalance, isNativeToken} from "../../../shared/utils";
+import {formatBalance} from "../../../shared/utils";
 import PickTokenDialog from "../PickTokenDialog";
-import useNetworkSectionBalance from "../../../shared/hooks/useNetworkSectionBalance";
 import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
 import {useFiatPrice} from "../../../pages/swap/hooks/useFiatPrice";
-import {SwapToken} from "../../../pages/swap/models/types";
 import InputWithTokenPick from "../../molecules/InputWithTokenPick";
 import PercentageButtons from "../../molecules/PercentageButtons";
 import Text from "../../atoms/Text";
-import {useBalanceOf} from "../../../shared/web3/hooks/useBalanceOf";
-import {formatEther} from "ethers";
 import {WrappedTokenInfo} from "../../../pages/swap/hooks/useTrade";
 import {TokenAmount} from "@callisto-enterprise/soy-sdk";
 
@@ -28,12 +24,7 @@ interface Props {
 
 export default function TokenSelector({setDialogOpened, isDialogOpened, pickedToken, inputValue, handleInputChange, handleTokenChange, label, pair, balance}: Props) {
   const {chainId} = useWeb3();
-  // const {network, contracts} = useNetworkSectionBalance({chainId});
   const {loading, price} = useFiatPrice(pickedToken?.address, chainId);
-
-  // const balance = useMemo(() => {
-  //   return isNativeToken(pickedToken?.address) ? network?.balance : contracts?.find(c => c.symbol === pickedToken?.address)?.balance;
-  // }, [pickedToken, network, contracts]);
 
   return <div className={styles.swapCard}>
     <div className={styles.swapCardHeader}>
@@ -60,7 +51,7 @@ export default function TokenSelector({setDialogOpened, isDialogOpened, pickedTo
           </span>
         <span>Balance:
           {" "}
-          {balance ? balance.toSignificant(2) : "0.0"}
+          {balance ? (+balance).toFixed(6) : "0.0"}
         </span>
       </div>
 

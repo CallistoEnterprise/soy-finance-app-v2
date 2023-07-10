@@ -2,7 +2,7 @@
 
 .carousel {
   //overflow: hidden;
-  height: 200px;
+  //height: 200px;
   position: relative;
 }
 
@@ -10,13 +10,24 @@
   white-space: nowrap;
   transition: transform 0.3s;
   position: relative;
-  height: 200px;
+  height: 230px;
+
+  @media screen and (max-width: 1023px){
+    height: 230px;
+  }
 }
 
 .textPart {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  max-width: 535px;
+
+  > {
+    * {
+      white-space: normal;
+    }
+  }
 }
 
 .bannerImage {

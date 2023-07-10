@@ -1,11 +1,29 @@
 @use "../../../shared/styles/mixins";
 @use "../../../shared/styles/colors.module";
-@use "../../../shared/styles/media";
+@use "src/shared/styles/media";
 
 .topFooter {
-  padding: 0 20px 40px;
+  padding: 20px 40px 40px;
   display: flex;
   justify-content: space-between;
+  //background-color: #451913;
+
+  @include media.for-desktop {
+    display: grid;
+    gap: 24px;
+  }
+
+  @include media.for-mobile {
+    padding: 16px;
+  }
+}
+
+.footer {
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background-color: colors.$background-primary;
+  border: 1px solid colors.$border-primary;
 
   @include media.for-mobile {
     padding: 0 0 20px;
@@ -28,6 +46,7 @@
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .soyPrice {
@@ -60,8 +79,13 @@
   gap: 120px;
   padding-top: 20px;
 
-  @include media.for-mobile {
-    display: none;
+  @include media.for-desktop {
+    gap: 60px;
+  }
+
+  @media screen and (max-width: 685px){
+    display: grid;
+    gap: 24px;
   }
 }
 
@@ -72,14 +96,17 @@
 }
 
 .bottomFooter {
-  padding: 20px 20px 0;
+
+  padding: 20px 40px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  //background-color: #300802;
 
   @include media.for-mobile {
-    padding: 16px 0 0;
-    margin-bottom: 44px;
+    padding: 16px;
+
+    margin-bottom: 20px;
     @include mixins.t-body-12;
   }
 }
@@ -108,4 +135,12 @@
   display: flex;
   align-items: center;
   gap: 21px;
+
+  @include media.for-mobile {
+    gap: 12px;
+  }
+}
+
+.priceText {
+  color: colors.$text-primary;
 }

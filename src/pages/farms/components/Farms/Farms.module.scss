@@ -12,15 +12,71 @@
   height: 60px;
   padding: 0 20px;
   display: grid;
-  grid-template-columns: 255fr 209fr 195fr 228fr 235fr 174fr 20fr;
+  grid-template-columns: 195px 1fr 110px 1fr 120px 30px;
   align-items: center;
   gap: 30px;
+
+  @media screen and (max-width: 1100px) {
+    height: 68px;
+    gap: 16px;
+    grid-template-columns: 195px 1fr 70px 1fr 85px 40px;
+  }
+
+  @media screen and (max-width: 850px) {
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 .farmWrapper {
   border-radius: 8px;
   border: 1px solid colors.$border-primary;
 }
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  img {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+.secondImg {
+  position: relative;
+  margin-left: -18px;
+}
+
+.earnedCell,
+.liquidityCell {
+  display: flex;
+  justify-content: center;
+
+  @media screen and (max-width: 1100px){
+    //justify-content: flex-start;
+  }
+}
+
+.earnedCell,
+.aprCell,
+.liquidityCell,
+.multiplierCell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  @media screen and (max-width: 1100px){
+    display: grid;
+    gap: 4px;
+  }
+
+  @media screen and (max-width: 850px) {
+    display: none;
+  }
+}
+
+
 
 .label {
   height: 34px;
@@ -53,6 +109,71 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
+
+  @media screen and (max-width: 1100px){
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto;
+    padding: 0 16px 16px;
+    gap: 16px 10px;
+  }
+
+  @media screen and (max-width: 520px){
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto auto;
+    gap: 0;
+    margin: 0 -16px;
+    padding: 0 16px 16px;
+    //margin-top: 0;
+  }
+
+}
+
+.mobileInternal {
+  display: none;
+
+  @media screen and (max-width: 850px){
+    display: block;
+    padding: 0 20px 16px;
+  }
+}
+
+//.divider {
+//  @media screen and (max-width: 520px){
+//    display: none;
+//    padding: 0 20px 0;
+//  }
+//}
+
+.internalCellsWrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) 100px;
+  margin-top: 16px;
+
+  @media screen and (max-width: 520px){
+    grid-template-columns: 1fr;
+    gap: 16px;
+    //margin-top: 0;
+  }
+}
+
+.earnedCellInternal,
+.aprCellInternal,
+.liquidityCellInternal,
+.multiplierCellInternal {
+  display: grid;
+  gap: 4px;
+
+
+  @media screen and (max-width: 520px){
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.links {
+  @media screen and (max-width: 1100px){
+    display: none;
+  }
 }
 
 .links,
@@ -62,6 +183,16 @@
   border-radius: 8px;
   min-height: 110px;
   padding: 14px 20px;
+
+  @media screen and (max-width: 550px){
+    border-radius: 0;
+  }
+}
+
+.earned {
+  @media screen and (max-width: 550px){
+    border-bottom: 1px solid colors.$border-primary;
+  }
 }
 
 .linksContainer {
@@ -84,5 +215,26 @@
 
   &:nth-child(1) {
     margin-bottom: 6px;
+  }
+}
+
+.mobileFarmExternalLinks {
+  display: none;
+
+  grid-column-start: 1;
+  grid-column-end: 3;
+  justify-content: space-between;
+  align-items: center;
+
+  @media screen and (max-width: 1100px){
+    display: flex;
+  }
+
+  @media screen and (max-width: 520px){
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 16px 0;
+    grid-column-start: unset;
+    grid-column-end: unset;
   }
 }

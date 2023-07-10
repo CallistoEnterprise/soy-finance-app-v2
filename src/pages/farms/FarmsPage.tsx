@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {ChangeEvent, useEffect, useMemo, useState} from "react";
 import Layout from "../../components/layout/Layout";
 import Farms from "./components/Farms";
 import {IIFE} from "../../shared/web3/functions/iife";
@@ -703,9 +703,6 @@ export default function FarmsPage() {
         split.push(subarray);
       }
 
-      console.log("SPLIT");
-      console.log(split);
-
       const decodedArray = split.map((callArray) => {
         return callArray.map((call, i) => {
           if (i === 4 || i === 5) {
@@ -892,18 +889,18 @@ export default function FarmsPage() {
     }
   }, [isActive]);
 
+  const [searchRequest, setSearchRequest] = useState("");
+
   return <Layout>
-    <div className="mb-20"/>
-    <div className="container">
+    <div className={clsx("container", styles.banner)}>
       <div className="paper">
         <PageCardHeading title="Soy Finance essentials"/>
         <div className="mb-20"/>
-        <BannerSlider/>
+        <BannerSlider />
       </div>
     </div>
-    <div className="mb-20"/>
     <div className="container">
-      <div className="paper">
+      <div className={clsx("paper", styles.farmPaperWrapper)}>
         <h4 className="mb-20 font-700 font-24">All farms</h4>
 
         <div className={styles.farmsHeader}>
@@ -917,34 +914,44 @@ export default function FarmsPage() {
               <button className={clsx(styles.tab, showActive && styles.activeTab)}
                       onClick={() => setShowActive(true)}
               >
-                Active
+                Live
               </button>
               <button className={clsx(styles.tab, !showActive && styles.activeTab)}
                       onClick={() => setShowActive(false)}
               >
-                Inactive
+                Finished
               </button>
             </div>
           </div>
-          <div>
-            <Select options={[
-              {
-                id: "hot",
-                value: "Hot"
-              },
-              {
-                id: "liquidity",
-                value: "Liquidity"
-              },
-              {
-                id: "multiplier",
-                value: "Multiplier"
-              },
-              {
-                id: "apr",
-                value: "APR"
-              },
-            ]} selectedOption={sorting} setSelectedOption={(id) => setSorting(id)}/>
+          <div className={styles.rightPart}>
+            <div className={styles.sorting}>
+              <Select options={[
+                {
+                  id: "hot",
+                  value: "Hot"
+                },
+                {
+                  id: "liquidity",
+                  value: "Liquidity"
+                },
+                {
+                  id: "multiplier",
+                  value: "Multiplier"
+                },
+                {
+                  id: "apr",
+                  value: "APR"
+                },
+              ]} selectedOption={sorting} setSelectedOption={(id) => setSorting(id)}/>
+            </div>
+            <div className={styles.inputWrapper}>
+              <input value={searchRequest} onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchRequest(e.target.value)}
+                     className={styles.searchToken} placeholder="Name or address"/>
+            </div>
+            <div className={styles.stakedMobile}>
+              Staked only
+              <Switch checked={showOnlyStaked} setChecked={() => setShowOnlyStaked(!showOnlyStaked)}/>
+            </div>
           </div>
         </div>
         {activeFarms && showActive && <Farms onlyStaked={showOnlyStaked} farms={activeFarms} userData={userData}/>}

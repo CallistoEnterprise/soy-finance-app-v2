@@ -4,7 +4,7 @@
 
 .pickTokenDialog {
   width: 480px;
-  padding: 38px 40px 20px;
+  padding: 38px 40px 0;
 
   @include media.for-mobile {
     padding: 8px 16px 0;
@@ -17,8 +17,8 @@
   flex-direction: column;
   gap: 4px;
   height: 300px;
-  overflow: scroll;
 }
+
 
 .searchToken {
   border-radius: 8px;
@@ -27,6 +27,19 @@
   padding: 0 20px;
   width: 100%;
   background: #F1F1F1;
+
+  transition-duration: 0.2s;
+  outline: 0;
+
+  &:hover:not(&:focus) {
+    background: colors.$hover-secondary;
+  }
+
+  &:focus,
+  &:active {
+    border: 1px solid colors.$palette-green;
+    background-color: colors.$background-secondary;
+  }
 
   @include media.for-mobile {
     height: 40px;
@@ -68,6 +81,11 @@
   gap: 4px;
   justify-content: center;
   width: 100%;
+  transition-duration: 0.2s;
+
+  &:hover {
+    background-color: colors.$hover-secondary;
+  }
 
   img {
     width: 24px;
@@ -110,4 +128,8 @@
   border-radius: 20px;
   width: 120px;
   height: 120px;
+}
+
+.tokensUl {
+  margin-bottom: 40px;
 }

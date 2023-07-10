@@ -1,4 +1,5 @@
 @use "../../../../shared/styles/media";
+@use "src/shared/styles/colors.module";
 
 .lastDayData {
   margin-top: 4px;
@@ -14,12 +15,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fff;
+  background-color: colors.$background-primary;
 }
 
 .chartContainer {
   position: relative;
-  height: 498px;
+  aspect-ratio: 9/5;
 
   @include media.for-mobile {
     height: unset;

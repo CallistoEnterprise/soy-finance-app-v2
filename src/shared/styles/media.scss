@@ -29,7 +29,19 @@
 }
 
 @mixin for-desktop {
-  @media (min-width: 1366px) {
+  @media (max-width: 1366px) {
+    @content;
+  }
+}
+
+@mixin for-desktop-low {
+  @media (max-width: 1366px) {
+    @content;
+  }
+}
+
+@mixin for-large-desktop {
+  @media (max-width: 1919px) {
     @content;
   }
 }

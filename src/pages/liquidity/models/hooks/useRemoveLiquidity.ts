@@ -157,6 +157,26 @@ export function useRemoveLiquidity() {
 
   const totalPoolTokens = useTotalSupply(pairs?.[0]?.[1]?.liquidityToken);
 
+  const pair = useMemo(() => {
+    if(pairs && pairs[0] && pairs[0][1]) {
+      return pairs[0][1];
+    }
+
+    return null;
+  }, [pairs]);
+
+  const [token0Deposited, token1Deposited] =
+    !!pair &&
+    !!totalPoolTokens &&
+    !!userPoolBalance &&
+    // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
+    JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
+      ? [
+        pair.getLiquidityValue(pair.token0, totalPoolTokens, userPoolBalance, false),
+        pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false),
+      ]
+      : [undefined, undefined]
+
   const fragment = useRouterFragment("removeLiquidity");
 
   const handleLiquidityAmountLPChange = useCallback(async (amount: string) => {
@@ -306,11 +326,8 @@ export function useRemoveLiquidity() {
       return;
     }
 
-
-
     const pairContract = new Contract(lpToken.address, IUniswapV2PairABI, await web3Provider.getSigner(account))
 
-    console.log(pairContract);
     if (!pairContract) {
       console.log("No contract");
       return;
@@ -536,6 +553,8 @@ export function useRemoveLiquidity() {
     approving,
     removing,
     pair: pairs?.[0][1],
-    readyToRemove: approval === ApprovalState.APPROVED || signatureData !== null
+    readyToRemove: approval === ApprovalState.APPROVED || signatureData !== null,
+    token1Deposited,
+    token0Deposited
   };
 }

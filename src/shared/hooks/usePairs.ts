@@ -1,7 +1,6 @@
-import {useEffect, useMemo, useState} from 'react'
-import {useWeb3} from "../../processes/web3/hooks/useWeb3";
-import {ChainId, Currency, ETHERS, Pair, Token, TokenAmount, WETH} from "@callisto-enterprise/soy-sdk";
-import {useMultiCallContract} from "../web3/hooks/useMultiCallContract";
+import {useMemo} from 'react'
+import { Pair, TokenAmount} from "@callisto-enterprise/soy-sdk";
+
 import {toCallState} from "../toCallState";
 import {PAIR_INTERFACE} from "../config/interfaces";
 import {usePairFragment} from "../config/fragments";
@@ -13,14 +12,6 @@ export enum PairState {
   NOT_EXISTS,
   EXISTS,
   INVALID,
-}
-
-function wrappedCurrency(currency: Currency | undefined, chainId: ChainId | null): Token | undefined {
-  return chainId && currency === ETHERS[chainId]
-    ? WETH[chainId]
-    : currency instanceof Token
-      ? currency
-      : undefined;
 }
 
 export function usePairs(currencies: [WrappedTokenInfo | null, WrappedTokenInfo | null][]): [PairState, Pair | null][] | null {

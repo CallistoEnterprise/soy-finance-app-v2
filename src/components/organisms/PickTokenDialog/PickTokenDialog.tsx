@@ -2,7 +2,7 @@ import React, {ChangeEvent, useEffect, useMemo, useState} from "react";
 import styles from "./PickTokenDialog.module.scss";
 import Tabs from "../../molecules/Tabs";
 import Tab from "../../atoms/Tab";
-import {baseTokens, swapTokensList} from "../../../pages/swap/constants/constants";
+import {baseTokens} from "../../../pages/swap/constants/constants";
 import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
 import Svg from "../../atoms/Svg/Svg";
 import {useEvent, useStore} from "effector-react";
@@ -12,6 +12,7 @@ import PickTokenItem from "../../molecules/PickTokenItem";
 import DrawerDialog from "../../atoms/DrawerDialog";
 import DialogHeader from "../../molecules/DialogHeader";
 import {useAllTokens} from "../../../shared/hooks/useAllTokens";
+import SimpleBar from "simplebar-react";
 
 interface Props {
   isOpened: boolean,
@@ -32,15 +33,7 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
   }, [chainId, favoriteTokens]);
 
   const setFavoriteTokenFn = useEvent(setFavoriteTokens);
-
-  // const tokensForChain = useMemo(() => {
-  //   return swapTokensList.flatMap((item) => {
-  //     return item[chainId] || [];
-  //   });
-  // }, [chainId]);
-
   const tokensList = useAllTokens();
-  // console.log(tokensList);
 
   const filteredList = useMemo(() => {
     return tokensList.filter((token) => {
@@ -48,8 +41,13 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
         return true;
       }
 
+      if(!token.symbol) {
+        return false;
+      }
+
       return token.address.toLowerCase() === searchRequest.toLowerCase()
-        || token.symbol?.toLowerCase().startsWith(searchRequest.toLowerCase());
+        || token.symbol?.toLowerCase().startsWith(searchRequest.toLowerCase())
+        || token.symbol.replace(/cc/g, "").toLowerCase().startsWith(searchRequest.toLowerCase());
 
     })
   }, [searchRequest, tokensList]);
@@ -80,12 +78,12 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
       </div>
       {Boolean(baseTokens[chainId]) && <div className={styles.baseTokens}>
         {baseTokens[chainId].map((token) => {
-          return <button key={token.original_name} onClick={() => {
+          return <button key={token.symbol} onClick={() => {
             pickToken(token);
             handleClose();
           }} className={styles.baseTokenButton}>
-            <img src={token.imgUri} alt={token.original_name}/>
-            {token.original_name}
+            <img src={token.logoURI} alt={token.symbol}/>
+            {token.symbol}
           </button>
         })}
       </div>
@@ -100,19 +98,22 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
                 <h4>No tokens found</h4>
                 <p>We did not find tokens with such a name</p>
               </div> :
-              <ul>
-                {filteredList.map(token => {
-                  return <PickTokenItem
-                    key={token.address}
-                    token={token}
-                    handlePick={() => {
-                      pickToken(token);
-                      handleClose();
-                    }}
-                    isFavorite={favoriteTokensForChain.includes(token.address)}
-                  />
-                })}
-              </ul>}
+              <SimpleBar style={{maxHeight: 300, margin: "0 -40px", padding: "0 40px"}}>
+                <ul className={styles.tokensUl}>
+                  {filteredList.map(token => {
+                    return <PickTokenItem
+                      key={token.address}
+                      token={token}
+                      handlePick={() => {
+                        pickToken(token);
+                        handleClose();
+                      }}
+                      isFavorite={favoriteTokensForChain.includes(token.address)}
+                    />
+                  })}
+                </ul>
+              </SimpleBar>
+              }
           </div>
         </Tab>
         <Tab title="My list">
@@ -140,8 +141,6 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
           </div>
         </Tab>
       </Tabs>
-
-
     </div>
   </DrawerDialog>;
 }

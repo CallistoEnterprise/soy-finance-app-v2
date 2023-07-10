@@ -20,3 +20,6 @@ export const setPairsWithLiquidity = createEvent<Pair[]>("Set pairs with liquidi
 
 export const setImportTokenA = createEvent<WrappedTokenInfo>("");
 export const setImportTokenB = createEvent<WrappedTokenInfo>("");
+
+export const setLiquidityChartOpened = createEvent<boolean>("Open or close mobile chart");
+export const setLiquidityHistoryOpened = createEvent<boolean>("Open or close mobile chart");

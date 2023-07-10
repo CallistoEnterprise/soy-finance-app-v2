@@ -9,7 +9,6 @@ export interface PriceChartEntry {
   low: number
 }
 
-
 export const multiQuery = async (
   queryConstructor: (subqueries: string[]) => string,
   subqueries: string[],
@@ -167,7 +166,7 @@ export const startTimestamp = getUnixTime(startOfHour(sub(utcCurrentTime, timeWi
 export const inter = 3600;
 
 export const fetchTokenPriceData = async (
-  address: string,
+  address: string | undefined,
   interval: number,
   startTimestamp: number,
 ): Promise<{
@@ -184,7 +183,7 @@ export const fetchTokenPriceData = async (
   }
   try {
     const blocks = await getBlocksFromTimestamps(timestamps, 'asc', 500)
-    if (!blocks || blocks.length === 0) {
+    if (!blocks || blocks.length === 0 || !address) {
       console.error('Error fetching blocks for timestamps', timestamps)
       return {
         error: false,
@@ -586,6 +585,26 @@ const GLOBAL_TRANSACTIONS = gql`
       amount0
       amount1
       amountUSD
+    },
+    swaps: swaps(first: 50, orderBy: timestamp, orderDirection: desc) {
+      id
+      timestamp
+      pair {
+        token0 {
+          id
+          symbol
+        }
+        token1 {
+          id
+          symbol
+        }
+      }
+      from
+      amount0In
+      amount1In
+      amount0Out
+      amount1Out
+      amountUSD
     }
   }
 `;
@@ -712,7 +731,7 @@ interface TransactionResults {
   burns: BurnResponse[]
 }
 
-export const fetchTopTransactions = async (): Promise<Transaction[] | undefined> => {
+export const fetchTopTransactions = async (): Promise<{ add: Transaction[], remove: Transaction[], swap: Transaction[] } | undefined> => {
   try {
     const data = await request<TransactionResults>(infoClient, GLOBAL_TRANSACTIONS)
 
@@ -722,10 +741,19 @@ export const fetchTopTransactions = async (): Promise<Transaction[] | undefined>
 
     const mints = data.mints.map(mapMints)
     const burns = data.burns.map(mapBurns)
+    const swaps = data.swaps.map(mapSwaps)
 
-    return [...mints, ...burns].sort((a, b) => {
-      return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10)
-    })
+    return {
+      add: mints.sort((a, b) => {
+        return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10)
+      }),
+      remove: burns.sort((a, b) => {
+        return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10)
+      }),
+      swap: swaps.sort((a, b) => {
+        return parseInt(b.timestamp, 10) - parseInt(a.timestamp, 10)
+      })
+    }
   } catch {
     return undefined
   }

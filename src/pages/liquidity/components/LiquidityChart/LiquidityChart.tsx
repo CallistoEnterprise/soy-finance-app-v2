@@ -16,6 +16,8 @@ import 'chartjs-adapter-date-fns';
 import PageCardHeading from "../../../../components/molecules/PageCardHeading";
 import Text from "../../../../components/atoms/Text";
 import Preloader from "../../../../components/atoms/Preloader";
+import {useColorMode} from "../../../../shared/providers/ThemeProvider";
+import {useLiquidityGraphData} from "../../../../stores/liquidity-graph-data/useLiquidityGraphData";
 
 const tooltipLine = {
   id: 'tooltipLine',
@@ -316,47 +318,21 @@ const financialOptions = (): ChartOptions =>  ({
 });
 
 export default function LiquidityChart() {
-  const [overviewChartData, setOverviewChartData] = useState<string[]>([]);
-  const [labels, setLabels] = useState<Date[]>([]);
-  const [error, setError] = useState(false)
-  const [loading, setIsLoading] = useState(true);
+  const {mode} = useColorMode();
 
-  useEffect(() => {
-    const fetch = async () => {
-      const { data } = await fetchChartData(getOverviewChartData)
-      if (data) {
-        const dataResult = [];
-        const labelsResult = [];
-
-        for(const item of data) {
-          dataResult.push(item.liquidityUSD);
-          labelsResult.push(new Date(item.date * 1000));
-        }
-
-        setOverviewChartData(dataResult);
-        setLabels(labelsResult);
-      } else {
-        setError(true)
-      }
-      setIsLoading(false);
-    }
-    if (!overviewChartData?.length && !error) {
-      fetch()
-    }
-  }, [overviewChartData, error]);
+  const {labels, data, loading} = useLiquidityGraphData();
 
   return <div className="paper">
     <PageCardHeading title="Liquidity analytics" />
     <div className={styles.chartContainer}>
-      {labels.length && overviewChartData.length && !loading ?
+      {!loading ?
       <div className={styles.lastDayData}>
-
           <Text variant={20} weight={500} color="secondary">
-            {labels[labels.length - 1].toLocaleString('en-US', {year: "numeric", day: "numeric", month: "short"})} — {(overviewChartData[overviewChartData.length - 1] / 1000).toFixed(2)}K
+            {labels[labels.length - 1].toLocaleString('en-US', {year: "numeric", day: "numeric", month: "short"})} — {(data[data.length - 1] / 1000).toFixed(2)}K
           </Text>
       </div> : null}
       {loading && <div className={styles.loading}><Preloader withLogo={false} size={100} /></div>}
-      {overviewChartData.length && <Line options={financialOptions()} type="line" data={getData("light", overviewChartData, labels)} />}
+      {!loading && <Line options={financialOptions()} type="line" data={getData(mode, data, labels)} />}
     </div>
   </div>;
 }

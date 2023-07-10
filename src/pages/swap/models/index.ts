@@ -32,3 +32,5 @@ export const setFiatPrices = createEvent<{[key:string]: number}>("Set prices for
 
 export const setSwapConfirmDialogOpened = createEvent<boolean>("Set opened or closer swap confirmation dialog");
 export const setMobileChartOpened = createEvent<boolean>("Open or close mobile chart");
+export const setSafeTradingOpened = createEvent<boolean>("Open or close mobile chart");
+export const setSwapHistoryOpened = createEvent<boolean>("Open or close mobile chart");

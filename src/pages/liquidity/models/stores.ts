@@ -37,3 +37,6 @@ export const $pairsWithLiquidity = createStore< {pairs: Pair[], loading: boolean
 
 export const $importTokenA = createStore<WrappedTokenInfo | null>(null, {sid: "importTokenA"});
 export const $importTokenB = createStore<WrappedTokenInfo | null>(null, {sid: "importTokenB"});
+
+export const $isLiquidityChartOpened = createStore<boolean>(false, {sid: "isLiquidityChartOpened"});
+export const $isLiquidityHistoryOpened = createStore<boolean>(false, {sid: "isLiquidityHistoryOpened"});

@@ -1,11 +1,6 @@
 import {createEvent} from "effector";
-import {BalanceItem} from "../hooks/useNetworkSectionBalance";
 import {ChainId} from "@callisto-enterprise/soy-sdk";
 import {RecentTransaction} from "./types";
-
-export const pushBalance = createEvent<{account: string | null, value: BalanceItem}>("Push balance item after recieving");
-export const updateBalance = createEvent<{account: string, chainId}>("Remove balance to load it next time");
-export const resetBalance = createEvent("Reset all balances");
 
 export const setWalletDialogOpened = createEvent<boolean>("Open or close wallet dialog");
 

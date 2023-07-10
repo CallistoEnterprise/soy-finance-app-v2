@@ -13,8 +13,6 @@ import OpenDropdownButton from "../OpenDropdownButton";
 import DropdownItem from "../DropdownItem";
 import {formatAddress} from "../../../shared/utils";
 
-
-
 export default function WalletMenu({expandDirection = "bottom"}) {
   const {t} = useTranslation('common');
 
@@ -44,11 +42,11 @@ export default function WalletMenu({expandDirection = "bottom"}) {
         });
       }
     },
-    [walletRef, expandDirection]
+    [walletRef, isWalletMenuOpened, expandDirection]
   );
 
   return <>
-    <div ref={walletRef}>
+    <div ref={walletRef} className={styles.dropdownWrapper}>
       <OpenDropdownButton
         handleClick={() => setWalletMenuOpened(true)}
         label={formatAddress(account)}

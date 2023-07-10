@@ -1,3 +1,6 @@
+import {WrappedTokenInfo} from "../hooks/useTrade";
+import {Token} from "@callisto-enterprise/soy-sdk";
+
 export const swapTokensList = [
   {
     "61": {
@@ -383,69 +386,33 @@ export const swapTokensList = [
   }
 ];
 
-export const baseTokens = {
-  820: [{
-    "token_address": "0x0000000000000000000000000000000000000001",
-    "original_name": "CLO",
-    "decimal_token": 18,
-    "imgUri": "https://s2.coinmarketcap.com/static/img/coins/64x64/2757.png"
-  },
-    {
-      "token_address": "0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65",
-      "original_name": "SOY",
-      "decimal_token": 18,
-      "imgUri": "https://app.soy.finance/images/coins/0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65.png"
-    },
-    {
-      "token_address": "0xbf6c50889d3a620eb42C0F188b65aDe90De958c4",
-      "original_name": "BUSDT",
-      "decimal_token": 18,
-      "imgUri": "https://app.soy.finance/images/coins/0xbf6c50889d3a620eb42C0F188b65aDe90De958c4.png"
-    }
+export const baseTokens: {[key: number]: Array<WrappedTokenInfo>} = {
+  820: [
+    new WrappedTokenInfo({
+      chainId: 820,
+      address: '0xF5AD6F6EDeC824C7fD54A66d241a227F6503aD3a',
+      symbol: "CLO",
+      name: "CLO",
+      decimals: 18,
+      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2757.png"
+    }, []),
+    new WrappedTokenInfo({
+      chainId: 820,
+      address: '0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65',
+      symbol: "SOY",
+      name: "Soy-ERC223",
+      decimals: 18,
+      logoURI: "https://app.soy.finance/images/coins/0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65.png"
+    }, []),
+    new WrappedTokenInfo({
+      chainId: 820,
+      address: '0xbf6c50889d3a620eb42C0F188b65aDe90De958c4',
+      symbol: "BUSDT",
+      name: "Bulls USD",
+      decimals: 18,
+      logoURI: "https://app.soy.finance/images/coins/0xbf6c50889d3a620eb42C0F188b65aDe90De958c4.png"
+    }, [])
   ],
-  199: [{
-    "token_address": "0xCC78D0A86B0c0a3b32DEBd773Ec815130F9527CF",
-    "original_name": "BUSDT",
-    "decimal_token": 18,
-    "imgUri": "https://app.soy.finance/images/coins/0xbf6c50889d3a620eb42C0F188b65aDe90De958c4.png"
-  },
-    {
-      "token_address": "0x0000000000000000000000000000000000000003",
-      "original_name": "BTT",
-      "decimal_token": 18,
-      "imgUri": "https://s2.coinmarketcap.com/static/img/coins/64x64/16086.png"
-    },
-    {
-      "token_address": "0xCcbf1C9E8b4f2cDF3Bfba1098b8f56f97d219D53",
-      "original_name": "ccCLO",
-      "decimal_token": 18,
-      "imgUri": "https://s2.coinmarketcap.com/static/img/coins/64x64/2757.png"
-    },
-    {
-      "token_address": "0xcC00860947035a26Ffe24EcB1301ffAd3a89f910",
-      "original_name": "SOY",
-      "decimal_token": 18,
-      "imgUri": "https://app.soy.finance/images/coins/0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65.png"
-    }
-  ],
-  61: [
-    {
-      "token_address": "0xcC67D978Ddf07971D9050d2b424f36f6C1a15893",
-      "original_name": "SOY",
-      "decimal_token": 18,
-      "imgUri": "https://app.soy.finance/images/coins/0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65.png"
-    },
-    {
-      "token_address": "0xCC48CD0B4a6f50b8f8bf0f9b80eD7881fA547968",
-      "original_name": "BUSDT",
-      "decimal_token": 18,
-      "imgUri": "https://app.soy.finance/images/coins/0xbf6c50889d3a620eb42C0F188b65aDe90De958c4.png"
-    },
-    {
-      "token_address": "0x0000000000000000000000000000000000000005",
-      "original_name": "ETC",
-      "decimal_token": 18,
-      "imgUri": "https://s2.coinmarketcap.com/static/img/coins/64x64/1321.png"
-    }
-  ]
+  199: [],
+  61: []
 }

@@ -1,43 +1,36 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import styles from "./TradingChart.module.scss";
 import TabTitle from "../../../../components/atoms/TabTitle";
 import clsx from "clsx";
 import {Bar, Chart, Line} from "react-chartjs-2";
 import {
   BarElement,
-  ChartData, ChartMeta,
+  CategoryScale,
+  Chart as ChartJS,
+  ChartData,
+  ChartMeta,
   ChartOptions,
   Filler,
   Legend,
   LinearScale,
   LineElement,
   PointElement,
-  ScriptableContext, TimeSeriesScale,
+  ScriptableContext,
+  TimeSeriesScale,
   Title,
-  Tooltip,
-  Chart as ChartJS,
-  CategoryScale
+  Tooltip
 } from "chart.js";
 import {useColorMode} from "../../../../shared/providers/ThemeProvider";
 import {useStore} from "effector-react";
 import {$swapInputData} from "../../models/stores";
-import {SwapToken} from "../../models/types";
-import {
-  fetchTokenPriceData,
-  getUnixTime,
-  inter,
-  startOfHour,
-  startTimestamp,
-  utcCurrentTime
-} from "../../../../shared/fetcher";
 import 'chartjs-adapter-date-fns';
 import Svg from "../../../../components/atoms/Svg/Svg";
-import {sub} from "../../../../shared/fetcher";
 import Preloader from "../../../../components/atoms/Preloader";
 import Text from "../../../../components/atoms/Text";
-import {isNativeToken} from "../../../../shared/utils";
-import {WCLO_ADDRESS} from "../../hooks/useTrade";
-import useMediaQuery from "../../../../shared/hooks/useMediaQuery";
+import {SOY, WrappedTokenInfo} from "../../hooks/useTrade";
+import {usePairs} from "../../../../shared/hooks/usePairs";
+import {useTokenGraphData} from "../../../../stores/token-graph-data/useTokenGraphData";
+import {Timeline} from "../../../../stores/token-graph-data/types";
 
 
 const tooltipLine = {
@@ -115,6 +108,10 @@ const getCandleData = (data) => ({
   datasets: [
     {
       backgroundColor: (ctx => {
+        if(!ctx.raw) {
+          return;
+        }
+
         const {raw: {o, c}} = ctx;
         let color;
         if (c >= o) {
@@ -129,6 +126,7 @@ const getCandleData = (data) => ({
       borderRadius: 2,
       borderSkipped: false,
       label: 'Financial Chart',
+      minBarLength: 2,
       data
     },
   ],
@@ -469,128 +467,81 @@ export const getData = (mode, data, labels): ChartData => ({
 
 const tabsTimeline = ["day", "week", "month", "year"];
 
+const soy = new WrappedTokenInfo({
+  chainId: 820,
+  address: '0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65',
+  symbol: "SOY",
+  name: "Soy-ERC223",
+  decimals: 18,
+  logoURI: "https://app.soy.finance/images/coins/0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65.png"
+}, []);
+
 export default function TradingChart() {
   const [selectedTab, setSelectedTab] = useState(1);
   const {mode} = useColorMode();
+  const [view, setView] = useState<"line" | "candlestick">("line");
 
   const swapInputData = useStore($swapInputData);
-
   const [currentGraph, setCurrentGraph] = useState<"first" | "second">("first");
 
-  const [firstToken, setFirstToken] = useState<any>({
-    "address": "0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65",
-    "original_name": "SOY",
-    "decimal_token": 18,
-    "imgUri": "https://app.soy.finance/images/coins/0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65.png"
-  });
-
-  const [data, setData] = useState([]);
-  const [candleData, setCandleData] = useState([]);
-  const [labels, setLabels] = useState([]);
-
-  const [time, setTime] = useState({
-    startTimestamp,
-    interval: inter
-  });
-
-  const isMobile = useMediaQuery("(max-width: 600px)");
-
-  const [loading, setIsLoading] = useState(true);
-
-  const [secondToken, setSecondToken] = useState<any>(null);
+  const [firstToken, setFirstToken] = useState<WrappedTokenInfo>(soy);
+  const [timeline, setTimeline] = useState<Timeline>(Timeline.WEEK);
+  const [secondToken, setSecondToken] = useState<WrappedTokenInfo | null>(null);
 
   useEffect(() => {
     if (swapInputData.tokenFrom) {
-      if(isNativeToken(swapInputData.tokenFrom.address)) {
-        return setFirstToken({
-          original_name: swapInputData.tokenFrom.name,
-          decimal_token: swapInputData.tokenFrom.decimals,
-          imgUri: swapInputData.tokenFrom.logoURI,
-          address: WCLO_ADDRESS
-        });
-      }
-
-      return setFirstToken({
-        original_name: swapInputData.tokenFrom.name,
-        decimal_token: swapInputData.tokenFrom.decimals,
-        imgUri: swapInputData.tokenFrom.logoURI,
-        address: swapInputData.tokenFrom.address
-      });
+      setFirstToken(swapInputData.tokenFrom);
     }
   }, [swapInputData.tokenFrom]);
 
   useEffect(() => {
     if (swapInputData.tokenTo) {
-      if(isNativeToken(swapInputData.tokenTo.address)) {
-        return setSecondToken({
-          original_name: swapInputData.tokenTo.name,
-          decimal_token: swapInputData.tokenTo.decimals,
-          imgUri: swapInputData.tokenTo.logoURI,
-          address: WCLO_ADDRESS
-        });
-      }
-
-      return setSecondToken({
-        original_name: swapInputData.tokenTo.name,
-        decimal_token: swapInputData.tokenTo.decimals,
-        imgUri: swapInputData.tokenTo.logoURI,
-        address: swapInputData.tokenTo.address
-      });
+      setSecondToken(swapInputData.tokenTo);
     }
   }, [swapInputData.tokenTo]);
 
-  useEffect(() => {
-    (async () => {
-      setIsLoading(true);
-      const price = await fetchTokenPriceData(currentGraph === "first" ? firstToken.address.toLowerCase() : secondToken.address.toLowerCase(), time.interval, time.startTimestamp);
+  const p = useMemo(() => {
+    return [[firstToken, secondToken]]
+  }, [firstToken, secondToken]);
 
-      const candlePrice = await fetchTokenPriceData(currentGraph === "first" ? firstToken.address.toLowerCase() : secondToken.address.toLowerCase(), time.interval, time.startTimestamp);
+  const pairs = usePairs(p);
 
-      const dataResult = [];
-      const labelsResult = [];
-      const candleDataResult = [];
+  const prices = useMemo(() => {
+    if(!pairs || !secondToken) {
+      return null;
+    }
+    const [, pair] = pairs[0];
 
-      if (price.data) {
-        for (const priceObj of price.data) {
-          dataResult.push(priceObj.close);
-          labelsResult.push( new Date(priceObj.time * 1000));
-        }
-      }
+    if(!pair) {
+      return null;
+    }
 
-      if (candlePrice.data) {
-        for (const priceObj of candlePrice.data) {
-          candleDataResult.push({
-            x: new Date(priceObj.time * 1000),
-            o: priceObj.open,
-            h: priceObj.high,
-            l: priceObj.low,
-            c: priceObj.close,
-            s: [priceObj.open, priceObj.close]
-          });
-        }
-      }
+    return {first: pair.priceOf(firstToken), second: pair.priceOf(secondToken)};
+  }, [firstToken, pairs, secondToken]);
 
-      setCandleData(candleDataResult);
-      setLabels(labelsResult);
-      setData(dataResult);
 
-      const newValue = dataResult[dataResult.length - 1];
-      const oldValue = dataResult[0];
 
-      const change = ((newValue - oldValue) / oldValue) * 100;
-      setPriceChange(+change.toFixed(1));
+  const {data, candleData, loading, labels} = useTokenGraphData({address: currentGraph === "first" ? firstToken.address : secondToken?.address, timeline});
 
-      // console.log(dataResult[0], dataResult[dataResult.length - 1]);
-      //
-      // console.log(price);
-      setIsLoading(false);
-    })();
+  const firstTokenPrice = useMemo(() => {
+    if(!data) {
+      return;
+    }
 
-  }, [firstToken, currentGraph, secondToken, time]);
+    return data[data.length - 1];
+  }, [data]);
 
-  const [view, setView] = useState<"line" | "candlestick">("line");
+  const priceChange = useMemo(() => {
+    if(!data) {
+      return;
+    }
 
-  const [priceChange, setPriceChange] = useState(0);
+    const newValue = data[data.length - 1];
+    const oldValue = data[0];
+
+    const change = ((newValue - oldValue) / oldValue) * 100;
+    return +change.toFixed(1);
+  }, [data]);
 
   return <div className="paper">
     <>
@@ -600,14 +551,14 @@ export default function TradingChart() {
             <button onClick={() => {
               setCurrentGraph("first");
             }} className={clsx(styles.firstImageToken, currentGraph === "first" && styles.active)}>
-              <img width={36} height={36} src={firstToken.imgUri}/>
+              <img width={36} height={36} src={firstToken.logoURI}/>
             </button>
             <button disabled={!secondToken}
                     onClick={() => {
                       setCurrentGraph("second");
                     }} className={clsx(styles.secondImageToken, currentGraph === "second" && styles.active)}>
 
-              {secondToken ? <img width={36} height={36} src={secondToken.imgUri}/>
+              {secondToken ? <img width={36} height={36} src={secondToken.logoURI}/>
                 :
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -625,31 +576,19 @@ export default function TradingChart() {
           <div className={styles.tabs}>
             <TabTitle size="small" title="1D" selectedTab={selectedTab} setSelectedTab={(tab) => {
               setSelectedTab(tab);
-              setTime({
-                startTimestamp: getUnixTime(startOfHour(sub(utcCurrentTime, {days: 1}))),
-                interval: 1800
-              })
+              setTimeline(Timeline.DAY);
             }} view="separate" index={0}/>
             <TabTitle size="small" title="1W" selectedTab={selectedTab} setSelectedTab={(tab) => {
               setSelectedTab(tab);
-              setTime({
-                startTimestamp: getUnixTime(startOfHour(sub(utcCurrentTime, {weeks: 1}))),
-                interval: 3600
-              })
+              setTimeline(Timeline.WEEK);
             }} view="separate" index={1}/>
             <TabTitle size="small" title="1M" selectedTab={selectedTab} setSelectedTab={(tab) => {
               setSelectedTab(tab);
-              setTime({
-                startTimestamp: getUnixTime(startOfHour(sub(utcCurrentTime, {months: 1}))),
-                interval: 3600 * 4
-              })
+              setTimeline(Timeline.MONTH);
             }} view="separate" index={2}/>
             <TabTitle size="small" title="1Y" selectedTab={selectedTab} setSelectedTab={(tab) => {
               setSelectedTab(tab);
-              setTime({
-                startTimestamp: getUnixTime(startOfHour(sub(utcCurrentTime, {years: 1}))),
-                interval: 3600 * 24
-              })
+              setTimeline(Timeline.YEAR);
             }} view="separate" index={3}/>
           </div>
           <div className={styles.viewButtons}>
@@ -662,14 +601,19 @@ export default function TradingChart() {
           </div>
         </div>
       </div>
-      <p className={styles.tokenPrice}>1 {firstToken.original_name} = 1,655.2385 USDT ($1,664.11)</p>
-
+      {firstTokenPrice && !prices && <>
+        <p className={styles.tokenPrice}>1 {firstToken.symbol} (${firstTokenPrice.toFixed(4)})</p>
+      </>}
+      {firstTokenPrice && prices && <>
+        {currentGraph === "first" && <p className={styles.tokenPrice}>1 {firstToken.symbol} = {prices.first.toSignificant(6)} {secondToken?.symbol} (${firstTokenPrice.toFixed(4)})</p>}
+        {currentGraph === "second" && <p className={styles.tokenPrice}>1 {secondToken?.symbol} = {prices.second.toSignificant(6)} {firstToken?.symbol} (${firstTokenPrice.toFixed(4)})</p>}
+      </>}
       <div className={styles.chartContainer}>
         {loading && <div className={styles.loading}><Preloader withLogo={false} size={100} /></div>}
         <div>
           {selectedTab === 0 && <div className={clsx("font-16", "font-secondary", styles.tabContent)}>
             <span className={clsx(styles.priceChange, priceChange >= 0 ? styles.green : styles.red)}>{priceChange}%</span>
-            <Text color="secondary">Past 1 hour</Text>
+            <Text color="secondary">Past 1 day</Text>
           </div>}
           {selectedTab === 1 && <div className={clsx("font-16", "font-secondary", styles.tabContent)}>
             <span className={clsx(styles.priceChange, priceChange >= 0 ? styles.green : styles.red)}>{priceChange}%</span>
@@ -684,10 +628,9 @@ export default function TradingChart() {
             <Text color="secondary">Past 365 days</Text>
           </div>}
         </div>
-        {view==="line" && data.length && labels.length && <Line options={options(tabsTimeline[selectedTab])} data={getData(mode, data, labels)} type="line"/>}
-        {view==="candlestick" && candleData.length && <Bar options={financialOptions(tabsTimeline[selectedTab])} data={getCandleData(candleData)} type="bar"/>}
+        {view==="line" && !loading && <Line options={options(tabsTimeline[selectedTab])} data={getData(mode, data, labels)} type="line"/>}
+        {view==="candlestick" && !loading && <Bar options={financialOptions(tabsTimeline[selectedTab])} data={getCandleData(candleData)} type="bar"/>}
       </div>
-
     </>
   </div>;
 }

@@ -5,13 +5,13 @@ import tokenListInBTT from "../constants/tokenLists/tokenlistInBTT.json";
 import {useMemo} from "react";
 import {WrappedTokenInfo} from "../../pages/swap/hooks/useTrade";
 
-const tokenListMap = {
+export const tokenListMap = {
   820: tokenListInCLO,
   61: tokenListInETC,
   199: tokenListInBTT
 };
 
-const nativeTokens = {
+export const nativeTokens = {
   820: new WrappedTokenInfo({
     chainId: 820,
     address: '0xF5AD6F6EDeC824C7fD54A66d241a227F6503aD3a',

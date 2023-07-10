@@ -40,7 +40,7 @@ export default function HeaderNetwork({expandDirection = "bottom"}: Props) {
         });
       }
     },
-    [ref, isNetworksDropdownOpened]
+    [ref, isNetworksDropdownOpened, expandDirection]
   );
 
   const currentNetwork = useMemo(() => {

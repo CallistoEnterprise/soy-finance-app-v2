@@ -3,7 +3,7 @@
 .pickTokenListItem {
   display: flex;
   align-items: center;
-  gap: 10px;
+  position: relative;
 }
 
 .tokenBalance {
@@ -17,6 +17,13 @@
   width: 40px;
   height: 40px;
   color: colors.$palette-grey-light;
+  border-radius: 50%;
+  border: 1px solid transparent;
+
+  &:hover {
+    //border: 1px solid colors.$border-primary;
+    border: 1px solid colors.$palette-green;
+  }
 
   &.active {
     color: colors.$palette-green;
@@ -29,6 +36,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-right: 10px;
+  padding-left: 10px;
+  border-radius: 10px;
+
+  &:hover {
+    background-color: colors.$background-secondary;
+  }
 }
 
 .tokenButtonInfo {

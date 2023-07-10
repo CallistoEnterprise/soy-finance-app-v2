@@ -1,6 +1,6 @@
 import {
-  $isMobileChartOpened,
-  $isSwapConfirmDialogOpened,
+  $isMobileChartOpened, $isSafeTradingOpened,
+  $isSwapConfirmDialogOpened, $isSwapHistoryOpened,
   $isSwapSettingsDialogOpened,
   $isTradeInLoading,
   $isTradeOutLoading, $swapDeadline, $swapFiatPrices,
@@ -16,9 +16,9 @@ import {
   setAmountIn,
   setAmountOut,
   setFiatPrices, setMobileChartOpened,
-  setRoute,
+  setRoute, setSafeTradingOpened,
   setSwapConfirmDialogOpened,
-  setSwapDeadline,
+  setSwapDeadline, setSwapHistoryOpened,
   setSwapSettingsDialogOpened,
   setSwapSlippage,
   setTokenFrom,
@@ -191,6 +191,20 @@ $isSwapConfirmDialogOpened.on(
 
 $isMobileChartOpened.on(
   setMobileChartOpened,
+  (_, data) => {
+    return data;
+  }
+)
+
+$isSafeTradingOpened.on(
+  setSafeTradingOpened,
+  (_, data) => {
+    return data;
+  }
+)
+
+$isSwapHistoryOpened.on(
+  setSwapHistoryOpened,
   (_, data) => {
     return data;
   }

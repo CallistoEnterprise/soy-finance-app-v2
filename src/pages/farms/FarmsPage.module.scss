@@ -1,9 +1,75 @@
 @use "../../shared/styles/colors.module";
 @use "../../shared/styles/mixins";
+@use "../../shared/styles/media";
 
 .farms {
   display: grid;
   gap: 10px;
+}
+
+.banner {
+  margin-top: 20px;
+  @media screen and (max-width: 1080px){
+    display: none;
+  }
+}
+
+.farmPaperWrapper {
+  margin-top: 20px;
+  @include media.for-mobile {
+    margin-top: 0;
+  }
+}
+
+.rightPart {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  @media screen and (max-width: 520px) {
+    display: grid;
+    grid-template-areas: "search search" "staked sorting";
+  }
+}
+
+.stakedMobile {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  grid-area: staked;
+
+  @include mixins.t-body-14;
+  @media screen and (max-width: 520px) {
+    display: flex;
+
+  }
+}
+
+.searchInput {
+  height: 40px;
+  border: 1px solid colors.$border-primary;
+  border-radius: 10px;
+  padding: 16px;
+  width: 333px;
+
+  @media screen and (max-width: 1023px) {
+    width: 100%;
+  }
+}
+
+.inputWrapper {
+  width: 100%;
+  @media screen and (max-width: 520px) {
+    grid-area: search;
+  }
+}
+
+.sorting {
+  @media screen and (max-width: 520px) {
+    grid-area: sorting;
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 
 .farm {
@@ -35,6 +101,40 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+
+  @media screen and (max-width: 1023px) {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr;
+  }
+
+  @media screen and (max-width: 520px) {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr;
+  }
+}
+
+.searchToken {
+  border-radius: 8px;
+  border: 1px solid colors.$border-primary;
+  height: 40px;
+  padding: 0 16px;
+  width: 100%;
+  background: #F1F1F1;
+
+  transition-duration: 0.2s;
+  outline: 0;
+
+  &:hover:not(&:focus) {
+    background: colors.$hover-secondary;
+  }
+
+  &:focus,
+  &:active {
+    border: 1px solid colors.$palette-green;
+    background-color: colors.$background-secondary;
+  }
 }
 
 .leftPart {
@@ -49,6 +149,10 @@
   gap: 10px;
 
   @include mixins.t-body-14;
+
+  @media screen and (max-width: 520px) {
+    display: none;
+  }
 }
 
 .tabs {

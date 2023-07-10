@@ -1,3 +1,5 @@
+@use "src/shared/styles/media";
+
 .stakeLpTokensModal {
   width: 480px;
 }
@@ -10,4 +12,20 @@
   display: flex;
   gap: 10px;
   margin-top: 20px;
+}
+
+.stakeLpTokensModal {
+  width: 480px;
+
+  @include media.for-mobile {
+    width: 100%;
+  }
+}
+
+.content {
+  padding: 40px 34px 43px;
+
+  @include media.for-mobile {
+    padding: 16px 16px 40px;
+  }
 }

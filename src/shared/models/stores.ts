@@ -1,10 +1,5 @@
 import {createStore} from "effector";
-import {BalanceItem} from "../hooks/useNetworkSectionBalance";
 import {RecentTransaction} from "./types";
-
-export const $balances = createStore<{[key: string]: BalanceItem[]}>({}, {
-  sid: "balances"
-});
 
 export const $isWalletDialogOpened = createStore<boolean>(false, {
   sid: "isWalletDialogOpened"

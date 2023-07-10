@@ -1,5 +1,9 @@
 @use "../../../shared/styles/colors.module";
 
+.dropdownWrapper {
+  position: relative;
+}
+
 .buttonContent {
   display: flex;
   justify-content: center;
@@ -73,10 +77,6 @@
     opacity: 1;
     pointer-events: auto;
     z-index: 999;
-  }
-
-  .networksDropdown {
-    opacity: 1;
   }
 
   .walletMenuDropdown {

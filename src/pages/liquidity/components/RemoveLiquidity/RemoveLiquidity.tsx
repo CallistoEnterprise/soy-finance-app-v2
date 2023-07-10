@@ -97,7 +97,9 @@ export default function RemoveLiquidity() {
     handleAmountAChange,
     handleAmountBChange,
     handleLiquidityAmountLPChange,
-    pair
+    pair,
+    token1Deposited,
+    token0Deposited
   } = useRemoveLiquidity();
 
   const [isFromTokenPickDialogOpened, setFromTokenPickDialogOpened] = useState(false);
@@ -121,11 +123,11 @@ export default function RemoveLiquidity() {
       handleTokenChange={(token) => {
         // handleTokenAChange(token);
       }}
-      balance={balance}
+      balance={balance?.toSignificant(6)}
     />
 
     <div className={styles.changeOrder}>
-      <IconButton variant="action" onClick={null}>
+      <IconButton readonly variant="action" onClick={null}>
         <Svg iconName="arrow-right"/>
       </IconButton>
     </div>
@@ -142,10 +144,11 @@ export default function RemoveLiquidity() {
       handleTokenChange={(token) => {
         handleTokenAChange(token);
       }}
+      balance={token0Deposited?.toSignificant(6)}
     />
 
     <div className={styles.changeOrder}>
-      <IconButton variant="action" onClick={null}>
+      <IconButton readonly variant="action" onClick={null}>
         <Svg iconName="add-token"/>
       </IconButton>
     </div>
@@ -162,6 +165,7 @@ export default function RemoveLiquidity() {
       handleTokenChange={(token) => {
         handleTokenBChange(token);
       }}
+      balance={token1Deposited?.toSignificant(6)}
     />
 
     <div className={styles.pricesBlock}>

@@ -1,6 +1,6 @@
 import {
   $importTokenA, $importTokenB,
-  $isImportPoolDialogOpened,
+  $isImportPoolDialogOpened, $isLiquidityChartOpened, $isLiquidityHistoryOpened,
   $isRemoveLiquidityDialogOpened,
   $liquidityInputData,
   $pairsWithLiquidity
@@ -10,102 +10,36 @@ import {
   closeRemoveLiquidityDialog, openImportPoolDialog,
   openRemoveLiquidityDialog, setImportTokenA, setImportTokenB,
   setLiquidityAmountIn,
-  setLiquidityAmountOut,
-  setLiquidityFirstToken,
+  setLiquidityAmountOut, setLiquidityChartOpened,
+  setLiquidityFirstToken, setLiquidityHistoryOpened,
   setLiquiditySecondToken, setPairsWithLiquidity, setPairsWithLiquidityLoading
 } from "./index";
 
-$liquidityInputData.on(
-  setLiquidityFirstToken,
-  (_, data) => {
-    return {
-      ..._, tokenFrom: data
-    }
-  }
-)
+$liquidityInputData.on(setLiquidityFirstToken,
+  (_, data) => ({ ..._, tokenFrom: data }));
 
-$liquidityInputData.on(
-  setLiquiditySecondToken,
-  (_, data) => {
-    return {
-      ..._, tokenTo: data
-    }
-  }
-)
+$liquidityInputData.on(setLiquiditySecondToken,
+  (_, data) => ({ ..._, tokenTo: data }));
 
+$liquidityInputData.on(setLiquidityAmountIn,
+  (_, data) => ({ ..._, amountIn: data }));
 
-$liquidityInputData.on(
-  setLiquidityAmountIn,
-  (_, data) => {
-    return {
-      ..._,
-      amountIn: data
-    }
-  }
-);
+$liquidityInputData.on(setLiquidityAmountOut,
+  (_, data) => ({ ..._, amountOut: data }));
 
-$liquidityInputData.on(
-  setLiquidityAmountOut,
-  (_, data) => {
-    return {
-      ..._,
-      amountOut: data
-    }
-  }
-);
+$isRemoveLiquidityDialogOpened.on(openRemoveLiquidityDialog, () => true);
+$isRemoveLiquidityDialogOpened.on(closeRemoveLiquidityDialog, () => false);
 
-$isRemoveLiquidityDialogOpened.on(
-  openRemoveLiquidityDialog,
-  () => {
-    return true;
-  }
-)
+$isImportPoolDialogOpened.on(openImportPoolDialog, () => true);
+$isImportPoolDialogOpened.on(closeImportPoolDialog, () => false);
 
-$isRemoveLiquidityDialogOpened.on(
-  closeRemoveLiquidityDialog,
-  () => {
-    return false;
-  }
-)
+$pairsWithLiquidity.on(setPairsWithLiquidityLoading,
+  (_, data) => ({..._, loading: data}));
+$pairsWithLiquidity.on(setPairsWithLiquidity,
+  (_, data) => ({..._, pairs: data}));
 
-$isImportPoolDialogOpened.on(
-  openImportPoolDialog,
-  () => {
-    return true;
-  }
-)
+$importTokenB.on(setImportTokenB, (_, data) => data);
+$importTokenA.on(setImportTokenA, (_, data) => data);
 
-$isImportPoolDialogOpened.on(
-  closeImportPoolDialog,
-  () => {
-    return false;
-  }
-)
-
-$pairsWithLiquidity.on(
-  setPairsWithLiquidityLoading,
-  (_, data) => {
-    return {..._, loading: data}
-  }
-)
-
-$pairsWithLiquidity.on(
-  setPairsWithLiquidity,
-  (_, data) => {
-    return {..._, pairs: data}
-  }
-)
-
-$importTokenA.on(
-  setImportTokenA,
-  (_, data) => {
-    return data;
-  }
-);
-
-$importTokenB.on(
-  setImportTokenB,
-  (_, data) => {
-    return data;
-  }
-)
+$isLiquidityChartOpened.on(setLiquidityChartOpened, (_, data) => data);
+$isLiquidityHistoryOpened.on(setLiquidityHistoryOpened, (_, data) => data);

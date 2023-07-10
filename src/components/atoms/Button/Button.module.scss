@@ -71,7 +71,7 @@
 
   &[disabled] {
     color: colors.$palette-grey-light;
-    border: 1px solid colors.$text-secondary;
+    border: 1px solid colors.$palette-grey-light;
     background: transparent;
   }
 
@@ -109,6 +109,7 @@
   }
 
   &[disabled] {
+    color: colors.$palette-grey-light;
     background: colors.$palette-grey-light;
   }
 

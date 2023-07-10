@@ -76,7 +76,7 @@ function getPairOfWrappedTokensByAddress(addressPair: [string, string]) {
 
   const wrappedTokenB = new WrappedTokenInfo({
     address: addressB,
-    decimals: tokenA.decimals,
+    decimals: tokenB.decimals,
     chainId: 820,
     name: tokenB.name,
     symbol: tokenB.symbol,

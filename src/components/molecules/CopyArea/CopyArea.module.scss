@@ -8,7 +8,9 @@
   position: relative;
   height: 60px;
   white-space: nowrap;
-  background-color: #F1F1F1;
+  background-color: colors.$background-secondary;
+
+  color: colors.$text-primary;
 
   &.button {
   }
@@ -28,12 +30,17 @@
 
   color: colors.$text-secondary;
   cursor: pointer;
-  //&:hover {
-  //  cursor: pointer;
-  //  svg path {
-  //    fill: #4B564B;
-  //  }
-  //}
+
+  svg {
+    transition-duration: 0.2s;
+  }
+
+  &:hover {
+    cursor: pointer;
+    //svg {
+    //  color: colors.$hover-primary;
+    //}
+  }
 }
 
 .text {

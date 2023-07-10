@@ -1,5 +1,18 @@
 @use "../../../../shared/styles/colors.module";
 @use "../../../../shared/styles/mixins";
+@use "../../../../shared/styles/media";
+
+.onlyTablet {
+  display: none;
+
+  @include media.for-mobile {
+    display: block;
+  }
+}
+
+.wrapper {
+  margin-bottom: 16px;
+}
 
 .swapHeader {
   display: flex;
@@ -11,7 +24,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
 }
 
 .proMode {
@@ -129,4 +141,8 @@
       transform: translateX(-50%);
     }
   }
+}
+
+.spacer20 {
+  height: 20px;
 }

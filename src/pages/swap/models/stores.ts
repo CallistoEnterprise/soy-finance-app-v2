@@ -42,3 +42,6 @@ export const $swapFiatPrices = createStore<{[key: string]: number} | null>(null,
 export const $isSwapConfirmDialogOpened = createStore<boolean>(false, {sid: "isSwapConfirmDialogOpened"})
 
 export const $isMobileChartOpened = createStore<boolean>(false, {sid: "isMobileChartOpened"});
+export const $isSafeTradingOpened = createStore<boolean>(false, {sid: "isSafeTradingOpened"});
+export const $isSwapHistoryOpened = createStore<boolean>(false, {sid: "isSafeTradingOpened"});
+

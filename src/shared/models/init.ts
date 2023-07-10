@@ -4,58 +4,15 @@ import "../../pages/liquidity/models/init";
 import "../../pages/farms/models/init";
 import "../web3/models/init";
 
-import {$balances, $favoriteTokens, $isWalletDialogOpened, $recentTransactions} from "./stores";
+import { $favoriteTokens, $isWalletDialogOpened, $recentTransactions } from "./stores";
 import {
   addFavoriteToken,
   addRecentTransaction, editTransactionStatus,
-  pushBalance, removeFavoriteToken,
-  resetBalance, resetTransactions, setFavoriteTokens,
+  removeFavoriteToken,
+  setFavoriteTokens,
   setRecentTransactions,
-  setWalletDialogOpened,
-  updateBalance
+  setWalletDialogOpened
 } from "./index";
-
-$balances.on(
-  pushBalance,
-  (state, data) => {
-    let result;
-    if (state[data.account]) {
-      result = [...state[data.account], data.value];
-    } else {
-      result = [data.value];
-    }
-
-    return {
-      ...state,
-      [data.account]: result
-    };
-  }
-);
-
-$balances.on(
-  updateBalance,
-  (state, data) => {
-    let result;
-    if (state[data.account]) {
-      if (typeof data.chainId === "number") {
-        result = state[data.account].filter(balance => {
-          return balance.network.chainId !== data.chainId;
-        });
-      } else {
-        result = state[data.account].filter(balance => {
-          return !data.chainId.includes(balance.network.chainId);
-        });
-      }
-
-      return {
-        ...state,
-        [data.account]: result
-      };
-    }
-
-    return state;
-  }
-).reset(resetBalance);
 
 $isWalletDialogOpened.on(
   setWalletDialogOpened,
@@ -144,5 +101,3 @@ $favoriteTokens.on(
     return result;
   }
 )
-
-// $recentTransactions.reset(resetTransactions);
