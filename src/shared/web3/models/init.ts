@@ -1,8 +1,8 @@
 import {createEvent, createStore} from "effector";
 import {LiquidityInputTokens, RemoveLiquidityTokens, TokenMetadata} from "./types";
 import {Token, TokenAmount} from "@callisto-enterprise/soy-sdk";
-import {WrappedTokenInfo} from "../../../pages/swap/hooks/useTrade";
 import {LiquidityInputData} from "../../../pages/liquidity/models/types";
+import {WrappedTokenInfo} from "../../../pages/swap/functions";
 
 // export const $swapInputTokens = createStore<TransactionTokensMetadata>({
 //   tokenA: null,

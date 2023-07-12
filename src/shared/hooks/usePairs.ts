@@ -5,7 +5,7 @@ import {toCallState} from "../toCallState";
 import {PAIR_INTERFACE} from "../config/interfaces";
 import {usePairFragment} from "../config/fragments";
 import {useMultiCallGetReserves} from "../web3/hooks/useMultiCallGetReserves";
-import {WrappedTokenInfo} from "../../pages/swap/hooks/useTrade";
+import {WrappedTokenInfo} from "../../pages/swap/functions";
 
 export enum PairState {
   LOADING,

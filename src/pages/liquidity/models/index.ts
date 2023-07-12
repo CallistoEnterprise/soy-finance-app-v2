@@ -1,7 +1,7 @@
 import {createEvent} from "effector";
 import {SwapToken} from "../../swap/models/types";
 import {Pair} from "@callisto-enterprise/soy-sdk";
-import {WrappedTokenInfo} from "../../swap/hooks/useTrade";
+import {WrappedTokenInfo} from "../../swap/functions";
 
 export const setLiquidityFirstToken = createEvent<SwapToken | null>("Set swap token from");
 export const setLiquiditySecondToken = createEvent<SwapToken | null>("Set swap token to");

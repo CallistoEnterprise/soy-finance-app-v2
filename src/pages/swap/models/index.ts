@@ -1,7 +1,7 @@
 import {createEvent} from "effector";
 import {SwapInputData} from "./types";
 import {Route, Trade} from "@callisto-enterprise/soy-sdk";
-import {WrappedTokenInfo} from "../hooks/useTrade";
+import {WrappedTokenInfo} from "../functions";
 
 export const setTokenFrom = createEvent<WrappedTokenInfo | null>("Set swap token from");
 export const setTokenTo = createEvent<WrappedTokenInfo | null>("Set swap token to");

@@ -4,20 +4,19 @@ import {useSwapAction} from "../../hooks/useSwapAction";
 import Button from "../../../../components/atoms/Button";
 import {useEvent, useStore} from "effector-react";
 import {$isSwapConfirmDialogOpened, $swapInputData, $swapRoute, $swapSlippage, $trade} from "../../models/stores";
-import {
-  computeSlippageAdjustedAmounts,
-  computeSlippageAdjustedAmountsOut,
-  computeTradePriceBreakdown,
-  ONE_BIPS
-} from "../Swap/Swap";
 import Svg from "../../../../components/atoms/Svg/Svg";
-import Dialog from "../../../../components/molecules/Dialog";
 import {setSwapConfirmDialogOpened} from "../../models";
 import {TradeType} from "@callisto-enterprise/soy-sdk";
 import DialogHeader from "../../../../components/molecules/DialogHeader";
 import {formatBalanceToEight} from "../../../../shared/utils";
 import Route from "../../../../components/molecules/Route";
 import DrawerDialog from "../../../../components/atoms/DrawerDialog";
+import {
+  computeSlippageAdjustedAmounts,
+  computeSlippageAdjustedAmountsOut,
+  computeTradePriceBreakdown,
+  ONE_BIPS
+} from "../../functions";
 
 export default function ConfirmSwapDialog() {
   const { handleSwap } = useSwapAction();

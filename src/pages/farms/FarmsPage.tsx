@@ -132,7 +132,7 @@ const fetchTopPools = async (timestamp24hAgo: number): Promise<string[]> => {
         }
       }
     `
-    const data = await request<TopPoolsResponse>(infoClient, query, {blacklist: TOKEN_BLACKLIST, timestamp24hAgo})
+    const data = await request<TopPoolsResponse>(infoClient, query, {blacklist: TOKEN_BLACKLIST, timestamp24hAgo});
     // pairDayDatas id has compound id "0xPOOLADDRESS-NUMBERS", extracting pool address with .split('-')
     return data.pairDayDatas.map((p) => p.id.split('-')[0])
   } catch (error) {
@@ -142,18 +142,24 @@ const fetchTopPools = async (timestamp24hAgo: number): Promise<string[]> => {
 }
 
 const useTopPoolAddresses = (): string[] => {
-  const [topPoolAddresses, setTopPoolAddresses] = useState([])
-  const [timestamp24hAgo] = getDeltaTimestamps()
+  const [topPoolAddresses, setTopPoolAddresses] = useState([]);
+  const [timestamp24hAgo] = useMemo(() => {
+    return getDeltaTimestamps();
+  }, []);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
-      const addresses = await fetchTopPools(timestamp24hAgo)
-      setTopPoolAddresses(addresses)
+      const addresses = await fetchTopPools(timestamp24hAgo);
+      console.log("FETCHING ADDRESSES");
+      console.log(addresses);
+      setTopPoolAddresses(addresses);
+      setLoaded(true);
     }
-    if (topPoolAddresses.length === 0) {
+    if (topPoolAddresses.length === 0 && !loaded) {
       fetch()
     }
-  }, [topPoolAddresses, timestamp24hAgo])
+  }, [topPoolAddresses, timestamp24hAgo, loaded])
 
   return topPoolAddresses
 }
@@ -455,9 +461,13 @@ export const getLpFeesAndApr = (volumeUSD: number, volumeUSDWeek: number, liquid
 
 const usePoolDatas = (poolAddresses: string[]): PoolDatas => {
   const [fetchState, setFetchState] = useState<PoolDatas>({error: false})
-  const [t24h, t48h, t7d, t14d] = getDeltaTimestamps()
+  const [t24h, t48h, t7d, t14d] = useMemo(() => {
+    return getDeltaTimestamps()
+  }, []);
   const {blocks, error: blockError} = useBlocksFromTimestamps([t24h, t48h, t7d, t14d])
-  const [block24h, block48h, block7d, block14d] = blocks ?? []
+  const [block24h, block48h, block7d, block14d] = useMemo(() => {
+    return blocks ?? [];
+  }, [blocks])
 
   useEffect(() => {
     const fetch = async () => {
@@ -547,8 +557,12 @@ const usePoolDatas = (poolAddresses: string[]): PoolDatas => {
       }
     }
 
-    const allBlocksAvailable = block24h?.number && block48h?.number && block7d?.number && block14d?.number
+    const allBlocksAvailable = block24h?.number && block48h?.number && block7d?.number && block14d?.number;
+
+    console.log(poolAddresses);
+
     if (poolAddresses.length > 0 && allBlocksAvailable && !blockError) {
+      console.log("FETHING NOW!");
       fetch()
     }
   }, [poolAddresses, block24h, block48h, block7d, block14d, blockError])
@@ -589,6 +603,7 @@ export default function FarmsPage() {
 
   const getAllocFragment = useLocalFarmFragment("getAllocationX1000");
   const userInfoFragment = useLocalFarmFragment("userInfo");
+  const pendingRewardFragment = useLocalFarmFragment("pendingReward");
 
   const [data, setData] = useState<Farm[] | null>(null);
 
@@ -600,8 +615,10 @@ export default function FarmsPage() {
   const [sorting, setSorting] = useState<"hot" | "liquidity" | "apr" | "multiplier">("hot");
 
   const addresses = useTopPoolAddresses();
-
   const poolsDatas = usePoolDatas(addresses);
+
+  const [fPrice, setFPrice] = useState<any>(0);
+  const [searchRequest, setSearchRequest] = useState("");
 
   useEffect(() => {
     if (!multiCallContract
@@ -681,11 +698,6 @@ export default function FarmsPage() {
           ERC_20_INTERFACE.encodeFunctionData(call.fragment, call.params ? call.params : undefined)
         ]));
       }
-
-      console.log(multiplierResultsCalls);
-      console.log(allocResultsCalls);
-
-      console.log(resultsCalls);
 
       const {returnData: allReturnData} = await multiCallContract["aggregate"](resultsCalls);
 
@@ -769,12 +781,15 @@ export default function FarmsPage() {
       });
 
       const farmsWithPrices = fetchFarmsPrices(serializedResults);
+      const mainFarmPrice = farmsWithPrices.find((farm) => farm.pid === 2)?.token.usdcPrice;
+      setFPrice(mainFarmPrice);
 
       const farmsWithAPR = farmsWithPrices.map((farm) => {
         const poolKey = farm.lpAddresses["820"]?.toLowerCase();
-        const farmSwapAPR = poolsDatas.data && poolsDatas.data[poolKey] && poolsDatas.data[poolKey] ? poolsDatas.data[poolKey].lpApr7d : 0
+        const farmSwapAPR = poolsDatas.data && poolsDatas.data[poolKey] ? poolsDatas.data[poolKey].lpApr7d : 0
 
-        const mainFarmPrice = farmsWithPrices.find((farm) => farm.pid === 2)?.token.usdcPrice;
+        console.log(poolsDatas.data);
+        console.log(poolKey);
 
         const {cakeRewardsApr, lpRewardsApr} = getFarmApr(
           farm.poolWeight,
@@ -784,6 +799,7 @@ export default function FarmsPage() {
           820,
           farmSwapAPR,
         );
+
 
         return {...farm, apr: cakeRewardsApr, lpRewardsApr}
       });
@@ -796,12 +812,13 @@ export default function FarmsPage() {
   }, [balanceOfFragment, decimalsFragment, getAllocFragment, localFarmsFragment, multiCallContract, poolsDatas.data, totalSupplyFragment]);
 
   useEffect(() => {
-    if (!account || !multiCallContract || !userInfoFragment) {
+    if (!account || !multiCallContract || !userInfoFragment || !pendingRewardFragment) {
       return;
     }
 
     (IIFE(async () => {
       const userInfoCalls = [];
+      const pendingRewardCalls = [];
       for (let i = 0; i < farmsToFetch.length; i++) {
         const {localFarmAddresses} = farmsToFetch[i];
 
@@ -814,23 +831,40 @@ export default function FarmsPage() {
         userInfoCalls.push([userInfoCall.address, LOCAL_FARM_INTERFACE.encodeFunctionData(userInfoCall.fragment, userInfoCall.params)]);
       }
 
+      for (let i = 0; i < farmsToFetch.length; i++) {
+        const {localFarmAddresses} = farmsToFetch[i];
+
+        const pendingRewardCall = {
+          address: localFarmAddresses?.["820"],
+          fragment: pendingRewardFragment,
+          params: [account],
+        };
+
+        pendingRewardCalls.push([pendingRewardCall.address, LOCAL_FARM_INTERFACE.encodeFunctionData(pendingRewardCall.fragment, pendingRewardCall.params)]);
+      }
+
       const {returnData: userInfoReturnData} = await multiCallContract["aggregate"](userInfoCalls);
+      const {returnData: pendingRewardReturnData} = await multiCallContract["aggregate"](pendingRewardCalls);
       const userInfoResult = userInfoReturnData.map(call => MASTER_CHEF_INTERFACE.decodeFunctionResult(userInfoFragment, call));
+      const pendingRewardResult = pendingRewardReturnData.map(call => MASTER_CHEF_INTERFACE.decodeFunctionResult(pendingRewardFragment, call));
 
       const res = {};
 
       for (const [index, farm] of farmsToFetch.entries()) {
-        res[farm.pid] = userInfoResult[index];
+        res[farm.pid] = {
+          staked: userInfoResult[index],
+          reward: pendingRewardResult[index]
+        };
       }
 
       setUserData(res);
     }));
-  }, [account, multiCallContract, userInfoFragment]);
+  }, [account, multiCallContract, pendingRewardFragment, userInfoFragment]);
 
   const filteredFarms = useMemo(() => {
     if(showOnlyStaked && userData && data) {
       return data.filter((farm, index) => {
-        return Boolean(userData[index]?.[0]);
+        return Boolean(userData[index]?.staked[0]);
       });
     }
 
@@ -889,7 +923,6 @@ export default function FarmsPage() {
     }
   }, [isActive]);
 
-  const [searchRequest, setSearchRequest] = useState("");
 
   return <Layout>
     <div className={clsx("container", styles.banner)}>
@@ -954,8 +987,8 @@ export default function FarmsPage() {
             </div>
           </div>
         </div>
-        {activeFarms && showActive && <Farms onlyStaked={showOnlyStaked} farms={activeFarms} userData={userData}/>}
-        {inactiveFarms && !showActive && <Farms onlyStaked={showOnlyStaked} farms={inactiveFarms} userData={userData}/>}
+        {activeFarms && showActive && <Farms fPrice={fPrice} onlyStaked={showOnlyStaked} farms={activeFarms} userData={userData}/>}
+        {inactiveFarms && !showActive && <Farms fPrice={fPrice} onlyStaked={showOnlyStaked} farms={inactiveFarms} userData={userData}/>}
       </div>
     </div>
     <StakeLPTokensModal/>

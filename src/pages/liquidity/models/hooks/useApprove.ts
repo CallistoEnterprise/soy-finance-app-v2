@@ -5,8 +5,8 @@ import {isNativeToken} from "../../../../shared/utils";
 import {Contract, MaxInt256, parseUnits} from "ethers";
 import WETH_ABI from "../../../../shared/constants/abis/interfaces/weth.json";
 import {ROUTER_ADDRESS} from "../../../../shared/web3/contracts";
-import {WrappedTokenInfo} from "../../../swap/hooks/useTrade";
 import {ERC_20_ABI} from "../../../../shared/constants/abis";
+import {WrappedTokenInfo} from "../../../swap/functions";
 
 export enum ApprovalState {
   UNKNOWN,

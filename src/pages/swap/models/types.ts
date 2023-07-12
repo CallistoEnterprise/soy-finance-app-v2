@@ -1,4 +1,4 @@
-import {WrappedTokenInfo} from "../hooks/useTrade";
+import {WrappedTokenInfo} from "../functions";
 
 export type SwapToken = {
   token_address: string,

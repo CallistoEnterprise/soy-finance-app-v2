@@ -52,7 +52,8 @@
 .earnedCell,
 .liquidityCell {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-left: 25%;
 
   @media screen and (max-width: 1100px){
     //justify-content: flex-start;
@@ -151,7 +152,11 @@
 
   @media screen and (max-width: 520px){
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 10px;
+
+    > div {
+      height: 26px;
+    }
     //margin-top: 0;
   }
 }
@@ -167,6 +172,7 @@
   @media screen and (max-width: 520px){
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
 }
 
@@ -237,4 +243,31 @@
     grid-column-start: unset;
     grid-column-end: unset;
   }
+}
+
+.roiButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  width: 24px;
+  color: colors.$palette-green;
+  padding: 0;
+  svg {
+    transition-duration: 0.3s;
+  }
+
+
+  &:hover {
+    svg {
+      transform: scale(1.1);
+      transform-origin: center;
+    }
+  }
+}
+
+.aprValue {
+  display: flex;
+  gap: 4px;
+  align-items: center;
 }

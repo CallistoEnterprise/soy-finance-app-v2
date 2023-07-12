@@ -7,8 +7,8 @@ import {useFiatPrice} from "../../../pages/swap/hooks/useFiatPrice";
 import InputWithTokenPick from "../../molecules/InputWithTokenPick";
 import PercentageButtons from "../../molecules/PercentageButtons";
 import Text from "../../atoms/Text";
-import {WrappedTokenInfo} from "../../../pages/swap/hooks/useTrade";
 import {TokenAmount} from "@callisto-enterprise/soy-sdk";
+import {WrappedTokenInfo} from "../../../pages/swap/functions";
 
 interface Props {
   setDialogOpened: any,

@@ -27,10 +27,10 @@ import 'chartjs-adapter-date-fns';
 import Svg from "../../../../components/atoms/Svg/Svg";
 import Preloader from "../../../../components/atoms/Preloader";
 import Text from "../../../../components/atoms/Text";
-import {SOY, WrappedTokenInfo} from "../../hooks/useTrade";
 import {usePairs} from "../../../../shared/hooks/usePairs";
 import {useTokenGraphData} from "../../../../stores/token-graph-data/useTokenGraphData";
 import {Timeline} from "../../../../stores/token-graph-data/types";
+import {WrappedTokenInfo} from "../../functions";
 
 
 const tooltipLine = {

@@ -6,9 +6,9 @@ import {addFavoriteToken, removeFavoriteToken, setFavoriteTokens} from "../../..
 import clsx from "clsx";
 import Svg from "../../atoms/Svg/Svg";
 import {formatBalance, isNativeToken} from "../../../shared/utils";
-import {WrappedTokenInfo} from "../../../pages/swap/hooks/useTrade";
 import {useTokenBalance} from "../../../stores/balance/useTokenBalance";
 import Preloader from "../../atoms/Preloader";
+import {WrappedTokenInfo} from "../../../pages/swap/functions";
 
 export default function PickTokenItem({token, isFavorite, handlePick}: {token: WrappedTokenInfo, isFavorite: boolean, handlePick: any}) {
   const {chainId} = useWeb3();

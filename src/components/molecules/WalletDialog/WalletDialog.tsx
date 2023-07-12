@@ -14,11 +14,11 @@ import Preloader from "../../atoms/Preloader";
 import InfoRow from "../../atoms/InfoRow";
 import DrawerDialog from "../../atoms/DrawerDialog";
 import {useBalanceOf} from "../../../shared/web3/hooks/useBalanceOf";
-import {WrappedTokenInfo} from "../../../pages/swap/hooks/useTrade";
 import {formatBalance} from "../../../shared/utils";
 import ExternalLink from "../../atoms/ExternalLink";
 import {useTokenBalance} from "../../../stores/balance/useTokenBalance";
 import {nativeTokens} from "../../../shared/hooks/useAllTokens";
+import {WrappedTokenInfo} from "../../../pages/swap/functions";
 
 function Transaction({transaction}) {
   const {web3Provider, chainId} = useWeb3();

@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import styles from "./TokensSelect.module.scss";
-import {WrappedTokenInfo} from "../../../swap/hooks/useTrade";
 import Svg from "../../../../components/atoms/Svg/Svg";
 import Text from "../../../../components/atoms/Text";
+import {WrappedTokenInfo} from "../../../swap/functions";
 
 interface Props {
   pickedToken: WrappedTokenInfo,

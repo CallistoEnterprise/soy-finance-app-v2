@@ -2,7 +2,7 @@ import {createStore} from "effector";
 import {SwapToken} from "../../swap/models/types";
 import {LiquidityInputData} from "./types";
 import {Pair} from "@callisto-enterprise/soy-sdk";
-import {WrappedTokenInfo} from "../../swap/hooks/useTrade";
+import {WrappedTokenInfo} from "../../swap/functions";
 
 export const $liquidityTokens = createStore<{
   firstToken: SwapToken | null,

@@ -1,5 +1,5 @@
 import {Token} from "@callisto-enterprise/soy-sdk";
-import {WrappedTokenInfo} from "../../../pages/swap/hooks/useTrade";
+import {WrappedTokenInfo} from "../../../pages/swap/functions";
 
 export type TokenMetadata = {
   token_address: string,

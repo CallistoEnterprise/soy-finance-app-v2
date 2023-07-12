@@ -1,5 +1,5 @@
-import {CallResult, CallState} from "../pages/swap/hooks/useTrade";
 import {FunctionFragment, Interface, Result} from "ethers";
+import {CallResult, CallState} from "../pages/swap/functions";
 
 const INVALID_CALL_STATE: CallState = { valid: false, result: undefined, loading: false, syncing: false, error: false }
 const LOADING_CALL_STATE: CallState = { valid: true, result: undefined, loading: true, syncing: true, error: false }

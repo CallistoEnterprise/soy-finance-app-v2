@@ -7,7 +7,6 @@ import {
   setLiquidityTokenA,
   setLiquidityTokenB
 } from "../../../../shared/web3/models/init";
-import {WrappedTokenInfo} from "../../../swap/hooks/useTrade";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import {CurrencyAmount, JSBI, TokenAmount } from "@callisto-enterprise/soy-sdk";
 import {Contract, parseUnits} from "ethers";
@@ -16,6 +15,7 @@ import {BigNumber} from "@ethersproject/bignumber";
 import routerABI from "../../../../shared/constants/abis/interfaces/router.json";
 import {usePairs} from "../../../../shared/hooks/usePairs";
 import {wrappedCurrencyAmount} from "../../../../shared/web3/functions/wrappedCurrency";
+import {WrappedTokenInfo} from "../../../swap/functions";
 
 export function tryParseAmount(value?: string, currency?: WrappedTokenInfo | null, chainId?: number): CurrencyAmount | undefined {
   if (!value || !currency) {

@@ -4,7 +4,7 @@ import Svg from "../../atoms/Svg/Svg";
 import {useSnackbar} from "../../../shared/providers/SnackbarProvider";
 import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
 import Text from "../../atoms/Text";
-import {WrappedTokenInfo} from "../../../pages/swap/hooks/useTrade";
+import {WrappedTokenInfo} from "../../../pages/swap/functions";
 
 interface Props {
   value: string,

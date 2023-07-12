@@ -7,6 +7,7 @@
 
 .font-14 {
   @include mixins.t-body-14;
+  letter-spacing: -0.28px;
 }
 
 .font-16 {

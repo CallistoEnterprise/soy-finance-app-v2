@@ -1,13 +1,13 @@
 import {useEvent, useStore} from "effector-react";
 import {$pairsWithLiquidity} from "../stores";
 import {useEffect, useMemo, useRef} from "react";
-import {WrappedTokenInfo} from "../../../swap/hooks/useTrade";
 import {Pair, Token} from "@callisto-enterprise/soy-sdk";
 import {isAddress} from "ethers";
 import {usePairs} from "../../../../shared/hooks/usePairs";
 import {toV2LiquidityToken, usePairBalances, useTrackedTokenPairs} from "../../components/YourLiquidity/YourLiquidity";
 import {setPairsWithLiquidity, setPairsWithLiquidityLoading} from "../index";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
+import {WrappedTokenInfo} from "../../../swap/functions";
 
 export function usePairsWithLiquidity(): {pairsWithLiquidity: Pair[], loading: boolean} {
   const {pairs, loading} = useStore($pairsWithLiquidity);

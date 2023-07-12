@@ -1,8 +1,8 @@
 import {useMemo} from "react";
 import {Contract, JsonRpcProvider} from "ethers";
 import MULTICALL_ABI from "../../constants/abis/interfaces/multicall.json";
-import {MULTICALL_NETWORKS} from "../../../pages/swap/hooks/useTrade";
 import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
+import {MULTICALL_NETWORKS} from "../../../pages/swap/functions";
 
 export function useMultiCallContract() {
   const {chainId, web3Provider} = useWeb3();

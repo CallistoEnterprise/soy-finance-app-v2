@@ -6,7 +6,6 @@ import {$isUnStakeLPTokensDialogOpened, $lpTokenToUnStake} from "../../models/st
 import DialogHeader from "../../../../components/molecules/DialogHeader";
 import TokenSelector from "../../../../components/organisms/TokenSelector";
 import Button from "../../../../components/atoms/Button";
-import {WrappedTokenInfo} from "../../../swap/hooks/useTrade";
 import {Farm} from "../../FarmsPage";
 import {Contract, EthersError, isError, parseUnits} from "ethers";
 import {LOCAL_FARM_ABI} from "../../../../shared/constants/abis";
@@ -15,6 +14,7 @@ import DrawerDialog from "../../../../components/atoms/DrawerDialog";
 import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
 import {ErrorCode} from "@ethersproject/logger";
 import {useEthersError} from "../../../swap/hooks/useEthersError";
+import {WrappedTokenInfo} from "../../../swap/functions";
 
 export default function UnStakeLPTokensModal() {
   const isOpened = useStore($isUnStakeLPTokensDialogOpened);

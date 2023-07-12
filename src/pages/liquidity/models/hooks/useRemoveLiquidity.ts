@@ -12,7 +12,6 @@ import {
   setRemoveLiquidityTokenB
 } from "../../../../shared/web3/models/init";
 import IUniswapV2PairABI from "../../../../shared/constants/abis/interfaces/IUniswapV2Pair.json";
-import {WrappedTokenInfo} from "../../../swap/hooks/useTrade";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import {
   CurrencyAmount,
@@ -34,6 +33,7 @@ import {ROUTER_ADDRESS} from "../../../../shared/web3/contracts";
 import {ApprovalState, useApproveCallback} from "./useApprove";
 import {splitSignature} from "@ethersproject/bytes";
 import {wrappedCurrencyAmount} from "../../../../shared/web3/functions/wrappedCurrency";
+import {WrappedTokenInfo} from "../../../swap/functions";
 
 export function tryParseAmount(value?: string, currency?: WrappedTokenInfo | Token | null, chainId?: number): CurrencyAmount | undefined {
   // console.log(value);

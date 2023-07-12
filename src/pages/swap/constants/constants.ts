@@ -1,5 +1,4 @@
-import {WrappedTokenInfo} from "../hooks/useTrade";
-import {Token} from "@callisto-enterprise/soy-sdk";
+import {WrappedTokenInfo} from "../functions";
 
 export const swapTokensList = [
   {

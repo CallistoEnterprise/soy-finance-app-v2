@@ -1,17 +1,15 @@
 import {useEffect, useMemo, useState} from "react";
 import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
-import {useBlockNumber} from "../../../shared/hooks/useBlockNumber";
 
 export default function useTransactionDeadline(userDeadline): number | undefined {
   const ttl = userDeadline * 60;
   const { chainId, web3Provider } = useWeb3();
   const [blockTs, setBlockTs] = useState<number>(null);
 
-  const currentBlock = useBlockNumber();
 
   useEffect(
     () => {
-      if(!web3Provider || !currentBlock) {
+      if(!web3Provider) {
         return;
       }
 
@@ -24,7 +22,7 @@ export default function useTransactionDeadline(userDeadline): number | undefined
         }
       )();
     },
-    [chainId, currentBlock, web3Provider]
+    [chainId, web3Provider]
   );
 
   return useMemo(

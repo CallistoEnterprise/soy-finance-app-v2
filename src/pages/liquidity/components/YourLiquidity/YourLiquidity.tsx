@@ -8,7 +8,6 @@ import Text from "../../../../components/atoms/Text";
 import Button from "../../../../components/atoms/Button";
 import IconButton from "../../../../components/atoms/IconButton";
 import Svg from "../../../../components/atoms/Svg/Svg";
-import {WrappedTokenInfo} from "../../../swap/hooks/useTrade";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import {useAllTokens} from "../../../../shared/hooks/useAllTokens";
 import {useErc20Fragment} from "../../../../shared/config/fragments";
@@ -29,6 +28,7 @@ import {setImportTokenA, setImportTokenB} from "../../models";
 import Divider from "../../../../components/atoms/Divider";
 import {useBalanceOf} from "../../../../shared/web3/hooks/useBalanceOf";
 import tokensListInClo from "../../../../shared/constants/tokenLists/tokenlistInCLO.json";
+import {WrappedTokenInfo} from "../../../swap/functions";
 
 const BASES_TO_TRACK_LIQUIDITY_FOR = {
   820: [

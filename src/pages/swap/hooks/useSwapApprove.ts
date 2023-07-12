@@ -9,7 +9,7 @@ import {$swapInputData, $tokenSpendApproved, $tokenSpendEnabling, $tokenSpendReq
 import {setTokenSpendApproved, setTokenSpendEnabling, setTokenSpendRequesting} from "../models";
 import WETH_ABI from "../../../shared/constants/abis/interfaces/weth.json";
 import {addRecentTransaction, editTransactionStatus} from "../../../shared/models";
-import {WrappedTokenInfo} from "./useTrade";
+import {WrappedTokenInfo} from "../functions";
 
 
 const ROUTER_ADDRESS = {

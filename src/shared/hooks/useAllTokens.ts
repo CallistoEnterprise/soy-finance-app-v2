@@ -3,7 +3,7 @@ import tokenListInCLO from "../constants/tokenLists/tokenlistInCLO.json";
 import tokenListInETC from "../constants/tokenLists/tokenlistInETC.json";
 import tokenListInBTT from "../constants/tokenLists/tokenlistInBTT.json";
 import {useMemo} from "react";
-import {WrappedTokenInfo} from "../../pages/swap/hooks/useTrade";
+import {WrappedTokenInfo} from "../../pages/swap/functions";
 
 export const tokenListMap = {
   820: tokenListInCLO,
