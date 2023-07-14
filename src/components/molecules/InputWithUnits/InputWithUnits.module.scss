@@ -14,6 +14,7 @@
   background-color: colors.$background-secondary;
   height: 40px;
   outline: 0;
+  color: colors.$text-primary;
 
   &:focus,
   &:active {
@@ -33,6 +34,7 @@
   width: 47px;
   height: 40px;
   border-left: 1px solid colors.$border-primary;
+  color: colors.$text-primary;
   display: flex;
   align-items: center;
   justify-content: center;

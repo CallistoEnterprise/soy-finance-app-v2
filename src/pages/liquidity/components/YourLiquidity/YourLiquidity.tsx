@@ -38,7 +38,7 @@ const BASES_TO_TRACK_LIQUIDITY_FOR = {
       symbol: "CLO",
       name: "CLO",
       decimals: 18,
-      logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2757.png"
+      logoURI: "/images/all-tokens/CLO.svg"
     }, []),
     new WrappedTokenInfo({
       chainId: 820,
@@ -46,7 +46,7 @@ const BASES_TO_TRACK_LIQUIDITY_FOR = {
       symbol: "SOY",
       name: "Soy-ERC223",
       decimals: 18,
-      logoURI: "https://app.soy.finance/images/coins/0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65.png"
+      logoURI: "/images/all-tokens/SOY.svg"
     }, []),
     new WrappedTokenInfo({
       chainId: 820,
@@ -54,7 +54,7 @@ const BASES_TO_TRACK_LIQUIDITY_FOR = {
       symbol: "BUSDT",
       name: "Bulls USD",
       decimals: 18,
-      logoURI: "https://app.soy.finance/images/coins/0xbf6c50889d3a620eb42C0F188b65aDe90De958c4.png"
+      logoURI: "/images/all-tokens/BUSDT.svg"
     }, [])
   ]
 }

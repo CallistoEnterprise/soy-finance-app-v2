@@ -122,10 +122,10 @@ export default function AddLiquidity() {
             —
         </span>}
       </div>
-      <div className={styles.infoRow}>
-        <span>Share of pool</span>
-        {tokenA && tokenB ? <span>{51}%</span> : <span>—</span>}
-      </div>
+      {/*<div className={styles.infoRow}>*/}
+      {/*  <span>Share of pool</span>*/}
+      {/*  {tokenA && tokenB ? <span>{51}%</span> : <span>—</span>}*/}
+      {/*</div>*/}
     </div>
     <Action/>
   </div>;

@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import styles from "./StakeLPTokensModal.module.scss";
 import {useEvent, useStore} from "effector-react";
 import {closeStakeLPTokensDialog} from "../../models";
@@ -11,11 +11,12 @@ import {Contract, EthersError, parseUnits} from "ethers";
 import {LP_TOKEN_ABI} from "../../../../shared/constants/abis";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import DrawerDialog from "../../../../components/atoms/DrawerDialog";
-import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
 import {useEthersError} from "../../../swap/hooks/useEthersError";
+import {WrappedTokenInfo} from "../../../swap/functions";
+import {getLogo} from "../../../../shared/utils";
 
 export default function StakeLPTokensModal() {
-  const {web3Provider, account} = useWeb3();
+  const {web3Provider, account, chainId} = useWeb3();
   const isOpened = useStore($isStakeLPTokensDialogOpened);
   const closeStakeLPTokensDialogFn = useEvent(closeStakeLPTokensDialog);
 
@@ -59,6 +60,32 @@ export default function StakeLPTokensModal() {
 
   }, [account, farmToStake, handleError, value, web3Provider]);
 
+  const pair = useMemo(() => {
+    if(chainId && farmToStake?.token && farmToStake?.quoteToken) {
+      return [
+        new WrappedTokenInfo({
+          address: farmToStake.token.address![chainId],
+          symbol: farmToStake.token.symbol,
+          name: farmToStake.token.symbol,
+          decimals: farmToStake.token.decimals!,
+          logoURI: getLogo({address: farmToStake.token.address?.[chainId].toLowerCase()}),
+          chainId: chainId
+        }, []),
+        new WrappedTokenInfo({
+          address: farmToStake.quoteToken.address![chainId],
+          symbol: farmToStake.quoteToken.symbol,
+          name: farmToStake.quoteToken.symbol,
+          decimals: farmToStake.quoteToken.decimals!,
+          logoURI: getLogo({address: farmToStake.quoteToken.address?.[chainId].toLowerCase()}),
+          chainId: chainId
+        }, [])
+      ]
+    }
+
+    return [undefined, undefined];
+  }, [chainId, farmToStake?.quoteToken, farmToStake?.token]);
+
+  console.log(pair);
   return <DrawerDialog isOpen={isOpened} onClose={handleClose}>
     <div className={styles.stakeLpTokensModal}>
       <DialogHeader handleClose={handleClose} title="Stake lp tokens" />
@@ -67,7 +94,7 @@ export default function StakeLPTokensModal() {
           setDialogOpened={null}
           isDialogOpened={null}
           pickedToken={null}
-          pair={[farmToStake?.token, farmToStake?.quoteToken]}
+          pair={pair}
           inputValue={value}
           handleInputChange={setValue}
           handleTokenChange={null}

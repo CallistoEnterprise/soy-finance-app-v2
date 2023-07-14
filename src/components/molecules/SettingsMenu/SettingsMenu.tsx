@@ -11,6 +11,7 @@ import Flex from "../../layout/Flex";
 import Switch from "../../atoms/Switch";
 import {useColorMode} from "../../../shared/providers/ThemeProvider";
 import {useSnackbar} from "../../../shared/providers/SnackbarProvider";
+import Text from "../../atoms/Text";
 
 export default function SettingsMenu({expandDirection = "bottom"}) {
   const {t} = useTranslation('common');
@@ -67,8 +68,8 @@ export default function SettingsMenu({expandDirection = "bottom"}) {
             <ul className={styles.list}>
               <li>
                 <Flex gap={8}>
-                  <Svg iconName="night" />
-                  Dark mode
+                  <div className={styles.menuIcon}><Svg iconName="night" /></div>
+                  <Text variant={14}>Dark mode</Text>
                 </Flex>
                 <div>
                   <Switch checked={mode === "dark"} setChecked={toggleTheme} />
@@ -78,26 +79,15 @@ export default function SettingsMenu({expandDirection = "bottom"}) {
                 showMessage("Coming soon...");
               }}>
                 <Flex gap={8}>
-                  <Svg iconName="web3" />
-                  Language
+                  <div className={styles.menuIcon}><Svg iconName="web3" /></div>
+                  <Text variant={14}>Language</Text>
                 </Flex>
-                <Svg iconName="arrow-right" />
+                <div className={styles.menuIcon}><Svg iconName="arrow-right" /></div>
               </li>
               <li>
                 <Flex gap={8}>
-                  <Svg iconName="line" />
-                  Show chart
-                </Flex>
-                <div className={styles.switchWrapper}>
-                  <Switch checked={true} setChecked={() => {
-                    showMessage("Coming soon...");
-                  }} />
-                </div>
-              </li>
-              <li>
-                <Flex gap={8}>
-                  <Svg iconName="table" />
-                  Show table
+                  <div className={styles.menuIcon}><Svg iconName="line" /></div>
+                  <Text variant={14}>Show chart</Text>
                 </Flex>
                 <div className={styles.switchWrapper}>
                   <Switch checked={true} setChecked={() => {
@@ -107,8 +97,19 @@ export default function SettingsMenu({expandDirection = "bottom"}) {
               </li>
               <li>
                 <Flex gap={8}>
-                  <Svg iconName="sound" />
-                  Sounds
+                  <div className={styles.menuIcon}><Svg iconName="table" /></div>
+                  <Text variant={14}>Show table</Text>
+                </Flex>
+                <div className={styles.switchWrapper}>
+                  <Switch checked={true} setChecked={() => {
+                    showMessage("Coming soon...");
+                  }} />
+                </div>
+              </li>
+              <li>
+                <Flex gap={8}>
+                  <div className={styles.menuIcon}><Svg iconName="sound" /></div>
+                  <Text>Sounds</Text>
                 </Flex>
                 <div className={styles.switchWrapper}>
                   <Switch checked={false} setChecked={() => {

@@ -6,7 +6,7 @@ import TextAlign = Property.TextAlign;
 interface Props {
   tag?: keyof JSX.IntrinsicElements,
   variant?: 12 | 14 | 16 | 18 | 20 | 24 | 28,
-  color?: "primary" | "secondary",
+  color?: "primary" | "secondary" | "static-primary",
   weight?: 400 | 500 | 600 | 700,
   align?: TextAlign
   children,

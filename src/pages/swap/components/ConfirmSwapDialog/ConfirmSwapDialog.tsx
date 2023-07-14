@@ -17,6 +17,7 @@ import {
   computeTradePriceBreakdown,
   ONE_BIPS
 } from "../../functions";
+import Text from "../../../../components/atoms/Text";
 
 export default function ConfirmSwapDialog() {
   const { handleSwap } = useSwapAction();
@@ -57,11 +58,11 @@ export default function ConfirmSwapDialog() {
         <div className={styles.tokenBlock}>
           <div className={styles.tokenName}>
             <img width={24} height={24} src={swapInputData.tokenFrom?.logoURI} alt={swapInputData.tokenFrom?.name} />
-            {swapInputData.tokenFrom?.symbol}
+           {swapInputData.tokenFrom?.symbol}
           </div>
-          <span className="font-700 font-20">
-            {formatBalanceToEight(swapInputData.amountIn)}
-          </span>
+          <Text variant={20} weight={700}>
+             {formatBalanceToEight(swapInputData.amountIn)}
+          </Text>
         </div>
         <div className={styles.arrowTo}>
           <Svg iconName="arrow-right" />
@@ -71,9 +72,9 @@ export default function ConfirmSwapDialog() {
             <img width={24} height={24} src={swapInputData.tokenTo?.logoURI} alt={swapInputData.tokenTo?.name} />
             {swapInputData.tokenTo?.symbol}
           </div>
-          <span className="font-700 font-20">
+          <Text variant={20} weight={700}>
             {formatBalanceToEight(swapInputData.amountOut)}
-          </span>
+          </Text>
 
         </div>
       </div>

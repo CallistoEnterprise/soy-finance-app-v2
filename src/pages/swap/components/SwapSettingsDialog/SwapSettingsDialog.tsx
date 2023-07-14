@@ -10,6 +10,7 @@ import clsx from "clsx";
 import InputWithUnits from "../../../../components/molecules/InputWithUnits";
 import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
 import DrawerDialog from "../../../../components/atoms/DrawerDialog";
+import Text from "../../../../components/atoms/Text";
 
 export default function SwapSettingsDialog() {
   const isSwapSettingsDialogOpened = useStore($isSwapSettingsDialogOpened);
@@ -49,7 +50,7 @@ export default function SwapSettingsDialog() {
 
       <div className={styles.swapSettingsDialogContent}>
         <div>
-          <p className="font-500">Slippage tolerance</p>
+          <Text>Slippage tolerance</Text>
           <div className={styles.slippageControls}>
             {[0.1, 0.5, 1].map((value) => {
               return <button key={value} className={clsx(styles.tabButton, slippageValue === value && styles.active)} onClick={() => {
@@ -62,7 +63,7 @@ export default function SwapSettingsDialog() {
         </div>
 
         <div className={styles.deadline}>
-          <p className="font-500">Transaction deadline</p>
+          <Text>Transaction deadline</Text>
           <div className={styles.deadlineInput}>
             <InputWithUnits units="min" value={deadlineValue} setValue={setDeadlineValue} />
           </div>

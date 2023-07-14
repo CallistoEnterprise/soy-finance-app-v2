@@ -6,6 +6,8 @@ import PageCard from "../../../../components/atoms/PageCard";
 import PageCardHeading from "../../../../components/molecules/PageCardHeading";
 import Text from "../../../../components/atoms/Text";
 import {useColorMode} from "../../../../shared/providers/ThemeProvider";
+import {WrappedTokenInfo} from "../../functions";
+import Image from "next/image";
 
 function Progress({percents, color}: {percents: number, color: "green" | "purple" | "pink"}) {
   return <>
@@ -24,7 +26,7 @@ function Progress({percents, color}: {percents: number, color: "green" | "purple
   </>
 }
 
-function SemiCircleProgress({percentage}: {percentage: number}) {
+function SemiCircleProgress({percentage, logoURI}: {percentage: number, logoURI: string}) {
   const angle = (percentage / 100) * 180 * Math.PI / 180;
   const XEnd = 160 + Math.abs(150 * Math.cos(angle));
   const YEnd = 160 - Math.abs(150 * Math.sin(angle)) - 5;
@@ -42,6 +44,7 @@ function SemiCircleProgress({percentage}: {percentage: number}) {
           <path d="M261.5 131C261.5 96.5219 247.804 63.4559 223.424 39.0761C199.044 14.6964 165.978 1 131.5 1C97.0219 0.999997 63.9559 14.6964 39.5761 39.0761C15.1964 63.4558 1.50001 96.5218 1.5 131" stroke="currentColor" strokeLinecap="square" strokeLinejoin="round" strokeDasharray="2 20"/>
         </svg>
       </div>
+      <Image className={styles.logoInsideArc} src={logoURI} alt={""} width={40} height={40} />
       <span className={clsx("font-20", "bold", styles.pointsText)}>{percentage / 10} / 10</span>
       <span className="font-secondary font-16 ">Overall score</span>
     </div>
@@ -49,15 +52,15 @@ function SemiCircleProgress({percentage}: {percentage: number}) {
 
 }
 
-export default function SafeTrading() {
+export default function SafeTrading({ token, meta }: {token: WrappedTokenInfo, meta: {score: number, link: string}})  {
   return <PageCard>
     <PageCardHeading title="Safe trading" />
     <div className="mb-20" />
-    <SemiCircleProgress percentage={90} />
+    <SemiCircleProgress logoURI={token.logoURI} percentage={meta.score * 10} />
     <div className="mb-20" />
     <Text tag="p">Security audit score</Text>
     <div className="mb-10" />
-    <Progress percents={90} color="green" />
+    <Progress percents={meta.score * 10} color="green" />
     {/*<div className="mb-10" />*/}
     {/*<Text tag="p">Decentralized insurance fund</Text>*/}
     {/*<div className="mb-10" />*/}
@@ -67,7 +70,9 @@ export default function SafeTrading() {
     {/*<div className="mb-10" />*/}
     {/*<Progress percents={60} color="pink" />*/}
     <div className="center mt-20">
-      <Button variant="outlined">Learn more</Button>
+      <a target="_blank" href={meta.link}>
+        <Button variant="outlined">Learn more</Button>
+      </a>
     </div>
   </PageCard>;
 }

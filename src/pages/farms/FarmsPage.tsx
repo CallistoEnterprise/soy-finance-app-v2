@@ -3,7 +3,9 @@ import Layout from "../../components/layout/Layout";
 import Farms from "./components/Farms";
 import {IIFE} from "../../shared/web3/functions/iife";
 import styles from "./FarmsPage.module.scss";
-import farmsToFetch from "./constants/farms/farmsInCLO";
+import farmsInClo from "./constants/farms/farmsInCLO";
+import farmsInEtc from "./constants/farms/farmsInETC";
+import farmsInBtt from "./constants/farms/farmsInBTT";
 import {FarmConfig} from "./types";
 import {BigNumber} from "@ethersproject/bignumber";
 import {useMultiCallJSONRpcContract} from "../../shared/web3/hooks/useMultiCallContract";
@@ -22,6 +24,8 @@ import Select from "../../components/molecules/Select";
 import StakeLPTokensModal from "./components/StakeLPTokensModal";
 import UnStakeLPTokensModal from "./components/UnstakeLPTokensModal";
 import {useWeb3} from "../../processes/web3/hooks/useWeb3";
+import EmptyStateIcon from "../../components/atoms/EmptyStateIcon";
+import Text from "../../components/atoms/Text";
 
 export type SerializedBigNumber = string
 
@@ -592,7 +596,7 @@ const getFarmApr = (
 }
 
 export default function FarmsPage() {
-  const {isActive, account} = useWeb3();
+  const {isActive, account, chainId} = useWeb3();
   const multiCallContract = useMultiCallJSONRpcContract();
 
   const totalSupplyFragment = useErc20Fragment("totalSupply");
@@ -620,6 +624,23 @@ export default function FarmsPage() {
   const [fPrice, setFPrice] = useState<any>(0);
   const [searchRequest, setSearchRequest] = useState("");
 
+  const networkId = useMemo(() => {
+    return 820;
+    // return chainId || 61;
+  }, []);
+
+  const farmsToFetch = useMemo(() => {
+    if(!networkId || networkId === 820) {
+      return farmsInClo;
+    }
+
+    if(networkId === 61) {
+      return farmsInEtc;
+    }
+
+    return farmsInBtt;
+  }, [networkId]);
+
   useEffect(() => {
     if (!multiCallContract
       || !totalSupplyFragment
@@ -639,18 +660,18 @@ export default function FarmsPage() {
 
       for (let i = 0; i < farmsToFetch.length; i++) {
         const {lpAddresses, token, quoteToken, localFarmAddresses, pid} = farmsToFetch[i];
-        const lpAddress = lpAddresses["820"];
+        const lpAddress = lpAddresses[networkId];
 
         const calls: Array<{ address: string | undefined, fragment: FunctionFragment, params?: any }> = [
           // Balance of token in the LP contract
           {
-            address: token.address?.["820"],
+            address: token.address?.[networkId],
             fragment: balanceOfFragment,
             params: [lpAddress],
           },
           // Balance of quote token on LP contract
           {
-            address: quoteToken.address?.["820"],
+            address: quoteToken.address?.[networkId],
             fragment: balanceOfFragment,
             params: [lpAddress],
           },
@@ -658,7 +679,7 @@ export default function FarmsPage() {
           {
             address: lpAddress,
             fragment: balanceOfFragment,
-            params: [localFarmAddresses?.["820"]],
+            params: [localFarmAddresses?.[networkId]],
           },
           // Total supply of LP tokens
           {
@@ -667,12 +688,12 @@ export default function FarmsPage() {
           },
           // Token decimals
           {
-            address: token.address?.["820"],
+            address: token.address?.[networkId],
             fragment: decimalsFragment
           },
           // Quote token decimals
           {
-            address: token.address?.["820"],
+            address: token.address?.[networkId],
             fragment: decimalsFragment
           },
         ];
@@ -684,7 +705,7 @@ export default function FarmsPage() {
         };
 
         const allocPointCall = {
-          address: localFarmAddresses?.["820"],
+          address: localFarmAddresses?.[networkId],
           fragment: getAllocFragment,
           params: [],
         }
@@ -785,21 +806,17 @@ export default function FarmsPage() {
       setFPrice(mainFarmPrice);
 
       const farmsWithAPR = farmsWithPrices.map((farm) => {
-        const poolKey = farm.lpAddresses["820"]?.toLowerCase();
+        const poolKey = farm.lpAddresses[networkId]?.toLowerCase();
         const farmSwapAPR = poolsDatas.data && poolsDatas.data[poolKey] ? poolsDatas.data[poolKey].lpApr7d : 0
-
-        console.log(poolsDatas.data);
-        console.log(poolKey);
 
         const {cakeRewardsApr, lpRewardsApr} = getFarmApr(
           farm.poolWeight,
           mainFarmPrice,
           farm.liquidity,
-          farm.lpAddresses["820"],
-          820,
+          farm.lpAddresses[networkId],
+          networkId || undefined,
           farmSwapAPR,
         );
-
 
         return {...farm, apr: cakeRewardsApr, lpRewardsApr}
       });
@@ -809,7 +826,7 @@ export default function FarmsPage() {
       setData(farmsWithAPR);
     });
 
-  }, [balanceOfFragment, decimalsFragment, getAllocFragment, localFarmsFragment, multiCallContract, poolsDatas.data, totalSupplyFragment]);
+  }, [balanceOfFragment, decimalsFragment, farmsToFetch, getAllocFragment, localFarmsFragment, multiCallContract, networkId, poolsDatas.data, totalSupplyFragment]);
 
   useEffect(() => {
     if (!account || !multiCallContract || !userInfoFragment || !pendingRewardFragment) {
@@ -823,7 +840,7 @@ export default function FarmsPage() {
         const {localFarmAddresses} = farmsToFetch[i];
 
         const userInfoCall = {
-          address: localFarmAddresses?.["820"],
+          address: localFarmAddresses?.[networkId],
           fragment: userInfoFragment,
           params: [account],
         };
@@ -835,7 +852,7 @@ export default function FarmsPage() {
         const {localFarmAddresses} = farmsToFetch[i];
 
         const pendingRewardCall = {
-          address: localFarmAddresses?.["820"],
+          address: localFarmAddresses?.[networkId],
           fragment: pendingRewardFragment,
           params: [account],
         };
@@ -859,17 +876,28 @@ export default function FarmsPage() {
 
       setUserData(res);
     }));
-  }, [account, multiCallContract, pendingRewardFragment, userInfoFragment]);
+  }, [account, farmsToFetch, multiCallContract, networkId, pendingRewardFragment, userInfoFragment]);
 
-  const filteredFarms = useMemo(() => {
-    if(showOnlyStaked && userData && data) {
-      return data.filter((farm, index) => {
-        return Boolean(userData[index]?.staked[0]);
-      });
+  const farmsWithSearch = useMemo(() => {
+    if(searchRequest && data) {
+      return data.filter((farm) => {
+        return farm.token.symbol.toLowerCase().startsWith(searchRequest.toLowerCase())
+          || farm.quoteToken.symbol.toLowerCase().startsWith(searchRequest.toLowerCase())
+      })
     }
 
     return data;
-  }, [data, showOnlyStaked, userData]);
+  }, [data, searchRequest]);
+
+  const filteredFarms = useMemo(() => {
+    if(showOnlyStaked && userData && farmsWithSearch) {
+      return farmsWithSearch.filter((farm) => {
+        return Boolean(userData[farm.pid]?.staked[0]);
+      });
+    }
+
+    return farmsWithSearch;
+  }, [farmsWithSearch, showOnlyStaked, userData]);
 
   const sortedFarms = useMemo(() => {
     if (!filteredFarms) {
@@ -934,12 +962,12 @@ export default function FarmsPage() {
     </div>
     <div className="container">
       <div className={clsx("paper", styles.farmPaperWrapper)}>
-        <h4 className="mb-20 font-700 font-24">All farms</h4>
+        <PageCardHeading title="All farms"/>
 
         <div className={styles.farmsHeader}>
           <div className={styles.leftPart}>
             <div className={styles.staked}>
-              Staked only
+              <Text variant={14}>Staked only</Text>
               <Switch checked={showOnlyStaked} setChecked={() => setShowOnlyStaked(!showOnlyStaked)}/>
             </div>
 
@@ -982,13 +1010,13 @@ export default function FarmsPage() {
                      className={styles.searchToken} placeholder="Name or address"/>
             </div>
             <div className={styles.stakedMobile}>
-              Staked only
+              <Text variant={14}>Staked only</Text>
               <Switch checked={showOnlyStaked} setChecked={() => setShowOnlyStaked(!showOnlyStaked)}/>
             </div>
           </div>
         </div>
-        {activeFarms && showActive && <Farms fPrice={fPrice} onlyStaked={showOnlyStaked} farms={activeFarms} userData={userData}/>}
-        {inactiveFarms && !showActive && <Farms fPrice={fPrice} onlyStaked={showOnlyStaked} farms={inactiveFarms} userData={userData}/>}
+        {activeFarms && showActive && <Farms searchRequest={searchRequest} fPrice={fPrice} onlyStaked={showOnlyStaked} farms={activeFarms} userData={userData}/>}
+        {inactiveFarms && !showActive && <Farms searchRequest={searchRequest} fPrice={fPrice} onlyStaked={showOnlyStaked} farms={inactiveFarms} userData={userData}/>}
       </div>
     </div>
     <StakeLPTokensModal/>

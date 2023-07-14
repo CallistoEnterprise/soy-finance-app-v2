@@ -75,6 +75,7 @@ export default function PickTokenDialog({isOpened, handleClose, pickToken}: Prop
       <div className={styles.searchTokenWrapper}>
         <input onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchRequest(e.target.value)}
                className={styles.searchToken} placeholder="Name or address"/>
+        <div className={styles.searchIcon}><Svg iconName="search" /></div>
       </div>
       {Boolean(baseTokens[chainId]) && <div className={styles.baseTokens}>
         {baseTokens[chainId].map((token) => {

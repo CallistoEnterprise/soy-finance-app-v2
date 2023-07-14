@@ -45,9 +45,7 @@ export default function InputWithTokenPick({value, handleChange, pickedToken, op
               </span>
             </div>
             <div>
-              <span>{pair[0].symbol}</span>
-              -
-              <span>{pair[1].symbol}</span>
+              <Text>{pair[0].symbol} - {pair[1].symbol}</Text>
             </div>
             </>
             : <>
@@ -67,8 +65,8 @@ export default function InputWithTokenPick({value, handleChange, pickedToken, op
               <img width={24} height={24} src={pickedToken.logoURI} alt={pickedToken.name}/>
             </span>
 
-              {pickedToken.symbol}
-              <Svg iconName="arrow-bottom"/>
+              <Text>{pickedToken.symbol}</Text>
+              <span className={styles.expandArrow}><Svg iconName="arrow-bottom"/></span>
             </>
             : <>
             <span className={styles.iconWrapper}>

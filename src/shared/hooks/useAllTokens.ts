@@ -18,7 +18,7 @@ export const nativeTokens = {
     symbol: "CLO",
     name: "CLO",
     decimals: 18,
-    logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2757.png"
+    logoURI: "/images/all-tokens/CLO.svg"
   }, []),
   61: new WrappedTokenInfo({
     chainId: 61,

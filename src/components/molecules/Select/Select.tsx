@@ -3,6 +3,7 @@ import styles from "./Select.module.scss";
 import classnames from "clsx";
 import SelectOptions from "../SelectOptions";
 import Svg from "../../atoms/Svg/Svg";
+import Text from "../../atoms/Text";
 
 interface Props {
   options: Array<{
@@ -111,7 +112,7 @@ export default function Select({ options, selectedOption, setSelectedOption, lab
           toggleOpen();
         }
       }}>
-        {options.find((option) => option.id === selectedOption)?.value || <span className={styles.placeholder}>{placeholder}</span>}
+        <Text variant={14}>{options.find((option) => option.id === selectedOption)?.value || <span className={styles.placeholder}>{placeholder}</span>}</Text>
         {!readOnly && <div className={classnames(
           styles.expandIconWrapper,
           isOpen && styles.isOpen

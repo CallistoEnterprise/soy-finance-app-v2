@@ -16,7 +16,7 @@ export default function NoPoolYet({height = 578, onClick}: Props) {
     <EmptyStateIcon iconName="liquidity" />
     <div className={styles.textWrapper}>
       <Text align="center" weight={700} variant={24}>
-        No liquidity yet
+        No Active Liquidity Pools
       </Text>
     </div>
     <Text color="secondary" align="center">Don&apos;t see a pool you joined?</Text>

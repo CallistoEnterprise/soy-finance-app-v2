@@ -18,14 +18,14 @@ export default function TokensSelect({pickedToken, onPick, tokens}: Props) {
       {pickedToken ?
         <div className={styles.pickedTokenInfo}>
           <img src={pickedToken.logoURI} alt={pickedToken.name}/>
-          {pickedToken.symbol}
+          <Text>{pickedToken.symbol}</Text>
         </div> : <div className={styles.pickedTokenInfo}>
             <span className={styles.iconWrapper}>
               <Svg iconName="currency"/>
             </span>
           <Text variant={16}>Select token</Text>
         </div>}
-      <Svg iconName="arrow-bottom"/>
+      <span className={styles.expandArrow}><Svg iconName="arrow-bottom"/></span>
     </button>
     {isOpened && <div className={styles.tokensList}>
       {tokens.map((token) => {

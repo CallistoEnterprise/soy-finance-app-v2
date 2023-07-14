@@ -50,8 +50,8 @@
   height: 24px;
   width: 24px;
 
-  svg path {
-    //fill: $basic-text-secondary;
+  svg {
+    color: colors.$text-primary;
   }
 
   &.isOpen {

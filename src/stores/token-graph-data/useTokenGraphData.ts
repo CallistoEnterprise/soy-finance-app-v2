@@ -9,6 +9,7 @@ import {
   setTokenGraphData, setTokensLabelsData
 } from "./stores";
 import {CandleGraphPoint, Timeline} from "./types";
+import {useWeb3} from "../../processes/web3/hooks/useWeb3";
 
 function getTime(timeline: Timeline) {
   switch (timeline) {

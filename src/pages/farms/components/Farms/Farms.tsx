@@ -47,9 +47,8 @@ function Label({type}: { type: LabelType }) {
   </div>
 }
 
-
 function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number, staked: any, fPrice, reward: any }) {
-  const {isActive, account, web3Provider} = useWeb3();
+  const {isActive, account, web3Provider, chainId, changeNetwork} = useWeb3();
   const [isOpen, setIsOpen] = useState(false);
 
   const {lpRewardsApr, apr}: { lpRewardApr: number, apr: FixedNumber } = farm;
@@ -105,22 +104,23 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
   const lpLabel = farm?.lpSymbol && farm?.lpSymbol?.toUpperCase().replace('SOYFINANCE', '')
 
   return <div className={styles.farmWrapper} key={farm.pid}>
-    <div key={farm.pid} className={styles.farm}>
+    <div role={"button"} onClick={() => setIsOpen(!isOpen)}  key={farm.pid} className={styles.farm}>
       <div className={styles.meta}>
         <Image width={35} height={35} src={getLogo({address: farm.token.address?.[820]?.toLowerCase()})} alt=""/>
         <Image width={35} height={35} className={styles.secondImg}
                src={getLogo({address: farm.quoteToken.address?.[820]?.toLowerCase()})} alt=""/>
-        {farm.token.symbol} - {farm.quoteToken.symbol}
+        <Text>{farm.token.symbol} - {farm.quoteToken.symbol}</Text>
       </div>
       {/*<div><Label type={["standard", "supreme", "select", ""][index % 4]}/></div>*/}
       <div className={styles.earnedCell}>
-        <span>Earned: </span><span>{reward ? Number(formatUnits(reward, 18)).toFixed(4) : 0}</span></div>
+        <Text>Earned: </Text><Text>{reward ? Number(formatUnits(reward, 18)).toFixed(4) : 0}</Text></div>
       <div className={styles.aprCell}>
-        <span>APR: </span>
+        <Text>APR: </Text>
         <div className={styles.aprValue}>
-          <span>{totalApr.toFixed(2).toString()}%</span>
+          <Text>{totalApr.toFixed(2).toString()}%</Text>
           {farm.apr && <span>
-            <button onClick={() => {
+            <button onClick={(e) => {
+              e.stopPropagation();
               setROILpAPR(farm.lpRewardsApr);
               setROIFarmAPR(farm.apr);
 
@@ -131,21 +131,21 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
           </span>}
         </div>
       </div>
-      <div className={styles.liquidityCell}><span>Liquidity:</span>
-        <span>{`$${farm.liquidity.round(2).toString()}`}</span></div>
-      <div className={styles.multiplierCell}><span>Multiplier:</span> <span>{farm.multiplier?.toString()}X</span></div>
-      <IconButton onClick={() => setIsOpen(!isOpen)}>
+      <div className={styles.liquidityCell}><Text>Liquidity:</Text>
+        <Text>{`$${(+farm.liquidity.round(2)).toLocaleString('en-US')}`}</Text></div>
+      <div className={styles.multiplierCell}><Text>Multiplier:</Text> <Text>{farm.multiplier?.toString()}X</Text></div>
+      <IconButton>
         <Svg iconName="arrow-bottom"/>
       </IconButton>
     </div>
     <div className={styles.mobileInternal}>
       <Divider/>
       <div className={styles.internalCellsWrapper}>
-        <div className={styles.earnedCellInternal}><span>Earned: </span><span>0</span></div>
+        <div className={styles.earnedCellInternal}><Text>Earned: </Text><Text>0</Text></div>
         <div className={styles.aprCellInternal}>
-          <span>APR: </span>
+          <Text>APR: </Text>
           <div className={styles.aprValue}>
-            <span>{totalApr.toFixed(2).toString()}%</span>
+            <Text>{totalApr.toFixed(2).toString()}%</Text>
             {farm.apr && <span>
             <button onClick={() => {
               setROILpAPR(farm.lpRewardsApr);
@@ -158,10 +158,10 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
           </span>}
           </div>
         </div>
-        <div className={styles.liquidityCellInternal}><span>Liquidity:</span>
-          <span>{`$${farm.liquidity.round(2).toString()}`}</span></div>
-        <div className={styles.multiplierCellInternal}><span>Multiplier:</span>
-          <span>{farm.multiplier?.toString()}X</span></div>
+        <div className={styles.liquidityCellInternal}><Text>Liquidity:</Text>
+          <Text>{`$${farm.liquidity.round(2).toString()}`}</Text></div>
+        <div className={styles.multiplierCellInternal}><Text>Multiplier:</Text>
+          <Text>{farm.multiplier?.toString()}X</Text></div>
       </div>
     </div>
     <Collapse open={isOpen}>
@@ -187,7 +187,7 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
           </div>
           <div style={{height: 16}}/>
           <div className={styles.linksContainer}>
-            <Button disabled={!staked} onClick={handleHarvest} fullWidth>
+            <Button disabled={!staked || chainId !== 820} onClick={handleHarvest} fullWidth>
               Harvest
             </Button>
           </div>
@@ -199,11 +199,12 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
           <div style={{height: 16}}/>
           <div className={styles.linksContainer}>
             {!isActive && <ConnectWalletButton fullWidth/>}
-            {isActive && !staked && <Button onClick={() => {
+            {isActive && chainId !== 820 && <Button fullWidth onClick={() => changeNetwork(820)}>Switch to CLO</Button>}
+            {isActive && !staked && chainId === 820 && <Button onClick={() => {
               setLpTokenToStakeFn(farm);
               openStakeLPTokensDialogFn();
             }} fullWidth>Stake LP</Button>}
-            {isActive && staked && <Flex gap={10}>
+            {isActive && staked && chainId === 820 && <Flex gap={10}>
               <Button onClick={() => {
                 setLpTokenToUnStakeFn(farm);
                 openUnStakeLPTokensDialogFn();
@@ -236,7 +237,7 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
   </div>
 }
 
-export default function Farms({farms, userData, onlyStaked, fPrice}: Props) {
+export default function Farms({farms, userData, onlyStaked, fPrice, searchRequest}: Props) {
   const {isActive} = useWeb3();
 
   if (!farms) {
@@ -253,11 +254,19 @@ export default function Farms({farms, userData, onlyStaked, fPrice}: Props) {
     </div>;
   }
 
+  if(searchRequest && !farms.length) {
+    return <div className={styles.noStaked}>
+      <EmptyStateIcon iconName="search"/>
+      <Text variant={24}>No farms found</Text>
+      <Text color="secondary" variant={16}>We did not found farms with this request</Text>
+    </div>
+  }
+
   if (onlyStaked && !farms.length) {
     return <div className={styles.noStaked}>
       <EmptyStateIcon iconName="staked"/>
-      <Text variant={24}>No staked pairs</Text>
-      <Text color="secondary" variant={16}>Stake the pair then it will be displayed here</Text>
+      <Text variant={24}>No Active Farms Yet</Text>
+      <Text color="secondary" variant={16}>Stake your LP tokens to start earning rewards. Your active farms will appear here.</Text>
     </div>
   }
 

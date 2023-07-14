@@ -50,9 +50,9 @@ export default function BannerSlider({children}) {
       >
         <BannerSliderItem active={activeIndex === 0} index={0}>
           <div className={styles.textPart}>
-            <Text variant={28} weight={600}>Sloth Farming 101</Text>
+            <Text color="static-primary" variant={28} weight={600}>Sloth Farming 101</Text>
             <div style={{height: 10}} />
-            <Text>New to the Slothiverse? Get started with Farming in just a few easy steps!</Text>
+            <Text color="static-primary">New to the Slothiverse? Get started with Farming in just a few easy steps!</Text>
             <div style={{height: 16}} />
             <Button>Master Farming</Button>
           </div>
@@ -62,9 +62,9 @@ export default function BannerSlider({children}) {
         </BannerSliderItem>
         <BannerSliderItem active={activeIndex === 1} index={1}>
           <div className={styles.textPart}>
-            <Text variant={28} weight={600}>Secure your Slothvestments</Text>
+            <Text color="static-primary" variant={28} weight={600}>Secure your Slothvestments</Text>
             <div style={{height: 10}} />
-            <Text>Fear not, Sloth friends! Our Sloth Shield has your back, keeping your funds safe and sound.</Text>
+            <Text color="static-primary">Fear not, Sloth friends! Our Sloth Shield has your back, keeping your funds safe and sound.</Text>
             <div style={{height: 16}} />
             <Button>Protect your Funds</Button>
           </div>
@@ -74,9 +74,9 @@ export default function BannerSlider({children}) {
         </BannerSliderItem>
         <BannerSliderItem active={activeIndex === 2} index={2}>
           <div className={styles.textPart}>
-            <Text variant={28} weight={600}>Callisto Network - Sloth`s Safe Haven</Text>
+            <Text color="static-primary" variant={28} weight={600}>Callisto Network - Sloth`s Safe Haven</Text>
             <div style={{height: 10}} />
-            <Text>Dive into the ultra-fast, ultra-cheap Callisto Network! The ideal environment for Soy-powered DeFi Sloths.</Text>
+            <Text color="static-primary">Dive into the ultra-fast, ultra-cheap Callisto Network! The ideal environment for Soy-powered DeFi Sloths.</Text>
             <div style={{height: 16}} />
             <Button>Explore Callisto Network</Button>
           </div>
@@ -86,9 +86,9 @@ export default function BannerSlider({children}) {
         </BannerSliderItem>
         <BannerSliderItem active={activeIndex === 3} index={3}>
           <div className={styles.textPart}>
-            <Text variant={28} weight={600}>Juicy APR Hotspots</Text>
+            <Text color="static-primary" variant={28} weight={600}>Juicy APR Hotspots</Text>
             <div style={{height: 10}} />
-            <Text>Hungry for juicy returns? Feast your eyes on our top-performing pools with the highest APRs, ripe for the picking!</Text>
+            <Text color="static-primary">Hungry for juicy returns? Feast your eyes on our top-performing pools with the highest APRs, ripe for the picking!</Text>
             <div style={{height: 16}} />
             <Button>Boost your Earnings</Button>
           </div>

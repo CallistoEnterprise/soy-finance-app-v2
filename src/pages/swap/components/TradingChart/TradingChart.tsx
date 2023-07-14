@@ -31,6 +31,7 @@ import {usePairs} from "../../../../shared/hooks/usePairs";
 import {useTokenGraphData} from "../../../../stores/token-graph-data/useTokenGraphData";
 import {Timeline} from "../../../../stores/token-graph-data/types";
 import {WrappedTokenInfo} from "../../functions";
+import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 
 
 const tooltipLine = {
@@ -473,10 +474,11 @@ const soy = new WrappedTokenInfo({
   symbol: "SOY",
   name: "Soy-ERC223",
   decimals: 18,
-  logoURI: "https://app.soy.finance/images/coins/0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65.png"
+  logoURI: "/images/all-tokens/SOY.svg"
 }, []);
 
 export default function TradingChart() {
+  const {chainId} = useWeb3();
   const [selectedTab, setSelectedTab] = useState(1);
   const {mode} = useColorMode();
   const [view, setView] = useState<"line" | "candlestick">("line");
@@ -489,16 +491,16 @@ export default function TradingChart() {
   const [secondToken, setSecondToken] = useState<WrappedTokenInfo | null>(null);
 
   useEffect(() => {
-    if (swapInputData.tokenFrom) {
+    if (swapInputData.tokenFrom && chainId === 820) {
       setFirstToken(swapInputData.tokenFrom);
     }
-  }, [swapInputData.tokenFrom]);
+  }, [chainId, swapInputData.tokenFrom]);
 
   useEffect(() => {
-    if (swapInputData.tokenTo) {
+    if (swapInputData.tokenTo && chainId === 820) {
       setSecondToken(swapInputData.tokenTo);
     }
-  }, [swapInputData.tokenTo]);
+  }, [swapInputData.tokenTo, chainId]);
 
   const p = useMemo(() => {
     return [[firstToken, secondToken]]

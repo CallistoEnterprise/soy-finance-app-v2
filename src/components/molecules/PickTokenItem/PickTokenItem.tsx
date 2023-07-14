@@ -9,6 +9,7 @@ import {formatBalance, isNativeToken} from "../../../shared/utils";
 import {useTokenBalance} from "../../../stores/balance/useTokenBalance";
 import Preloader from "../../atoms/Preloader";
 import {WrappedTokenInfo} from "../../../pages/swap/functions";
+import Text from "../../atoms/Text";
 
 export default function PickTokenItem({token, isFavorite, handlePick}: {token: WrappedTokenInfo, isFavorite: boolean, handlePick: any}) {
   const {chainId} = useWeb3();
@@ -36,11 +37,11 @@ export default function PickTokenItem({token, isFavorite, handlePick}: {token: W
     <button className={styles.pickTokenButton} onClick={handlePick}>
       <div className={styles.tokenButtonInfo}>
         <img height={40} width={40} src={token.logoURI} alt={token.name}/>
-        {token.symbol}
+        <Text variant={14}>{token.symbol}</Text>
       </div>
 
       <span className={styles.tokenBalance}>
-        {loading ? <Preloader size={20} withLogo={false} /> : formatBalance(tokenBalance)}
+        {loading ? <Preloader size={20} withLogo={false} /> : <Text variant={14}>{formatBalance(tokenBalance)}</Text>}
       </span>
     </button>
   </li>
