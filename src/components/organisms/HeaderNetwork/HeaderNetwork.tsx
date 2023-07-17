@@ -20,7 +20,7 @@ export default function HeaderNetwork({expandDirection = "bottom"}: Props) {
 
   const networks = useStore($wc2blockchains);
 
-  const { chainId, changeNetwork, isChangingNetwork } = useWeb3();
+  const { chainId, changeNetwork, isChangingNetwork, walletName } = useWeb3();
 
   const [positions, setPositions] = useState({
     [expandDirection === "bottom" ? "top" : "bottom"]: 0,
@@ -70,7 +70,14 @@ export default function HeaderNetwork({expandDirection = "bottom"}: Props) {
       <div style={{top: positions.top, left: positions.left, bottom: positions.bottom}} className={styles.networksDropdown}>
         <nav>
           <ul className={styles.networksList}>
-            {headersNetworks.filter(n => networks.includes(n.chainId)).map(n => <li key={n.chainId}>
+            {headersNetworks.filter(n => {
+              // display all networks for metamask
+              if(walletName === "metamask") {
+                return true;
+              }
+
+              return networks.includes(n.chainId);
+            }).map(n => <li key={n.chainId}>
               <DropdownItem handleClick={async () => {
                 changeNetwork(n.chainId);
                 setNetworksDropdownOpened(false);

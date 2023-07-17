@@ -112,7 +112,10 @@ export default function WalletDialog({defaultTab}) {
               <div className={styles.explorerLinkContainer}>
                 <ExternalLink href={`https://explorer.callisto.network/address/${account}/transactions`} text="View on CallistoScan" />
               </div>
-              <Button onClick={disconnect} fullWidth variant="outlined" endIcon="logout">Disconnect</Button>
+              <Button onClick={() => {
+                disconnect();
+                setWalletDialogOpenedFn(false);
+              }} fullWidth variant="outlined" endIcon="logout">Disconnect</Button>
             </div>
           </Tab>
           <Tab title="Transactions">

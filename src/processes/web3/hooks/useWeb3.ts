@@ -26,6 +26,7 @@ import {BrowserProvider, ethers} from "ethers";
 
 import {SUPPORTED_NETWORKS, SUPPORTED_SWAP_NETWORKS} from "../constants/supportedNetworks";
 import {WalletType} from "../types";
+import {useSnackbar} from "../../../shared/providers/SnackbarProvider";
 
 function getRPCMap(chains: number[]) {
   const result = {};
@@ -76,6 +77,8 @@ export function useWeb3() {
   const setWalletNameValue = (data: WalletType) => {
     walletNameRef.current = data;
   };
+
+  const {showMessage} = useSnackbar();
 
   useEffect(
     () => {
@@ -237,7 +240,8 @@ export function useWeb3() {
       setWalletChangeModalOpenFn,
       setWalletNameFn,
       setWeb3ProviderFn,
-      wc2Blockchains
+      wc2Blockchains,
+      showMessage
     ]
   );
 

@@ -19,6 +19,7 @@ import {disableWc2Blockchain, enableWc2Blockchain, setWalletChangeModalOpen} fro
 import {$wc2blockchains} from "../../models/stores";
 import PickButton from "../../../../components/atoms/PickButton";
 import Svg from "../../../../components/atoms/Svg/Svg";
+import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
 
 
 export default function ChangeWalletContent() {
@@ -34,6 +35,7 @@ export default function ChangeWalletContent() {
   const disableWcBlockchainFn = useEvent(disableWc2Blockchain);
 
   const wc2Blockchains = useStore($wc2blockchains);
+  const {showMessage} = useSnackbar();
 
   const handleClose = () => setWalletChangeModalOpenFn(false);
 
@@ -94,6 +96,8 @@ export default function ChangeWalletContent() {
             }
 
             if (!isMobileDevice() && !(window as any).ethereum) {
+              showMessage("Metamask is not installed", "error");
+              handleClose();
               return;
             }
           }

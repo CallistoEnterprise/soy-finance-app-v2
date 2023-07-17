@@ -141,7 +141,7 @@ export const fetchFarmsPrices = (farms) => {
 
   const nativePriceBusdt = nativeBusdtFarm?.tokenPriceVsQuote ? FixedNumber.fromValue(1).div(nativeBusdtFarm.tokenPriceVsQuote) : FixedZero
 
-  const farmsWithPrices = farms.map((farm) => {
+  return farms.map((farm) => {
     const quoteTokenFarm = getFarmFromTokenSymbol(farms, farm.quoteToken.symbol)
     const baseTokenPrice =
       farm.pid === 15 && (chainId === ChainId.BTTMAINNET || chainId === ChainId.ETCCLASSICMAINNET)
@@ -152,11 +152,9 @@ export const fetchFarmsPrices = (farms) => {
         ? cloPrice
         : getFarmQuoteTokenPrice(farm, quoteTokenFarm, nativePriceBusdt, cloPrice, chainId)
 
-    const token = { ...farm.token, usdcPrice: baseTokenPrice }
-    const quoteToken = { ...farm.quoteToken, usdcPrice: quoteTokenPrice }
+    const token = {...farm.token, usdcPrice: baseTokenPrice}
+    const quoteToken = {...farm.quoteToken, usdcPrice: quoteTokenPrice}
 
-    return { ...farm, token, quoteToken, liquidity: farm.lpTotalInQuoteToken.mul(quoteTokenPrice) }
+    return {...farm, token, quoteToken, liquidity: farm.lpTotalInQuoteToken.mul(quoteTokenPrice)}
   })
-
-  return farmsWithPrices
 }

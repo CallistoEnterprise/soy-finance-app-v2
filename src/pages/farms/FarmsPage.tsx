@@ -24,8 +24,8 @@ import Select from "../../components/molecules/Select";
 import StakeLPTokensModal from "./components/StakeLPTokensModal";
 import UnStakeLPTokensModal from "./components/UnstakeLPTokensModal";
 import {useWeb3} from "../../processes/web3/hooks/useWeb3";
-import EmptyStateIcon from "../../components/atoms/EmptyStateIcon";
 import Text from "../../components/atoms/Text";
+import Head from "next/head";
 
 export type SerializedBigNumber = string
 
@@ -693,7 +693,7 @@ export default function FarmsPage() {
           },
           // Quote token decimals
           {
-            address: token.address?.[networkId],
+            address: quoteToken.address?.[networkId],
             fragment: decimalsFragment
           },
         ];
@@ -953,6 +953,9 @@ export default function FarmsPage() {
 
 
   return <Layout>
+    <Head>
+      <title>Farms | Soy.Finance</title>
+    </Head>
     <div className={clsx("container", styles.banner)}>
       <div className="paper">
         <PageCardHeading title="Soy Finance essentials"/>

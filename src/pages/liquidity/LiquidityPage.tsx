@@ -9,6 +9,7 @@ import Drawer from "../../components/atoms/Drawer/Drawer";
 import {useEvent, useStore} from "effector-react";
 import {$isLiquidityChartOpened, $isLiquidityHistoryOpened} from "./models/stores";
 import {setLiquidityChartOpened, setLiquidityHistoryOpened} from "./models";
+import Head from "next/head";
 
 export default function LiquidityPage() {
   const isChartOpened = useStore($isLiquidityChartOpened);
@@ -18,6 +19,9 @@ export default function LiquidityPage() {
   const setSwapHistoryOpenedFn = useEvent(setLiquidityHistoryOpened);
 
   return <Layout>
+    <Head>
+      <title>Liquidity | Soy.Finance</title>
+    </Head>
     <main className="container">
       <div className={clsx(styles.contentWrapper, "mb-20")}>
         <div className={styles.column}>
