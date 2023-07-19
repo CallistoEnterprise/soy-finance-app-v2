@@ -19,8 +19,10 @@ export function usePairsWithLiquidity(): {pairsWithLiquidity: Pair[], loading: b
   const setPairsWithLiquidityLoadingFn = useEvent(setPairsWithLiquidityLoading);
 
   const tokenPairsWithLiquidityTokens = useMemo(
-    () => trackedTokenPairs.map((tokens) => ({liquidityToken: toV2LiquidityToken(tokens), tokens})),
-    [trackedTokenPairs],
+    () => {
+      console.log("FIRED CHANGE");
+      return trackedTokenPairs.map((tokens) => ({liquidityToken: toV2LiquidityToken(tokens), tokens}));
+    }, [trackedTokenPairs]
   );
 
   const liquidityTokens = useMemo(

@@ -132,12 +132,13 @@ export default function Header() {
                     <Svg iconName="futures" />
                     Futures
                   </a>
-                  <a onClick={() => {
-                    setMenuOpen(false);
-                    showMessage("Coming soon...", "info");
-                  }} className={styles.link} href="#">
+                  <a target="_blank" className={styles.link} href="https://bridge.soy.finance/">
                     <Svg iconName="bridge" />
                     Bridge
+                  </a>
+                  <a target="_blank" className={styles.link} href="https://app.soy.finance/">
+                    <Svg iconName="history" />
+                    Soy Finance V2
                   </a>
                 </div>
               </div>

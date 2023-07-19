@@ -29,6 +29,7 @@ import Divider from "../../../../components/atoms/Divider";
 import {useBalanceOf} from "../../../../shared/web3/hooks/useBalanceOf";
 import tokensListInClo from "../../../../shared/constants/tokenLists/tokenlistInCLO.json";
 import {WrappedTokenInfo} from "../../../swap/functions";
+import {useTrackedPools} from "../../../../stores/tracked-pools/useTrackedPools";
 
 const BASES_TO_TRACK_LIQUIDITY_FOR = {
   820: [
@@ -83,7 +84,7 @@ function getPairOfWrappedTokensByAddress(addressPair: [string, string]) {
     logoURI: tokenB.logoURI
   }, []);
 
-  return [[wrappedTokenA, wrappedTokenB]];
+  return [wrappedTokenA, wrappedTokenB];
 }
 
 export function useTrackedTokenPairs(): [WrappedTokenInfo, WrappedTokenInfo][] {
@@ -114,22 +115,25 @@ export function useTrackedTokenPairs(): [WrappedTokenInfo, WrappedTokenInfo][] {
     [wrappedTokens, chainId],
   )
 
-  const savedSerializedPairs = useMemo(() => {
-    return localStorage.getItem("trackedTokenPairs");
-  }, []);
+  const { trackedPools } = useTrackedPools();
 
   const userPairs = useMemo(() => {
-    if(!savedSerializedPairs) {
+    if(!trackedPools || !trackedPools[chainId]) {
       return [];
     }
+    console.log(trackedPools);
 
-    return getPairOfWrappedTokensByAddress(JSON.parse(savedSerializedPairs)["820"][0]);
-  }, [savedSerializedPairs]);
+    return trackedPools[chainId].map(pool => getPairOfWrappedTokensByAddress(pool));
+  }, [chainId, trackedPools]);
+
+  console.log(userPairs);
 
   const combinedList = useMemo(
-    () => userPairs.concat(generatedPairs),
+    () => [...userPairs, ...generatedPairs],
     [generatedPairs, userPairs],
   );
+
+  console.log(combinedList);
 
   return useMemo(() => {
     const keyed = combinedList.reduce<{ [key: string]: [WrappedTokenInfo, WrappedTokenInfo] }>((memo, [tokenA, tokenB]) => {
@@ -189,7 +193,7 @@ export function usePairBalances(pairs, addresses, validatedTokens) {
 }
 
 export default function YourLiquidity({setActiveTab}) {
-  const {isActive} = useWeb3();
+  const {isActive, chainId} = useWeb3();
 
   const [content, setContent] = useState<"pools" | "import">("pools");
 
@@ -200,6 +204,8 @@ export default function YourLiquidity({setActiveTab}) {
   const handleImportPool = useCallback(() => {
     setContent("import");
   }, []);
+
+  const { importPool } = useTrackedPools();
 
   const importTokenA = useStore($importTokenA);
   const importTokenB = useStore($importTokenB);
@@ -316,11 +322,7 @@ export default function YourLiquidity({setActiveTab}) {
         </div>
 
         <Button fullWidth onClick={() => {
-          const currentTrackedPairs = localStorage.getItem("trackedTokenPairs");
-
-          localStorage.setItem("trackedTokenPairs", JSON.stringify({
-            820: [[importTokenA?.address, importTokenB?.address]]
-          }))
+          importPool({chainId, pair: [importTokenA?.address || "", importTokenB?.address || ""]})
         }}>Import pool</Button>
       </div> : null}
     </>}

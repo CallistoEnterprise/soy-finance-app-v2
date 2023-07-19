@@ -10,5 +10,6 @@
   "connect": "Connect",
   "wallet": "Wallet",
   "recent_transactions": "Recent transactions",
-  "disconnect": "Disconnect"
+  "disconnect": "Disconnect",
+  "v2": "SOY Finance V2"
 }

@@ -69,12 +69,12 @@ const menuItems: {
     ]
   },
   {
-    title: "future",
-    url: "#"
+    title: "bridge",
+    url: "https://bridge.soy.finance/"
   },
   {
-    title: "bridge",
-    url: "#"
+    title: "v2",
+    url: "https://app.soy.finance"
   }
 ];
 
@@ -121,7 +121,11 @@ export default function HeaderNav() {
     <ul className={styles.menu}>
       {menuItems.map(link => <li key={link.title}>{
         link.menu ? <NavItemWithMenu menu={link.menu} title={t(link.title)} /> :
-          <a onClick={(e) => {
+          <a target="_blank" onClick={(e) => {
+            if(link.title === "bridge" || link.title === "v2") {
+              return;
+            }
+
             e.preventDefault();
 
             showMessage("Coming soon...", "info");
