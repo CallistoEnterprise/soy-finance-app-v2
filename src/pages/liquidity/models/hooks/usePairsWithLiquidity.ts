@@ -38,6 +38,9 @@ export function usePairsWithLiquidity(): {pairsWithLiquidity: Pair[], loading: b
 
   const pairBalances = usePairBalances(trackedTokenPairs, validatedTokenAddresses, validatedTokens);
 
+  console.log("PBL");
+  console.log(pairBalances);
+
   const liquidityTokensWithBalances = useMemo(
     () =>
       tokenPairsWithLiquidityTokens.filter(({liquidityToken}) =>
@@ -45,6 +48,8 @@ export function usePairsWithLiquidity(): {pairsWithLiquidity: Pair[], loading: b
       ),
     [tokenPairsWithLiquidityTokens, pairBalances],
   );
+
+  console.log(liquidityTokensWithBalances);
 
   const mapped = useMemo(() => {
     return liquidityTokensWithBalances.map(({tokens}) => tokens)
@@ -60,6 +65,7 @@ export function usePairsWithLiquidity(): {pairsWithLiquidity: Pair[], loading: b
     return v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair));
   }, [v2Pairs]);
 
+  console.log(ps);
   const pairsRef = useRef(pairs);
 
   useEffect(() => {
@@ -71,7 +77,7 @@ export function usePairsWithLiquidity(): {pairsWithLiquidity: Pair[], loading: b
       return;
     }
 
-    if (ps.length && !pairsRef.current.length) {
+    if (ps.length) {
       setPairsWithLiquidityFn(ps);
     }
 

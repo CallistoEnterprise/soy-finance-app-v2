@@ -198,6 +198,9 @@ export default function YourLiquidity({setActiveTab}) {
 
   const {pairsWithLiquidity, loading} = usePairsWithLiquidity();
 
+  console.log("PWL");
+  console.log(pairsWithLiquidity);
+
   const tokens = useAllTokens();
 
   const handleImportPool = useCallback(() => {
@@ -321,7 +324,8 @@ export default function YourLiquidity({setActiveTab}) {
         </div>
 
         <Button fullWidth onClick={() => {
-          importPool({chainId, pair: [importTokenA?.address || "", importTokenB?.address || ""]})
+          importPool({chainId, pair: [importTokenA?.address || "", importTokenB?.address || ""]});
+          setContent("pools");
         }}>Import pool</Button>
       </div> : null}
     </>}
