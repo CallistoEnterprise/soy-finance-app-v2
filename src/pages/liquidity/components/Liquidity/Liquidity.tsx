@@ -6,6 +6,9 @@ import RemoveLiquidity from "../RemoveLiquidity";
 import YourLiquidity from "../YourLiquidity";
 import AddLiquidity from "../AddLiquidity";
 import clsx from "clsx";
+import ConfirmAddLiquidityDialog from "../ConfirmAddLiquidityDialog";
+import AwaitingApproveDialog from "../../../../components/molecules/AwaitingApproveDialog";
+import ConfirmRemoveLiquidityDialog from "../ConfirmRemoveLiquidityDialog";
 
 export default function Liquidity() {
   const [activeTab, setActiveTab] = useState(0);
@@ -28,5 +31,8 @@ export default function Liquidity() {
         </div>
       </Tab>
     </Tabs>
+    <ConfirmAddLiquidityDialog />
+    <ConfirmRemoveLiquidityDialog />
+    <AwaitingApproveDialog />
   </div>
 }

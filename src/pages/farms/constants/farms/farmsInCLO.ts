@@ -21,6 +21,20 @@ const farms: FarmConfig[] = [
     quoteToken: tokens.wclo,
   },
   {
+    pid: 42,
+    lpSymbol: 'SOY-CLO LP (new)',
+    lpAddresses: {
+      20729: '',
+      820: '0x1ceE27d0627ce8A81dF9B4D7eEE0d753b8c2F613',
+    },
+    localFarmAddresses: {
+      820: '0x0CF951123B2d337eB52091bAbe61AfaDfff330b4',
+      20729: '',
+    },
+    token: tokens.soy,
+    quoteToken: tokens.wclo,
+  },
+  {
     pid: 4,
     lpSymbol: 'BUSDT-CLO LP',
     lpAddresses: {
@@ -29,6 +43,20 @@ const farms: FarmConfig[] = [
     },
     localFarmAddresses: {
       820: '0x3E5B906eE1Cb467E1511a2b1ad5a1bc4a3F9BF8B',
+      20729: '',
+    },
+    token: tokens.busdt,
+    quoteToken: tokens.wclo,
+  },
+  {
+    pid: 43,
+    lpSymbol: 'BUSDT-CLO LP (new)',
+    lpAddresses: {
+      20729: '',
+      820: '0xB852AD87329986EaC6e991954fe329231D1E4De1',
+    },
+    localFarmAddresses: {
+      820: '0x3A6B6E3e8f8cAdA392fD64A1a0527eacB1c187fe',
       20729: '',
     },
     token: tokens.busdt,
@@ -49,6 +77,20 @@ const farms: FarmConfig[] = [
     quoteToken: tokens.busdt,
   },
   {
+    pid: 44,
+    lpSymbol: 'SOY-BUSDT LP (new)',
+    lpAddresses: {
+      20729: '',
+      820: '0x23288A0a9c7ac3bEC523aeED146E4F0bf04d6309',
+    },
+    localFarmAddresses: {
+      820: '0xe884efF699177acca9f362d24516FD3763C0489b',
+      20729: '',
+    },
+    token: tokens.soy,
+    quoteToken: tokens.busdt,
+  },
+  {
     pid: 3,
     lpSymbol: 'CLOE-CLO LP',
     lpAddresses: {
@@ -57,6 +99,20 @@ const farms: FarmConfig[] = [
     },
     localFarmAddresses: {
       820: '0xfe61A8dc1458D013f31b7B5d0DDf82864Cf89035',
+      20729: '',
+    },
+    token: tokens.cloe,
+    quoteToken: tokens.wclo,
+  },
+  {
+    pid: 50,
+    lpSymbol: 'CLOE-CLO LP (new)',
+    lpAddresses: {
+      20729: '',
+      820: '0x6cC3F66d249D6bF299b226DEeB3E1c9Ed4dF60Da',
+    },
+    localFarmAddresses: {
+      820: '0xd3D623B5217634140A5Ab2852729aeA6bBeD2da4',
       20729: '',
     },
     token: tokens.cloe,
@@ -77,6 +133,20 @@ const farms: FarmConfig[] = [
     quoteToken: tokens.soy,
   },
   {
+    pid: 48,
+    lpSymbol: 'ETC-SOY LP (new)',
+    lpAddresses: {
+      20729: '',
+      820: '0xcE49b862ED38414C86914Df5E6d854AfBe203563',
+    },
+    localFarmAddresses: {
+      820: '0xE7DF85ABAB6505737713aC6eB53c8Ee03232cB14',
+      20729: '',
+    },
+    token: tokens.ccetc,
+    quoteToken: tokens.soy,
+  },
+  {
     pid: 9,
     lpSymbol: 'ETC-CLO LP',
     lpAddresses: {
@@ -85,6 +155,20 @@ const farms: FarmConfig[] = [
     },
     localFarmAddresses: {
       820: '0x009B08c79aF977557513a71132fC1CcC582Be310',
+      20729: '',
+    },
+    token: tokens.ccetc,
+    quoteToken: tokens.wclo,
+  },
+  {
+    pid: 49,
+    lpSymbol: 'ETC-CLO LP (new)',
+    lpAddresses: {
+      20729: '',
+      820: '0x3493391e234834c93C0ED675A4872cF48D63AD1C',
+    },
+    localFarmAddresses: {
+      820: '0xf1308a20c8C30F0F64D5b870A5C17e2d91ee5950',
       20729: '',
     },
     token: tokens.ccetc,
@@ -105,6 +189,20 @@ const farms: FarmConfig[] = [
     quoteToken: tokens.soy,
   },
   {
+    pid: 45,
+    lpSymbol: 'SOY-ETH LP (new)',
+    lpAddresses: {
+      20729: '',
+      820: '0xE0A4D8356c0Ded2e0E7A4Af6DB2a164f7d1aD243',
+    },
+    localFarmAddresses: {
+      820: '0xe59c4537a901640dC3fC3c3b9Da7b18f9F589807',
+      20729: '',
+    },
+    token: tokens.cceth_erc223,
+    quoteToken: tokens.soy,
+  },
+  {
     pid: 11,
     lpSymbol: 'CLO-ETH LP',
     lpAddresses: {
@@ -119,6 +217,20 @@ const farms: FarmConfig[] = [
     quoteToken: tokens.wclo,
   },
   {
+    pid: 47,
+    lpSymbol: 'CLO-ETH LP (new)',
+    lpAddresses: {
+      20729: '',
+      820: '0x162c8b62cDa2Ec98DafE8ccb0624bB2bc08d6a7b',
+    },
+    localFarmAddresses: {
+      820: '0x0556F967331e90b045870A0d59b74B50a659297e',
+      20729: '',
+    },
+    token: tokens.cceth_erc223,
+    quoteToken: tokens.wclo,
+  },
+  {
     pid: 12,
     lpSymbol: 'SOY-BNB LP',
     lpAddresses: {
@@ -127,6 +239,20 @@ const farms: FarmConfig[] = [
     },
     localFarmAddresses: {
       820: '0xF411Ff92CAcd87Ee7EcB4fD83A5e7AF5D2946c9e',
+      20729: '',
+    },
+    token: tokens.ccbnb_erc223,
+    quoteToken: tokens.soy,
+  },
+  {
+    pid: 46,
+    lpSymbol: 'SOY-BNB LP (new)',
+    lpAddresses: {
+      20729: '',
+      820: '0x3006b056eA9423804084D6bA9080d6356EC78c10',
+    },
+    localFarmAddresses: {
+      820: '0xA0412a0cd94Adb40E2d3c1dD95909Ff446fadE35',
       20729: '',
     },
     token: tokens.ccbnb_erc223,
@@ -197,6 +323,20 @@ const farms: FarmConfig[] = [
     },
     localFarmAddresses: {
       820: '0x8c0A982A4193c6bF8Eea6637Db0CF9160dCF91fD',
+      20729: '',
+    },
+    token: tokens.cloe,
+    quoteToken: tokens.soy,
+  },
+  {
+    pid: 51,
+    lpSymbol: 'SOY-CLOE LP (new)',
+    lpAddresses: {
+      20729: '',
+      820: '0x9A95F9cf7Ea14264ef7AaC0798bbbE856246c0B2',
+    },
+    localFarmAddresses: {
+      820: '0x95547a1C6Fb6E89b7BD2bA3DE5097494cBE696Da',
       20729: '',
     },
     token: tokens.cloe,
@@ -397,7 +537,35 @@ const farms: FarmConfig[] = [
     },
     token: tokens.vvt,
     quoteToken: tokens.soy,
-  },
+  }
+  // {
+  //   pid: 40,
+  //   lpSymbol: 'SOY-DOGE LP',
+  //   lpAddresses: {
+  //     20729: '',
+  //     820: '0x93AA120b5195337D71C1AF424B616c8ED5510305',
+  //   },
+  //   localFarmAddresses: {
+  //     820: '0xa20E39a3587cA7c3d790925c3875765669B323A1',
+  //     20729: '',
+  //   },
+  //   token: tokens.vvt,
+  //   quoteToken: tokens.soy,
+  // },
+  // {
+  //   pid: 52,
+  //   lpSymbol: 'SOY-DOGE LP (new)',
+  //   lpAddresses: {
+  //     20729: '',
+  //     820: '0x93AA120b5195337D71C1AF424B616c8ED5510305',
+  //   },
+  //   localFarmAddresses: {
+  //     820: '0x823734aDAb32Eaf9a3b0c339d72d5dE978c3a2cA',
+  //     20729: '',
+  //   },
+  //   token: tokens.doge,
+  //   quoteToken: tokens.soy,
+  // }
 ]
 
 export default farms

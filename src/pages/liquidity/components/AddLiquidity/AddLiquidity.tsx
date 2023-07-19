@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import styles from "./AddLiquidity.module.scss";
 import IconButton from "../../../../components/atoms/IconButton";
 import Svg from "../../../../components/atoms/Svg/Svg";
@@ -13,7 +13,7 @@ import {ApprovalState, useApproveCallback} from "../../models/hooks/useApprove";
 import {useEnoughBalance} from "../../models/hooks/useEnoughBalance";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import ConnectWalletButton from "../../../../processes/web3/ui/ConnectWalletButton";
-import {setLiquidityChartOpened, setLiquidityHistoryOpened} from "../../models";
+import {setConfirmAddLiquidityDialogOpened, setLiquidityChartOpened, setLiquidityHistoryOpened} from "../../models";
 import {useTokenBalance} from "../../../../stores/balance/useTokenBalance";
 import {setSwapSettingsDialogOpened} from "../../../swap/models";
 
@@ -146,11 +146,7 @@ function Action() {
   const isEnoughBalanceA = useEnoughBalance({token: tokenA, amount: amountA, balance: balanceA});
   const isEnoughBalanceB = useEnoughBalance({token: tokenB, amount: amountB, balance: balanceB});
 
-  console.log("BLS")
-  console.log(isEnoughBalanceA);
-  console.log(isEnoughBalanceB);
-
-  const { addLiquidity } = useLiquidity();
+  const setConfirmAddLiquidityDialogOpenedFn = useEvent(setConfirmAddLiquidityDialogOpened);
 
   const [wasApprovingTokenA, setWasApprovingTokenA] = useState(false);
   const [wasApprovingTokenB, setWasApprovingTokenB] = useState(false);
@@ -167,6 +163,10 @@ function Action() {
     }
   }, [approveStatusB]);
 
+  const handleOpenConfirmDialog = useCallback(() => {
+    setConfirmAddLiquidityDialogOpenedFn(true);
+  },[setConfirmAddLiquidityDialogOpenedFn])
+
   // console.log(approveStatusA);
 
   if (!isActive) {
@@ -179,6 +179,10 @@ function Action() {
 
   if (!amountA || !amountB) {
     return <Button disabled fullWidth>Enter an amount to proceed</Button>;
+  }
+
+  if (approveStatusA[0] === ApprovalState.UNKNOWN || approveStatusB[0] === ApprovalState.UNKNOWN) {
+    return <Button disabled fullWidth>Checking approvals...</Button>;
   }
 
   if (!isEnoughBalanceA && !isEnoughBalanceB) {
@@ -201,7 +205,7 @@ function Action() {
         <Button fullWidth onClick={approveStatusA[1]}>Approve {tokenA.symbol}</Button>
         <Button fullWidth onClick={approveStatusB[1]}>Approve {tokenB.symbol}</Button>
       </div>
-      <Button fullWidth onClick={addLiquidity}>Supply liquidity</Button>
+      <Button fullWidth onClick={handleOpenConfirmDialog}>Supply liquidity</Button>
     </div>
   }
 
@@ -226,19 +230,36 @@ function Action() {
 
         <Button
           disabled={approveStatusA[0] === ApprovalState.PENDING || approveStatusA[0] === ApprovalState.NOT_APPROVED}
-          fullWidth onClick={addLiquidity}>Supply liquidity</Button>
+          fullWidth onClick={handleOpenConfirmDialog}>Supply liquidity</Button>
       </div>
     </div>
   }
 
   if (approveStatusA[0] === ApprovalState.APPROVED &&
-    approveStatusB[0] === ApprovalState.NOT_APPROVED
+    approveStatusB[0] !== ApprovalState.APPROVED || wasApprovingTokenB
   ) {
-    return <div>
-      <Button fullWidth onClick={() => approveStatusA[1]}>Approve {tokenB.symbol}</Button>
-      <Button fullWidth onClick={addLiquidity}>Supply liquidity</Button>
+    return <div className={styles.stepRows}>
+      <div className={styles.stepRow}>
+        <div className={styles.stepWrapper}>1</div>
+        <div>
+          {approveStatusB[0] === ApprovalState.NOT_APPROVED &&
+          <Button fullWidth onClick={approveStatusB[1]}>Approve {tokenB.symbol}</Button>}
+          {approveStatusB[0] === ApprovalState.PENDING &&
+          <Button fullWidth disabled>Approving {tokenB.symbol}...</Button>}
+          {approveStatusB[0] === ApprovalState.APPROVED && wasApprovingTokenB &&
+          <Button fullWidth disabled>Approve {tokenB.symbol}</Button>}
+        </div>
+      </div>
+
+      <div className={styles.stepRow}>
+        <div className={styles.stepWrapper}>2</div>
+
+        <Button
+          disabled={approveStatusB[0] === ApprovalState.PENDING || approveStatusB[0] === ApprovalState.NOT_APPROVED}
+          fullWidth onClick={handleOpenConfirmDialog}>Supply liquidity</Button>
+      </div>
     </div>
   }
 
-  return <Button fullWidth onClick={addLiquidity}>Supply liquidity</Button>
+  return <Button fullWidth onClick={handleOpenConfirmDialog}>Supply liquidity</Button>
 }

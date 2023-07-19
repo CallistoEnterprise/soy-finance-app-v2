@@ -1,22 +1,28 @@
 import React, {useMemo} from "react";
 import styles from "./ROIDialog.module.scss";
-import Dialog from "../../../../components/molecules/Dialog";
 import DialogHeader from "../../../../components/molecules/DialogHeader";
 import {tokenEarnedPerThousandDollarsCompounding} from "../../../../shared/utils";
 import Text from "../../../../components/atoms/Text";
 import DrawerDialog from "../../../../components/atoms/DrawerDialog";
+import {FixedNumber} from "ethers";
 
-export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) => {
+export const getDisplayApr = (cakeRewardsApr: number | FixedNumber, lpRewardsApr?: number) => {
   if (cakeRewardsApr && lpRewardsApr) {
     return (cakeRewardsApr + lpRewardsApr).toLocaleString('en-US', { maximumFractionDigits: 2})
   }
+
   if (cakeRewardsApr) {
     return (+cakeRewardsApr).toLocaleString('en-US', { maximumFractionDigits: 2})
   }
-  return null
+
+  return 0;
 }
 
 export const getRoi = ({amountEarned, amountInvested}) => {
+  if(isNaN(amountEarned) || isNaN(amountInvested)) {
+    return 0;
+  }
+
   return (amountEarned / amountInvested) * 100
 }
 

@@ -18,11 +18,11 @@ import {
   ONE_BIPS
 } from "../../functions";
 import Text from "../../../../components/atoms/Text";
+import {useAwaitingApproveDialog} from "../../../../stores/awaiting-approve-dialog/useAwaitingApproveDialog";
 
 export default function ConfirmSwapDialog() {
   const { handleSwap } = useSwapAction();
   const swapInputData = useStore($swapInputData);
-
   const trade = useStore($trade);
 
   const {priceImpactWithoutFee} = useMemo(() => computeTradePriceBreakdown(trade), [trade])

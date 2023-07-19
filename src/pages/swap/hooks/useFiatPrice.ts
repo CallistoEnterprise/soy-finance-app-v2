@@ -25,7 +25,7 @@ export function useFiatPrice(address, chainId) {
   const fiatPrices = useStore($swapFiatPrices);
 
   useEffect(() => {
-    if(!chainId) {
+    if(!chainId || !APIChainsMap[chainId]) {
       return;
     }
 

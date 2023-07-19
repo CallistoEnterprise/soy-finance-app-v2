@@ -74,6 +74,8 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
   const setLpTokenToUnStakeFn = useEvent(setLpTokenToUnStake);
   const {handleError} = useEthersError();
 
+  const [harvesting, setHarvesting] = useState(false);
+
   const handleHarvest = useCallback(async () => {
     if (!farm || !account) {
       return;
@@ -88,12 +90,16 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
       _amount
     ];
 
+    setHarvesting(true);
+
     try {
       const gas = await contract["transfer"]["estimateGas"](...args);
       const tx = await contract["transfer"](...args, {gasLimit: gas});
       console.log(tx);
+      setHarvesting(false);
     } catch (e: EthersError) {
       handleError(e);
+      setHarvesting(false);
     }
   }, [account, farm, handleError, web3Provider]);
 
@@ -103,13 +109,16 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
 
   const lpLabel = farm?.lpSymbol && farm?.lpSymbol?.toUpperCase().replace('SOYFINANCE', '')
 
+  console.log(chainId)
+  console.log(farm.apr);
+
   return <div className={styles.farmWrapper} key={farm.pid}>
     <div role={"button"} onClick={() => setIsOpen(!isOpen)}  key={farm.pid} className={styles.farm}>
       <div className={styles.meta}>
         <Image width={35} height={35} src={getLogo({address: farm.token.address?.[820]?.toLowerCase()})} alt=""/>
         <Image width={35} height={35} className={styles.secondImg}
                src={getLogo({address: farm.quoteToken.address?.[820]?.toLowerCase()})} alt=""/>
-        <Text>{farm.token.symbol} - {farm.quoteToken.symbol}</Text>
+        <Text>{farm.token.symbol} - {farm.quoteToken.symbol} {(!chainId || chainId === 820) && farm.pid >= 42 && farm.pid <= 52 && "(new)"}</Text>
       </div>
       {/*<div><Label type={["standard", "supreme", "select", ""][index % 4]}/></div>*/}
       <div className={styles.earnedCell}>
@@ -118,7 +127,7 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
         <Text>APR: </Text>
         <div className={styles.aprValue}>
           <Text>{totalApr.toFixed(2).toString()}%</Text>
-          {farm.apr && <span>
+          {+farm.apr ? <span>
             <button onClick={(e) => {
               e.stopPropagation();
               setROILpAPR(farm.lpRewardsApr);
@@ -128,7 +137,7 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
             }} className={styles.roiButton}>
               <Svg iconName="calculate"/>
             </button>
-          </span>}
+          </span> : null}
         </div>
       </div>
       <div className={styles.liquidityCell}><Text>Liquidity:</Text>
@@ -180,31 +189,33 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
           <div className={styles.linksContainer}>
             <Text color="secondary" tag="h5">Earned: </Text>
             <div>
-              <Text>0.00</Text>
-              {" "}
-              <Text color="secondary">($0.00)</Text>
+              <Text>{reward ? Number(formatUnits(reward, 18)).toFixed(4) : 0}</Text>
             </div>
           </div>
           <div style={{height: 16}}/>
           <div className={styles.linksContainer}>
-            <Button disabled={!staked || chainId !== 820} onClick={handleHarvest} fullWidth>
+            <Button loading={harvesting} disabled={!staked} onClick={handleHarvest} fullWidth>
               Harvest
             </Button>
           </div>
         </div>
         <div className={styles.stake}>
           {!staked
-            ? <Text color="secondary" tag="h5">Stake SOY - CLO LP</Text>
-            : <Text color="secondary" tag="h5">SOY-CLO LP STAKED</Text>}
+            ? <Text color="secondary" tag="h5">Stake {farm.token.symbol} - {farm.quoteToken.symbol} LP</Text>
+            :  <div className={styles.linksContainer}>
+              <Text color="secondary" tag="h5">{farm.token.symbol} - {farm.quoteToken.symbol} LP STAKED</Text>
+              <div>
+                <Text>{formatUnits(staked, 18)}</Text>
+              </div>
+            </div>}
           <div style={{height: 16}}/>
           <div className={styles.linksContainer}>
             {!isActive && <ConnectWalletButton fullWidth/>}
-            {isActive && chainId !== 820 && <Button fullWidth onClick={() => changeNetwork(820)}>Switch to CLO</Button>}
-            {isActive && !staked && chainId === 820 && <Button onClick={() => {
+            {isActive && !staked && <Button disabled={!Boolean(farm.multiplier)} onClick={() => {
               setLpTokenToStakeFn(farm);
               openStakeLPTokensDialogFn();
             }} fullWidth>Stake LP</Button>}
-            {isActive && staked && chainId === 820 && <Flex gap={10}>
+            {isActive && staked && <Flex gap={10}>
               <Button onClick={() => {
                 setLpTokenToUnStakeFn(farm);
                 openUnStakeLPTokensDialogFn();
@@ -270,9 +281,17 @@ export default function Farms({farms, userData, onlyStaked, fPrice, searchReques
     </div>
   }
 
+  if (!farms.length) {
+    return <div className={styles.noStaked}>
+      <EmptyStateIcon iconName="staked"/>
+      <Text variant={24}>No Farms Found</Text>
+      <Text color="secondary" variant={16}>We did not fount farms with this request</Text>
+    </div>
+  }
+
   return <div className={styles.farmsContainer}>
     {farms.map((farm, index) => <Farm fPrice={fPrice} key={farm.pid} farm={farm} index={index}
-                                      staked={userData ? userData[farm.pid].staked[0] : null}
-                                      reward={userData ? userData[farm.pid].reward[0] : null}/>)}
+                                      staked={userData ? userData[farm.pid]?.staked[0] : null}
+                                      reward={userData ? userData[farm.pid]?.reward[0] : null}/>)}
   </div>
 }

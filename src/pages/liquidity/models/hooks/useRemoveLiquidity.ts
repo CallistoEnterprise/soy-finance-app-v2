@@ -34,6 +34,12 @@ import {ApprovalState, useApproveCallback} from "./useApprove";
 import {splitSignature} from "@ethersproject/bytes";
 import {wrappedCurrencyAmount} from "../../../../shared/web3/functions/wrappedCurrency";
 import {WrappedTokenInfo} from "../../../swap/functions";
+import {$signatureData} from "../stores";
+import {resetSignatureData, setConfirmRemoveLiquidityDialogOpened, setSignatureData} from "../index";
+import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
+import {useAwaitingApproveDialog} from "../../../../stores/awaiting-approve-dialog/useAwaitingApproveDialog";
+import {$swapSlippage} from "../../../swap/models/stores";
+import {calculateSlippageAmount} from "./useLiquidity";
 
 export function tryParseAmount(value?: string, currency?: WrappedTokenInfo | Token | null, chainId?: number): CurrencyAmount | undefined {
   // console.log(value);
@@ -56,16 +62,6 @@ export function tryParseAmount(value?: string, currency?: WrappedTokenInfo | Tok
   return undefined
 }
 
-export function calculateSlippageAmount(value: CurrencyAmount, slippage: number): [JSBI, JSBI] {
-  if (slippage < 0 || slippage > 10000) {
-    throw Error(`Unexpected slippage value: ${slippage}`)
-  }
-  return [
-    JSBI.divide(JSBI.multiply(value.raw, JSBI.BigInt(10000 - slippage)), JSBI.BigInt(10000)),
-    JSBI.divide(JSBI.multiply(value.raw, JSBI.BigInt(10000 + slippage)), JSBI.BigInt(10000)),
-  ]
-}
-
 const contracts = {
   bridge: {
     820: "0x9a1fc8C0369D49f3040bF49c1490E7006657ea56",
@@ -83,7 +79,7 @@ const contracts = {
 };
 
 export function useRemoveLiquidity() {
-  const {chainId, web3Provider, account, provider} = useWeb3();
+  const {chainId, web3Provider, account, provider, walletName} = useWeb3();
 
   const deadline = useTransactionDeadline(20);
   const {tokenA, tokenB, lpToken} = useStore($removeLiquidityInputTokens);
@@ -94,6 +90,7 @@ export function useRemoveLiquidity() {
   const setRemoveLiquidityAmountAFn = useEvent(setRemoveLiquidityAmountA);
   const setRemoveLiquidityAmountLPFn = useEvent(setRemoveLiquidityAmountLP);
   const setRemoveLiquidityAmountBFn = useEvent(setRemoveLiquidityAmountB);
+  const slippage = useStore($swapSlippage);
 
   const amountA = useStore($removeLiquidityAmountA);
   const amountB = useStore($removeLiquidityAmountB);
@@ -107,6 +104,10 @@ export function useRemoveLiquidity() {
     amountLP,
   );
 
+  const signatureData = useStore($signatureData);
+  const setSignatureDataFn = useEvent(setSignatureData);
+  const resetSignatureDataFn = useEvent(resetSignatureData);
+
   const pairArray = useMemo(() => {
     return [[tokenA, tokenB]]
   }, [tokenA, tokenB]);
@@ -117,20 +118,22 @@ export function useRemoveLiquidity() {
   const pairs = usePairs(pairArray);
 
   const handleTokenAChange = useCallback((token: WrappedTokenInfo) => {
+    resetSignatureDataFn();
     if(tokenB && tokenB.equals(token)) {
       setRemoveLiquidityTokenBFn(tokenA);
     }
 
     setRemoveLiquidityTokenAFn(token);
-  }, [setRemoveLiquidityTokenAFn, setRemoveLiquidityTokenBFn, tokenA, tokenB]);
+  }, [resetSignatureDataFn, setRemoveLiquidityTokenAFn, setRemoveLiquidityTokenBFn, tokenA, tokenB]);
 
   const handleTokenBChange = useCallback((token: WrappedTokenInfo) => {
+    resetSignatureDataFn();
     if(tokenA && tokenA.equals(token)) {
       setRemoveLiquidityTokenAFn(tokenB);
     }
 
     setRemoveLiquidityTokenBFn(token);
-  }, [setRemoveLiquidityTokenAFn, setRemoveLiquidityTokenBFn, tokenA, tokenB]);
+  }, [resetSignatureDataFn, setRemoveLiquidityTokenAFn, setRemoveLiquidityTokenBFn, tokenA, tokenB]);
 
   useEffect(() => {
     if(pairs) {
@@ -171,6 +174,7 @@ export function useRemoveLiquidity() {
 
   const handleLiquidityAmountLPChange = useCallback(async (amount: string) => {
     setRemoveLiquidityAmountLPFn(amount);
+    resetSignatureDataFn();
 
     if (!amount) {
       setRemoveLiquidityAmountBFn("");
@@ -215,10 +219,11 @@ export function useRemoveLiquidity() {
     setRemoveLiquidityAmountAFn(price1.toSignificant(6));
     setRemoveLiquidityAmountBFn(price2.toSignificant(6));
 
-  }, [chainId, lpToken, pairs, setRemoveLiquidityAmountAFn, setRemoveLiquidityAmountBFn, setRemoveLiquidityAmountLPFn, totalPoolTokens])
+  }, [chainId, lpToken, pairs, resetSignatureDataFn, setRemoveLiquidityAmountAFn, setRemoveLiquidityAmountBFn, setRemoveLiquidityAmountLPFn, totalPoolTokens])
 
   const handleAmountAChange = useCallback(async (amount: string) => {
     setRemoveLiquidityAmountAFn(amount);
+    resetSignatureDataFn();
 
     if (!amount) {
       setRemoveLiquidityAmountBFn("");
@@ -261,10 +266,11 @@ export function useRemoveLiquidity() {
 
     setRemoveLiquidityAmountBFn(price.toSignificant(6));
     setRemoveLiquidityAmountLPFn(price1.toSignificant(6));
-  }, [chainId, lpToken, pairs, setRemoveLiquidityAmountAFn, setRemoveLiquidityAmountBFn, setRemoveLiquidityAmountLPFn, tokenA, totalPoolTokens, userPoolBalance]);
+  }, [chainId, lpToken, pairs, resetSignatureDataFn, setRemoveLiquidityAmountAFn, setRemoveLiquidityAmountBFn, setRemoveLiquidityAmountLPFn, tokenA, totalPoolTokens, userPoolBalance]);
 
   const handleAmountBChange = useCallback(async (amount: string) => {
     setRemoveLiquidityAmountBFn(amount);
+    resetSignatureDataFn();
 
     if (!amount) {
       setRemoveLiquidityAmountAFn("");
@@ -305,9 +311,7 @@ export function useRemoveLiquidity() {
     setRemoveLiquidityAmountAFn(price.toSignificant(6));
     setRemoveLiquidityAmountLPFn(price1.toSignificant(6));
 
-  }, [chainId, lpToken, pairs, setRemoveLiquidityAmountAFn, setRemoveLiquidityAmountBFn, setRemoveLiquidityAmountLPFn, tokenB, totalPoolTokens, userPoolBalance]);
-
-  const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
+  }, [chainId, lpToken, pairs, resetSignatureDataFn, setRemoveLiquidityAmountAFn, setRemoveLiquidityAmountBFn, setRemoveLiquidityAmountLPFn, tokenB, totalPoolTokens, userPoolBalance]);
 
   async function onAttemptToApprove() {
 
@@ -379,7 +383,7 @@ export function useRemoveLiquidity() {
       .then((signature) => {
         console.log(signature);
 
-        setSignatureData({
+        setSignatureDataFn({
           v: signature.v,
           r: signature.r,
           s: signature.s,
@@ -398,11 +402,27 @@ export function useRemoveLiquidity() {
     });
   }
 
+  const setConfirmRemoveLiquidityDialogOpenedFn = useEvent(setConfirmRemoveLiquidityDialogOpened);
+  const {showMessage} = useSnackbar();
+
+  const {handleOpen, setAwaitingApproveDialogInfo, setSubmitted, handleClose, setSubmittedInfo} = useAwaitingApproveDialog();
+
+
   const removeLiquidity = useCallback(async () => {
-    if (!tokenA || !tokenB || !chainId || !web3Provider || !account || !fragment || !lpToken || !deadline) {
+    setConfirmRemoveLiquidityDialogOpenedFn(false);
+
+    if (!tokenA || !tokenB || !chainId || !web3Provider || !account || !fragment || !lpToken || !deadline || !walletName) {
       console.log("Not enough data");
+      showMessage("Not enough data", "error");
       return;
     }
+
+    setSubmitted(false);
+    handleOpen();
+    setAwaitingApproveDialogInfo({
+      subheading: `Removing ${amountA} ${tokenA.symbol} and ${amountB} ${tokenB.symbol}`,
+      wallet: walletName
+    });
 
     const parsedAmountA = tryParseAmount(amountA.toString(), tokenA, chainId);
     const parsedAmountB = tryParseAmount(amountB.toString(), tokenB, chainId);
@@ -414,8 +434,8 @@ export function useRemoveLiquidity() {
     }
 
     const amountsMin = {
-      a: calculateSlippageAmount(parsedAmountA, 1)[0],
-      b: calculateSlippageAmount(parsedAmountB, 1)[0],
+      a: calculateSlippageAmount(parsedAmountA, slippage * 100)[0],
+      b: calculateSlippageAmount(parsedAmountB, slippage * 100)[0],
     }
 
     let methodNames: string[]
@@ -487,7 +507,7 @@ export function useRemoveLiquidity() {
         ]
       }
     } else {
-      throw new Error('Attempting to confirm without approval or a signature. Please contact support.')
+      showMessage('Attempting to confirm without approval or a signature. Please contact support.', "error");
     }
 
     const contract = new Contract(
@@ -526,14 +546,33 @@ export function useRemoveLiquidity() {
         const tx = await contract[methodName](...args, {
           gasLimit: safeGasEstimate,
         });
+
+        setSubmitted(true);
+        setSubmittedInfo({
+          operation: "transaction",
+          hash: tx.hash,
+          chainId
+        });
         console.log(tx);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      handleClose();
+      if(error.code === "ACTION_REJECTED") {
+        showMessage(
+          "Action was rejected",
+          "error"
+        );
+      } else {
+        console.log(error);
+        showMessage(
+          "Something went wrong, please try again later",
+          "error"
+        );
+      }
     } finally {
       setRemoving(false);
     }
-  }, [tokenA, tokenB, chainId, web3Provider, account, fragment, lpToken, deadline, amountA, amountB, amountLP, approval, signatureData]);
+  }, [setConfirmRemoveLiquidityDialogOpenedFn, tokenA, tokenB, chainId, web3Provider, account, fragment, lpToken, deadline, walletName, setSubmitted, handleOpen, setAwaitingApproveDialogInfo, amountA, amountB, amountLP, slippage, approval, signatureData, showMessage, setSubmittedInfo, handleClose]);
 
   return {
     removeLiquidity,

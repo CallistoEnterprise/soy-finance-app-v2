@@ -40,7 +40,7 @@ function useTokenAllowance(token: WrappedTokenInfo | Token | null, pendingApprov
       (async () => {
         if (isSupportedSwapNetwork) {
 
-          if (isNativeToken(token)) {
+          if (isNativeToken(token.address)) {
             return;
           }
 

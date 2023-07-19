@@ -2,6 +2,7 @@ import {createEvent} from "effector";
 import {SwapToken} from "../../swap/models/types";
 import {Pair} from "@callisto-enterprise/soy-sdk";
 import {WrappedTokenInfo} from "../../swap/functions";
+import {$isConfirmAddLiquidityDialogOpened} from "./stores";
 
 export const setLiquidityFirstToken = createEvent<SwapToken | null>("Set swap token from");
 export const setLiquiditySecondToken = createEvent<SwapToken | null>("Set swap token to");
@@ -23,3 +24,9 @@ export const setImportTokenB = createEvent<WrappedTokenInfo>("");
 
 export const setLiquidityChartOpened = createEvent<boolean>("Open or close mobile chart");
 export const setLiquidityHistoryOpened = createEvent<boolean>("Open or close mobile chart");
+
+export const setConfirmAddLiquidityDialogOpened = createEvent<boolean>("Set confirmation dialog for add liquidity");
+export const setConfirmRemoveLiquidityDialogOpened = createEvent<boolean>("Set confirmation dialog for remove liquidity");
+
+export const setSignatureData = createEvent<{ v: number; r: string; s: string; deadline: number }>("Update remove liquidity signatures");
+export const resetSignatureData = createEvent("Reset signatures to default");

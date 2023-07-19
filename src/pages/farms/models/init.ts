@@ -1,4 +1,5 @@
 import {
+  $farmsUserData,
   $isStakeLPTokensDialogOpened,
   $isUnStakeLPTokensDialogOpened,
   $lpTokenToStake,
@@ -8,7 +9,7 @@ import {
   closeStakeLPTokensDialog,
   closeUnStakeLPTokensDialog,
   openStakeLPTokensDialog,
-  openUnStakeLPTokensDialog, setLpTokenToStake, setLpTokenToUnStake
+  openUnStakeLPTokensDialog, setFarmsUserData, setLpTokenToStake, setLpTokenToUnStake
 } from "./index";
 
 $isStakeLPTokensDialogOpened.on(
@@ -52,3 +53,5 @@ $lpTokenToUnStake.on(
     return data;
   }
 )
+
+$farmsUserData.on(setFarmsUserData, (_, data) => data);

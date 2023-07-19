@@ -1,6 +1,6 @@
 import {
   ERC_20_INTERFACE,
-  ERC_223_INTERFACE, LOCAL_FARM_INTERFACE,
+  ERC_223_INTERFACE, LOCAL_FARM_INTERFACE, LOCAL_FARM_V2_INTERFACE,
   MASTER_CHEF_INTERFACE,
   PAIR_INTERFACE,
   ROUTER_INTERFACE
@@ -29,4 +29,8 @@ export function useMasterChefFragment(method: string): FunctionFragment | null {
 
 export function useLocalFarmFragment(method: string): FunctionFragment | null {
   return LOCAL_FARM_INTERFACE.getFunction(method);
+}
+
+export function useLocalFarmV2Fragment(method: string): FunctionFragment | null {
+  return LOCAL_FARM_V2_INTERFACE.getFunction(method);
 }

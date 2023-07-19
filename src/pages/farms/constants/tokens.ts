@@ -373,4 +373,13 @@ export const tokens = {
     decimals: 18,
     projectLink: 'https://wbtt.io/',
   },
+  doge: {
+    symbol: 'DOGE',
+    address: {
+      [ChainId.MAINNET]: '',
+      [ChainId.CLOTESTNET]: '0xA38760109D760fe65427551242eAC320AD7bf672',
+    },
+    decimals: 18,
+    projectLink: 'https://wbtt.io/',
+  },
 }

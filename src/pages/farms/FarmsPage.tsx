@@ -8,16 +8,26 @@ import farmsInEtc from "./constants/farms/farmsInETC";
 import farmsInBtt from "./constants/farms/farmsInBTT";
 import {FarmConfig} from "./types";
 import {BigNumber} from "@ethersproject/bignumber";
-import {useMultiCallJSONRpcContract} from "../../shared/web3/hooks/useMultiCallContract";
-import {useErc20Fragment, useLocalFarmFragment, useMasterChefFragment} from "../../shared/config/fragments";
-import {ERC_20_INTERFACE, LOCAL_FARM_INTERFACE, MASTER_CHEF_INTERFACE} from "../../shared/config/interfaces";
+import {useMultiCallContract, useMultiCallJSONRpcContract} from "../../shared/web3/hooks/useMultiCallContract";
+import {
+  useErc20Fragment,
+  useLocalFarmFragment,
+  useLocalFarmV2Fragment,
+  useMasterChefFragment
+} from "../../shared/config/fragments";
+import {
+  ERC_20_INTERFACE,
+  LOCAL_FARM_INTERFACE,
+  LOCAL_FARM_V2_INTERFACE,
+  MASTER_CHEF_INTERFACE
+} from "../../shared/config/interfaces";
 import {FixedNumber, FunctionFragment} from "ethers";
 import {fetchFarmsPrices} from "./utils";
 import clsx from "clsx";
 import Switch from "../../components/atoms/Switch";
 import BannerSlider from "./components/BannerSlider";
 import PageCardHeading from "../../components/molecules/PageCardHeading";
-import {getUnixTime, subDays, subWeeks, startOfMinute} from 'date-fns'
+import {getUnixTime, startOfMinute, subDays, subWeeks} from 'date-fns'
 import {gql, request} from 'graphql-request';
 import {multiQuery, PoolData} from "../../shared/fetcher";
 import Select from "../../components/molecules/Select";
@@ -26,6 +36,9 @@ import UnStakeLPTokensModal from "./components/UnstakeLPTokensModal";
 import {useWeb3} from "../../processes/web3/hooks/useWeb3";
 import Text from "../../components/atoms/Text";
 import Head from "next/head";
+import {useEvent, useStore} from "effector-react";
+import {$farmsUserData} from "./models/stores";
+import {setFarmsUserData} from "./models";
 
 export type SerializedBigNumber = string
 
@@ -44,7 +57,7 @@ export interface Farm extends FarmConfig {
   apr: FixedNumber,
   userData?: {
     allowance: string
-    tokenBalance: string
+    lpBalance: string
     stakedBalance: string
     earnings: string
   }
@@ -574,6 +587,11 @@ const usePoolDatas = (poolAddresses: string[]): PoolDatas => {
   return fetchState
 }
 
+const multipliers = {
+  820: 0.8,
+  199: 0.1
+}
+
 const getFarmApr = (
   poolWeight: FixedNumber,
   soyPriceUsd: FixedNumber | undefined,
@@ -582,22 +600,34 @@ const getFarmApr = (
   chainId = 820,
   swapApr = 0,
 ): { cakeRewardsApr: number; lpRewardsApr: number } => {
-  const yearlySoyRewardAllocation = FixedNumber.fromValue(50000000 * 0.8).mul(poolWeight);
+
+  const yearlySoyRewardAllocation = FixedNumber.fromValue(50000000 * (multipliers[chainId] || 0.1)).mul(poolWeight);
   const p = soyPriceUsd || FixedNumber.fromValue(0);
 
-  const soyRewardsApr = yearlySoyRewardAllocation.mul(p).div(poolLiquidityUsd).mul(FixedNumber.fromValue(100));
   let soyRewardsAprAsNumber = null
 
-  if (!soyRewardsApr.isZero() /* && soyRewardsApr.isFinite() */) {
-    soyRewardsAprAsNumber = soyRewardsApr
+  if (!poolLiquidityUsd.isZero() /* && soyRewardsApr.isFinite() */) {
+    soyRewardsAprAsNumber = yearlySoyRewardAllocation.mul(p).div(poolLiquidityUsd).mul(FixedNumber.fromValue(100))
   }
   const lpRewardsApr = swapApr //lpAprs[farmAddress?.toLocaleLowerCase()] ?? 0
   return {cakeRewardsApr: soyRewardsAprAsNumber, lpRewardsApr}
 }
 
+const masterChef = {
+  20729: '0x9F66541abc036503Ae074E1E28638b0Cb6165458',
+  820: '0x64Fa36ACD0d13472FD786B03afC9C52aD5FCf023',
+  199: '0x06dC704b8313ab9216a79363b870fc6E558B4438',
+  61: '0x346984a5a13241dAf2587571Ce7D86cEA77bfB7e',
+}
+
+function isNewFarm(pid: number) {
+  return Boolean(pid >= 42 && pid <= 52);
+}
+
 export default function FarmsPage() {
   const {isActive, account, chainId} = useWeb3();
-  const multiCallContract = useMultiCallJSONRpcContract();
+  const multiCallJSONContract = useMultiCallJSONRpcContract();
+  const multiCallWeb3Contract = useMultiCallContract();
 
   const totalSupplyFragment = useErc20Fragment("totalSupply");
   const balanceOfFragment = useErc20Fragment("balanceOf");
@@ -605,13 +635,16 @@ export default function FarmsPage() {
 
   const localFarmsFragment = useMasterChefFragment("localFarms");
 
-  const getAllocFragment = useLocalFarmFragment("getAllocationX1000");
   const userInfoFragment = useLocalFarmFragment("userInfo");
-  const pendingRewardFragment = useLocalFarmFragment("pendingReward");
+
+  const getAllocV2Fragment = useLocalFarmV2Fragment("getAllocationX1000");
+  const userInfoV2Fragment = useLocalFarmV2Fragment("userInfo");
+  const pendingRewardV2Fragment = useLocalFarmV2Fragment("pendingReward");
 
   const [data, setData] = useState<Farm[] | null>(null);
 
-  const [userData, setUserData] = useState<any>(null);
+  const farmsUserData = useStore($farmsUserData);
+  const setFarmsUserDataFn = useEvent(setFarmsUserData);
 
   const [showActive, setShowActive] = useState(true);
   const [showOnlyStaked, setShowOnlyStaked] = useState(false);
@@ -625,9 +658,13 @@ export default function FarmsPage() {
   const [searchRequest, setSearchRequest] = useState("");
 
   const networkId = useMemo(() => {
+    if(chainId === 820 || chainId === 199 || chainId === 61) {
+      return chainId;
+    }
+
     return 820;
     // return chainId || 61;
-  }, []);
+  }, [chainId]);
 
   const farmsToFetch = useMemo(() => {
     if(!networkId || networkId === 820) {
@@ -641,13 +678,21 @@ export default function FarmsPage() {
     return farmsInBtt;
   }, [networkId]);
 
+  const multiCallContract = useMemo(() => {
+    if(!multiCallWeb3Contract) {
+      return multiCallJSONContract;
+    }
+
+    return multiCallWeb3Contract;
+  }, [multiCallJSONContract, multiCallWeb3Contract]);
+
   useEffect(() => {
     if (!multiCallContract
       || !totalSupplyFragment
       || !balanceOfFragment
       || !decimalsFragment
       || !localFarmsFragment
-      || !getAllocFragment
+      || !getAllocV2Fragment
     ) {
       return;
     }
@@ -699,14 +744,14 @@ export default function FarmsPage() {
         ];
 
         const multiplierCall = {
-          address: '0x64Fa36ACD0d13472FD786B03afC9C52aD5FCf023',
+          address: masterChef[networkId],
           fragment: localFarmsFragment,
           params: [pid],
         };
 
         const allocPointCall = {
           address: localFarmAddresses?.[networkId],
-          fragment: getAllocFragment,
+          fragment: getAllocV2Fragment,
           params: [],
         }
 
@@ -727,7 +772,7 @@ export default function FarmsPage() {
       const {returnData: allocReturnData} = await multiCallContract["aggregate"](allocResultsCalls);
 
       const multiplierResult = multiplierReturnData.map(call => MASTER_CHEF_INTERFACE.decodeFunctionResult(localFarmsFragment, call));
-      const allocResult = allocReturnData.map(call => MASTER_CHEF_INTERFACE.decodeFunctionResult(getAllocFragment, call));
+      const allocResult = allocReturnData.map(call => LOCAL_FARM_INTERFACE.decodeFunctionResult(getAllocV2Fragment, call));
 
       const split = [];
 
@@ -826,18 +871,24 @@ export default function FarmsPage() {
       setData(farmsWithAPR);
     });
 
-  }, [balanceOfFragment, decimalsFragment, farmsToFetch, getAllocFragment, localFarmsFragment, multiCallContract, networkId, poolsDatas.data, totalSupplyFragment]);
+  }, [balanceOfFragment, decimalsFragment, farmsToFetch, getAllocV2Fragment, localFarmsFragment, multiCallContract, networkId, poolsDatas.data, totalSupplyFragment]);
 
   useEffect(() => {
-    if (!account || !multiCallContract || !userInfoFragment || !pendingRewardFragment) {
+    if (!account || !multiCallContract || !userInfoFragment || !pendingRewardV2Fragment || !balanceOfFragment) {
       return;
     }
 
     (IIFE(async () => {
-      const userInfoCalls = [];
       const pendingRewardCalls = [];
+      const lpBalanceCalls = [];
+
+      const userInfoCalls = [];
+
       for (let i = 0; i < farmsToFetch.length; i++) {
         const {localFarmAddresses} = farmsToFetch[i];
+
+        const fragment = isNewFarm(farmsToFetch[i].pid) ? userInfoV2Fragment : userInfoFragment;
+        const farm_interface = isNewFarm(farmsToFetch[i].pid) ? LOCAL_FARM_V2_INTERFACE : LOCAL_FARM_INTERFACE;
 
         const userInfoCall = {
           address: localFarmAddresses?.[networkId],
@@ -845,38 +896,66 @@ export default function FarmsPage() {
           params: [account],
         };
 
-        userInfoCalls.push([userInfoCall.address, LOCAL_FARM_INTERFACE.encodeFunctionData(userInfoCall.fragment, userInfoCall.params)]);
+        userInfoCalls.push({
+          address: userInfoCall.address,
+          interface: farm_interface,
+          fragment: fragment,
+          encodedData: farm_interface.encodeFunctionData(fragment!, userInfoCall.params)
+        });
       }
 
+      const preparedUserInfoCalls = userInfoCalls.map((userInfoCall) => [userInfoCall.address, userInfoCall.encodedData]);
+
       for (let i = 0; i < farmsToFetch.length; i++) {
-        const {localFarmAddresses} = farmsToFetch[i];
+        const { localFarmAddresses } = farmsToFetch[i];
 
         const pendingRewardCall = {
           address: localFarmAddresses?.[networkId],
-          fragment: pendingRewardFragment,
+          fragment: pendingRewardV2Fragment,
           params: [account],
         };
 
         pendingRewardCalls.push([pendingRewardCall.address, LOCAL_FARM_INTERFACE.encodeFunctionData(pendingRewardCall.fragment, pendingRewardCall.params)]);
       }
 
-      const {returnData: userInfoReturnData} = await multiCallContract["aggregate"](userInfoCalls);
-      const {returnData: pendingRewardReturnData} = await multiCallContract["aggregate"](pendingRewardCalls);
-      const userInfoResult = userInfoReturnData.map(call => MASTER_CHEF_INTERFACE.decodeFunctionResult(userInfoFragment, call));
-      const pendingRewardResult = pendingRewardReturnData.map(call => MASTER_CHEF_INTERFACE.decodeFunctionResult(pendingRewardFragment, call));
+      for (let i = 0; i < farmsToFetch.length; i++) {
+        const { lpAddresses } = farmsToFetch[i];
 
-      const res = {};
+        const lpBalanceCall = {
+          address: lpAddresses?.[networkId],
+          fragment: balanceOfFragment,
+          params: [account],
+        };
+
+        lpBalanceCalls.push([lpBalanceCall.address, ERC_20_INTERFACE.encodeFunctionData(lpBalanceCall.fragment, lpBalanceCall.params)]);
+      }
+
+      const {returnData: userInfoReturnData} = await multiCallContract["aggregate"](preparedUserInfoCalls);
+      const {returnData: pendingRewardReturnData} = await multiCallContract["aggregate"](pendingRewardCalls);
+      const {returnData: lpTokenBalanceReturnData} = await multiCallContract["aggregate"](lpBalanceCalls);
+
+      const userInfoResult = userInfoReturnData.map((call, index) => {
+        const farm_interface = userInfoCalls[index].interface;
+        const fragment = userInfoCalls[index].fragment;
+        return farm_interface.decodeFunctionResult(fragment, call);
+      });
+
+      const pendingRewardResult = pendingRewardReturnData.map(call => LOCAL_FARM_INTERFACE.decodeFunctionResult(pendingRewardV2Fragment, call));
+      const lpTokenBalanceResult = lpTokenBalanceReturnData.map(call => ERC_20_INTERFACE.decodeFunctionResult(balanceOfFragment, call));
+
+      const res: any = {};
 
       for (const [index, farm] of farmsToFetch.entries()) {
         res[farm.pid] = {
           staked: userInfoResult[index],
-          reward: pendingRewardResult[index]
+          reward: pendingRewardResult[index],
+          lpBalance: lpTokenBalanceResult[index]
         };
       }
 
-      setUserData(res);
+      setFarmsUserDataFn(res);
     }));
-  }, [account, farmsToFetch, multiCallContract, networkId, pendingRewardFragment, userInfoFragment]);
+  }, [account, balanceOfFragment, farmsToFetch, multiCallContract, networkId, pendingRewardV2Fragment, setFarmsUserDataFn, userInfoFragment, userInfoV2Fragment]);
 
   const farmsWithSearch = useMemo(() => {
     if(searchRequest && data) {
@@ -890,14 +969,14 @@ export default function FarmsPage() {
   }, [data, searchRequest]);
 
   const filteredFarms = useMemo(() => {
-    if(showOnlyStaked && userData && farmsWithSearch) {
+    if(showOnlyStaked && farmsUserData && farmsWithSearch) {
       return farmsWithSearch.filter((farm) => {
-        return Boolean(userData[farm.pid]?.staked[0]);
+        return Boolean(farmsUserData[farm.pid]?.staked[0]);
       });
     }
 
     return farmsWithSearch;
-  }, [farmsWithSearch, showOnlyStaked, userData]);
+  }, [farmsWithSearch, showOnlyStaked, farmsUserData]);
 
   const sortedFarms = useMemo(() => {
     if (!filteredFarms) {
@@ -1018,8 +1097,8 @@ export default function FarmsPage() {
             </div>
           </div>
         </div>
-        {activeFarms && showActive && <Farms searchRequest={searchRequest} fPrice={fPrice} onlyStaked={showOnlyStaked} farms={activeFarms} userData={userData}/>}
-        {inactiveFarms && !showActive && <Farms searchRequest={searchRequest} fPrice={fPrice} onlyStaked={showOnlyStaked} farms={inactiveFarms} userData={userData}/>}
+        {activeFarms && showActive && <Farms searchRequest={searchRequest} fPrice={fPrice} onlyStaked={showOnlyStaked} farms={activeFarms} userData={farmsUserData}/>}
+        {inactiveFarms && !showActive && <Farms searchRequest={searchRequest} fPrice={fPrice} onlyStaked={showOnlyStaked} farms={inactiveFarms} userData={farmsUserData}/>}
       </div>
     </div>
     <StakeLPTokensModal/>

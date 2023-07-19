@@ -9,3 +9,5 @@ export const closeUnStakeLPTokensDialog = createEvent("Closes the remove liquidi
 
 export const setLpTokenToStake = createEvent<Farm>("Any");
 export const setLpTokenToUnStake = createEvent<Farm>("Any");
+
+export const setFarmsUserData = createEvent<{[key:string]: {lpBalance: any, staked: any, reward: any}}>("Any");

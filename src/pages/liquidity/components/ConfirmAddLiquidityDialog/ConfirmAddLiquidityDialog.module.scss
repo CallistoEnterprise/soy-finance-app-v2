@@ -1,0 +1,44 @@
+@use "src/shared/styles/colors.module";
+@use "src/shared/styles/mixins";
+
+.confirmAdd {
+  padding: 40px;
+  width: 480px;
+}
+
+.header {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.images {
+  display: flex;
+
+  img {
+    border-radius: 50%;
+    border: 1px solid colors.$border-primary;
+  }
+
+  img:nth-last-child(1) {
+    margin-left: -10px;
+  }
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  letter-spacing: -0.32px;
+
+  color: colors.$text-secondary;
+  @include mixins.t-body-16;
+}
+
+.infoRows {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 20px;
+}

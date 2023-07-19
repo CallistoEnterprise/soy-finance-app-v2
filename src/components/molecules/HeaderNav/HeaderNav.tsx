@@ -25,17 +25,9 @@ const menuItems: {
         href: "/swap"
       },
       {
-        title: "Orders",
-        icon: "orders"
-      },
-      {
         title: "Liquidity",
         icon: "liquidity",
         href: "/liquidity"
-      },
-      {
-        title: "Dex stats",
-        icon: "dex-stats"
       }
     ]
   },

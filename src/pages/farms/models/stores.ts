@@ -5,3 +5,5 @@ export const $isUnStakeLPTokensDialogOpened = createStore<boolean>(false, {sid: 
 
 export const $lpTokenToStake = createStore<any>(null);
 export const $lpTokenToUnStake = createStore<any>(null);
+
+export const $farmsUserData = createStore<any>({}, {sid: "farmsUserData"});

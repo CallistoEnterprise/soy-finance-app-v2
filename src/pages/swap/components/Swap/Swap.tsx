@@ -34,6 +34,7 @@ import {
   computeSlippageAdjustedAmountsOut,
   computeTradePriceBreakdown, ONE_BIPS
 } from "../../functions";
+import AwaitingApproveDialog from "../../../../components/molecules/AwaitingApproveDialog";
 
 export default function Swap() {
   const { isActive, chainId, isSupportedSwapNetwork, changeNetwork } = useWeb3();
@@ -265,6 +266,7 @@ export default function Swap() {
       <InfoRow label="Route" value={<Route route={route} />} />
     </div>
     <ConfirmSwapDialog />
+    <AwaitingApproveDialog />
   </PageCard>;
 }
 

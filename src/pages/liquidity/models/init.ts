@@ -1,18 +1,27 @@
 import {
-  $importTokenA, $importTokenB,
+  $importTokenA, $importTokenB, $isConfirmAddLiquidityDialogOpened, $isConfirmRemoveLiquidityDialogOpened,
   $isImportPoolDialogOpened, $isLiquidityChartOpened, $isLiquidityHistoryOpened,
   $isRemoveLiquidityDialogOpened,
   $liquidityInputData,
-  $pairsWithLiquidity
+  $pairsWithLiquidity, $signatureData
 } from "./stores";
 import {
   closeImportPoolDialog,
-  closeRemoveLiquidityDialog, openImportPoolDialog,
-  openRemoveLiquidityDialog, setImportTokenA, setImportTokenB,
+  closeRemoveLiquidityDialog,
+  openImportPoolDialog,
+  openRemoveLiquidityDialog, resetSignatureData,
+  setConfirmAddLiquidityDialogOpened,
+  setConfirmRemoveLiquidityDialogOpened,
+  setImportTokenA,
+  setImportTokenB,
   setLiquidityAmountIn,
-  setLiquidityAmountOut, setLiquidityChartOpened,
-  setLiquidityFirstToken, setLiquidityHistoryOpened,
-  setLiquiditySecondToken, setPairsWithLiquidity, setPairsWithLiquidityLoading
+  setLiquidityAmountOut,
+  setLiquidityChartOpened,
+  setLiquidityFirstToken,
+  setLiquidityHistoryOpened,
+  setLiquiditySecondToken,
+  setPairsWithLiquidity,
+  setPairsWithLiquidityLoading, setSignatureData
 } from "./index";
 
 $liquidityInputData.on(setLiquidityFirstToken,
@@ -43,3 +52,9 @@ $importTokenA.on(setImportTokenA, (_, data) => data);
 
 $isLiquidityChartOpened.on(setLiquidityChartOpened, (_, data) => data);
 $isLiquidityHistoryOpened.on(setLiquidityHistoryOpened, (_, data) => data);
+
+$isConfirmAddLiquidityDialogOpened.on(setConfirmAddLiquidityDialogOpened, (_, data) => data);
+$isConfirmRemoveLiquidityDialogOpened.on(setConfirmRemoveLiquidityDialogOpened, (_, data) => data);
+
+$signatureData.on(setSignatureData, (_, data) => data);
+$signatureData.reset(resetSignatureData);

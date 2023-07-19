@@ -31,6 +31,9 @@ export const $removeLiquidityTokens = createStore<{
 
 
 export const $isRemoveLiquidityDialogOpened = createStore<boolean>(false, {sid: "isRemoveLiquidityDialogOpened"});
+export const $isConfirmAddLiquidityDialogOpened = createStore<boolean>(false, {sid: "isConfirmAddLiquidityDialogOpened"});
+export const $isConfirmRemoveLiquidityDialogOpened = createStore<boolean>(false, {sid: "isConfirmRemoveLiquidityDialogOpened"});
+
 export const $isImportPoolDialogOpened = createStore<boolean>(false, {sid: "isImportPoolDialogOpened"});
 
 export const $pairsWithLiquidity = createStore< {pairs: Pair[], loading: boolean}>({pairs: [], loading: true}, {sid: "pairsWithLiquidity"});
@@ -40,3 +43,5 @@ export const $importTokenB = createStore<WrappedTokenInfo | null>(null, {sid: "i
 
 export const $isLiquidityChartOpened = createStore<boolean>(false, {sid: "isLiquidityChartOpened"});
 export const $isLiquidityHistoryOpened = createStore<boolean>(false, {sid: "isLiquidityHistoryOpened"});
+
+export const $signatureData = createStore<{ v: number; r: string; s: string; deadline: number } | null>(null);

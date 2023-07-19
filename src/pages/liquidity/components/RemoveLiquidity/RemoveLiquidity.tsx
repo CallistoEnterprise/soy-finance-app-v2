@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import styles from "./RemoveLiquidity.module.scss";
 import PageCardHeading from "../../../../components/molecules/PageCardHeading";
 import Button from "../../../../components/atoms/Button";
@@ -6,7 +6,7 @@ import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import TokenSelector from "../../../../components/organisms/TokenSelector";
 import IconButton from "../../../../components/atoms/IconButton";
 import Svg from "../../../../components/atoms/Svg/Svg";
-import {useStore} from "effector-react";
+import {useEvent, useStore} from "effector-react";
 import {
   $removeLiquidityAmountA,
   $removeLiquidityAmountB, $removeLiquidityAmountLP, $removeLiquidityInputTokens,
@@ -17,6 +17,7 @@ import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
 import ConnectWalletButton from "../../../../processes/web3/ui/ConnectWalletButton";
 import clsx from "clsx";
 import {useBalanceOf} from "../../../../shared/web3/hooks/useBalanceOf";
+import {setConfirmAddLiquidityDialogOpened, setConfirmRemoveLiquidityDialogOpened} from "../../models";
 
 function ActionButtons({isEnough}) {
   const {isActive} = useWeb3();
@@ -27,7 +28,6 @@ function ActionButtons({isEnough}) {
   const amountB = useStore($removeLiquidityAmountB);
 
   const {
-    removeLiquidity,
     onAttemptToApprove,
     readyToRemove,
     approving,
@@ -35,6 +35,12 @@ function ActionButtons({isEnough}) {
   } = useRemoveLiquidity();
 
   const {showMessage} = useSnackbar();
+
+  const setConfirmRemoveLiquidityDialogOpenedFn = useEvent(setConfirmRemoveLiquidityDialogOpened);
+
+  const setConfirmDialogOpened = useCallback(() => {
+    setConfirmRemoveLiquidityDialogOpenedFn(true);
+  }, [setConfirmRemoveLiquidityDialogOpenedFn]);
 
   if(!isActive) {
     return <ConnectWalletButton fullWidth/>;
@@ -70,13 +76,7 @@ function ActionButtons({isEnough}) {
 
       <div className={styles.buttonRow}>
         <div className={clsx(styles.step, !readyToRemove && styles.disabled)}>{2}</div>
-        <Button loading={removing} fullWidth disabled={!readyToRemove} onClick={async () => {
-          try {
-            await removeLiquidity();
-          } catch (e) {
-            showMessage(e.message, "error");
-          }
-        }}>Remove liquidity</Button>
+        <Button loading={removing} fullWidth disabled={!readyToRemove} onClick={setConfirmDialogOpened}>Remove liquidity</Button>
       </div>
     </div>
 }

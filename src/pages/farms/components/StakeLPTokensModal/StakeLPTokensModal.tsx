@@ -2,12 +2,12 @@ import React, {useCallback, useMemo, useState} from "react";
 import styles from "./StakeLPTokensModal.module.scss";
 import {useEvent, useStore} from "effector-react";
 import {closeStakeLPTokensDialog} from "../../models";
-import {$isStakeLPTokensDialogOpened, $lpTokenToStake} from "../../models/stores";
+import {$farmsUserData, $isStakeLPTokensDialogOpened, $lpTokenToStake} from "../../models/stores";
 import DialogHeader from "../../../../components/molecules/DialogHeader";
 import TokenSelector from "../../../../components/organisms/TokenSelector";
 import Button from "../../../../components/atoms/Button";
 import {Farm} from "../../FarmsPage";
-import {Contract, EthersError, parseUnits} from "ethers";
+import {Contract, EthersError, formatUnits, parseUnits} from "ethers";
 import {LP_TOKEN_ABI} from "../../../../shared/constants/abis";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import DrawerDialog from "../../../../components/atoms/DrawerDialog";
@@ -20,13 +20,17 @@ export default function StakeLPTokensModal() {
   const isOpened = useStore($isStakeLPTokensDialogOpened);
   const closeStakeLPTokensDialogFn = useEvent(closeStakeLPTokensDialog);
 
+  const [staking, setStaking] = useState(false);
+
   const farmToStake: Farm = useStore($lpTokenToStake);
 
   const [value, setValue] = useState("0");
 
   const handleClose = useCallback(() => {
     closeStakeLPTokensDialogFn();
-  }, [closeStakeLPTokensDialogFn])
+  }, [closeStakeLPTokensDialogFn]);
+
+  const farmsUserData = useStore($farmsUserData);
 
   const {handleError} = useEthersError();
 
@@ -85,7 +89,6 @@ export default function StakeLPTokensModal() {
     return [undefined, undefined];
   }, [chainId, farmToStake?.quoteToken, farmToStake?.token]);
 
-  console.log(pair);
   return <DrawerDialog isOpen={isOpened} onClose={handleClose}>
     <div className={styles.stakeLpTokensModal}>
       <DialogHeader handleClose={handleClose} title="Stake lp tokens" />
@@ -99,10 +102,18 @@ export default function StakeLPTokensModal() {
           handleInputChange={setValue}
           handleTokenChange={null}
           label="Stake"
-          balance={null} />
+          balance={farmsUserData[farmToStake?.pid]?.lpBalance ? formatUnits(farmsUserData[farmToStake?.pid]?.lpBalance[0]) : 0} />
         <div className={styles.buttons}>
           <Button onClick={handleClose} fullWidth variant="outlined">Cancel</Button>
-          <Button disabled={!value} onClick={handleStake} fullWidth>Stake</Button>
+          <Button loading={staking} disabled={!value} onClick={async () => {
+            setStaking(true);
+            try {
+              await handleStake();
+              setStaking(false);
+            } catch (e) {
+              setStaking(false);
+            }
+          }} fullWidth>Stake</Button>
         </div>
       </div>
     </div>

@@ -16,6 +16,11 @@ import routerABI from "../../../../shared/constants/abis/interfaces/router.json"
 import {usePairs} from "../../../../shared/hooks/usePairs";
 import {wrappedCurrencyAmount} from "../../../../shared/web3/functions/wrappedCurrency";
 import {WrappedTokenInfo} from "../../../swap/functions";
+import {setConfirmAddLiquidityDialogOpened} from "../index";
+import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
+import {useAwaitingApproveDialog} from "../../../../stores/awaiting-approve-dialog/useAwaitingApproveDialog";
+import {isNativeToken} from "../../../../shared/utils";
+import {$swapSlippage} from "../../../swap/models/stores";
 
 export function tryParseAmount(value?: string, currency?: WrappedTokenInfo | null, chainId?: number): CurrencyAmount | undefined {
   if (!value || !currency) {
@@ -61,15 +66,21 @@ const contracts = {
 };
 
 export function useLiquidity() {
-  const {chainId, web3Provider, account} = useWeb3();
+  const {chainId, web3Provider, account, walletName} = useWeb3();
 
   const deadline = useTransactionDeadline(20);
+  const slippage = useStore($swapSlippage);
+
   const {tokenA, tokenB} = useStore($liquidityInputTokens);
   const setLiquidityTokenAFn = useEvent(setLiquidityTokenA);
   const setLiquidityTokenBFn = useEvent(setLiquidityTokenB);
 
   const setLiquidityAmountAFn = useEvent(setLiquidityAmountA);
   const setLiquidityAmountBFn = useEvent(setLiquidityAmountB);
+
+  const setConfirmAddLiquidityDialogOpenedFn = useEvent(setConfirmAddLiquidityDialogOpened);
+
+  const {showMessage} = useSnackbar();
 
   const amountA = useStore($liquidityAmountA);
   const amountB = useStore($liquidityAmountB);
@@ -265,10 +276,24 @@ export function useLiquidity() {
     setLiquidityAmountAFn(price.toSignificant(6));
   }, [chainId, pairs, setLiquidityAmountAFn, setLiquidityAmountBFn, tokenB]);
 
+  const {handleOpen, setAwaitingApproveDialogInfo, setSubmitted, handleClose, setSubmittedInfo} = useAwaitingApproveDialog();
+
+
   const addLiquidity = useCallback(async () => {
-    if(!tokenA || !tokenB || !chainId || !web3Provider || !account) {
+    setConfirmAddLiquidityDialogOpenedFn(false);
+
+
+    if(!tokenA || !tokenB || !chainId || !web3Provider || !account || !walletName) {
+      showMessage("Wrong data. Please contact support", "error");
       return;
     }
+
+    setSubmitted(false);
+    handleOpen();
+    setAwaitingApproveDialogInfo({
+      subheading: `Supply ${amountA} ${tokenA.symbol} and ${amountB} ${tokenB.symbol}`,
+      wallet: walletName
+    });
 
     const parsedAmountA = tryParseAmount(amountA, tokenA, chainId);
     const parsedAmountB = tryParseAmount(amountB, tokenB, chainId);
@@ -278,22 +303,46 @@ export function useLiquidity() {
     }
 
     const amountsMin = {
-      a: calculateSlippageAmount(parsedAmountA, 1)[0],
+      a: calculateSlippageAmount(parsedAmountA, slippage * 100)[0],
       b: calculateSlippageAmount(parsedAmountB, 1)[0],
     }
 
-    const args: any[] = [
-      tokenA.address, //"0xCc99C6635Fae4DAcF967a3fc2913ab9fa2b349C3"
-      tokenB.address, //"0xCC10A4050917f771210407DF7A4C048e8934332c"
-      parsedAmountA.raw.toString(), //"2000000000000000000"
-      parsedAmountB.raw.toString(), //"110574669940283"
-      amountsMin.a.toString(), //"1990000000000000000"
-      amountsMin.b.toString(),//"110021796590581"
-      account, //"0xF1602175601606E8ffEe38CE433A4DB4C6cf5d60"
-      deadline, //"0x645cc5f5"
-      {}
-    ];
+    let method;
+    let value;
+    let args: any[];
 
+    console.log("IS NATIVE?");
+    console.log(isNativeToken(tokenA.address));
+
+    if(isNativeToken(tokenA.address) || isNativeToken(tokenB.address)) {
+      method = "addLiquidityCLO";
+      value = isNativeToken(tokenA.address) ? parsedAmountA.raw.toString() : parsedAmountB.raw.toString();
+      args = [
+        isNativeToken(tokenA.address) ? tokenB.address : tokenA.address, // token
+        isNativeToken(tokenA.address) ? parsedAmountB.raw.toString() : parsedAmountA.raw.toString(), // token desired
+        isNativeToken(tokenA.address) ? amountsMin.b.toString() : amountsMin.a.toString(), // token min
+        isNativeToken(tokenA.address) ? amountsMin.a.toString() : amountsMin.b.toString(), // eth min
+        account,
+        deadline,
+      ]
+    } else {
+      method = "addLiquidity"
+      value = null;
+      args = [
+        tokenA.address, //"0xCc99C6635Fae4DAcF967a3fc2913ab9fa2b349C3"
+        tokenB.address, //"0xCC10A4050917f771210407DF7A4C048e8934332c"
+        parsedAmountA.raw.toString(), //"2000000000000000000"
+        parsedAmountB.raw.toString(), //"110574669940283"
+        amountsMin.a.toString(), //"1990000000000000000"
+        amountsMin.b.toString(),//"110021796590581"
+        account, //"0xF1602175601606E8ffEe38CE433A4DB4C6cf5d60"
+        deadline, //"0x645cc5f5"
+      ];
+    }
+
+    console.log("ARGS");
+    console.log(args);
+    console.log(value);
 
     const router = new Contract(
       bridgeAddress,
@@ -301,19 +350,38 @@ export function useLiquidity() {
       await web3Provider.getSigner(account)
     );
 
-
-    const _estimatedGas = await router["addLiquidity"]["estimateGas"](...args);
-
-    args[args.length - 1]["gasLimit"] = BigNumber.from(_estimatedGas)._hex;
+    const _estimatedGas = await router[method]["estimateGas"](...args, value ? { value } : {});
 
     try {
-      const tx = await router["addLiquidity"](...args);
+      const tx = await router[method](...args, {
+        ...(value ? { value } : {}),
+        gasLimit: BigNumber.from(_estimatedGas)._hex
+      });
+
+      setSubmitted(true);
+      setSubmittedInfo({
+        operation: "transaction",
+        hash: tx.hash,
+        chainId
+      });
       console.log(tx);
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      handleClose();
+      if(error.code === "ACTION_REJECTED") {
+        showMessage(
+          "Action was rejected",
+          "error"
+        );
+      } else {
+        console.log(error);
+        showMessage(
+          "Something went wrong, please try again later",
+          "error"
+        );
+      }
     }
 
-  }, [tokenA, tokenB, chainId, web3Provider, account, amountA, amountB, deadline, bridgeAddress]);
+  }, [setConfirmAddLiquidityDialogOpenedFn, tokenA, tokenB, chainId, web3Provider, account, walletName, setSubmitted, handleOpen, setAwaitingApproveDialogInfo, amountA, amountB, deadline, bridgeAddress, showMessage, setSubmittedInfo, handleClose]);
 
   return {
     addLiquidity,

@@ -2,12 +2,12 @@ import React, {useCallback, useMemo, useState} from "react";
 import styles from "./UnstakeLPTokensModal.module.scss";
 import {useEvent, useStore} from "effector-react";
 import {closeUnStakeLPTokensDialog} from "../../models";
-import {$isUnStakeLPTokensDialogOpened, $lpTokenToUnStake} from "../../models/stores";
+import {$farmsUserData, $isUnStakeLPTokensDialogOpened, $lpTokenToUnStake} from "../../models/stores";
 import DialogHeader from "../../../../components/molecules/DialogHeader";
 import TokenSelector from "../../../../components/organisms/TokenSelector";
 import Button from "../../../../components/atoms/Button";
 import {Farm} from "../../FarmsPage";
-import {Contract, EthersError, parseUnits} from "ethers";
+import {Contract, EthersError, formatUnits, parseUnits} from "ethers";
 import {LOCAL_FARM_ABI} from "../../../../shared/constants/abis";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
 import DrawerDialog from "../../../../components/atoms/DrawerDialog";
@@ -20,12 +20,18 @@ export default function UnStakeLPTokensModal() {
   const closeUnStakeLPTokensDialogFn = useEvent(closeUnStakeLPTokensDialog);
   const { account, web3Provider, chainId } = useWeb3();
   const farmToUnStake: Farm = useStore($lpTokenToUnStake);
+  const farmsUserData = useStore($farmsUserData);
+
+  const [unstaking, setUnstaking] = useState(false);
 
   const stakedBalance = useMemo(() => {
-    if(!farmToUnStake) {
+    if(!farmToUnStake || !farmsUserData[farmToUnStake?.pid]) {
       return 0;
     }
-  }, []);
+
+    return formatUnits(farmsUserData[farmToUnStake?.pid]?.staked[0])
+
+  }, [farmToUnStake, farmsUserData]);
 
   const [value, setValue] = useState("0");
 
@@ -106,10 +112,20 @@ export default function UnStakeLPTokensModal() {
           handleInputChange={setValue}
           handleTokenChange={null}
           label="Unstake"
-          balance={null} />
+          balance={stakedBalance} />
         <div className={styles.buttons}>
           <Button onClick={handleClose} fullWidth variant="outlined">Cancel</Button>
-          <Button onClick={handleWithdraw} fullWidth>Unstake</Button>
+          <Button loading={unstaking} onClick={async () => {
+            setUnstaking(true);
+            try {
+              await handleWithdraw();
+              setUnstaking(false);
+            } catch (e) {
+              setUnstaking(false);
+              console.log(e);
+            }
+
+          }} fullWidth>Unstake</Button>
         </div>
       </div>
     </div>

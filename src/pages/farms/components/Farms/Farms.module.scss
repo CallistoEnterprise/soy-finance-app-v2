@@ -12,14 +12,14 @@
   height: 60px;
   padding: 0 20px;
   display: grid;
-  grid-template-columns: 195px 1fr 110px 1fr 120px 30px;
+  grid-template-columns: 250px 1fr 110px 1fr 120px 30px;
   align-items: center;
   gap: 30px;
 
   @media screen and (max-width: 1100px) {
     height: 68px;
     gap: 16px;
-    grid-template-columns: 195px 1fr 70px 1fr 85px 40px;
+    grid-template-columns: 250px 1fr 70px 1fr 85px 40px;
   }
 
   @media screen and (max-width: 850px) {
@@ -53,7 +53,7 @@
 .liquidityCell {
   display: flex;
   justify-content: flex-start;
-  padding-left: 25%;
+  padding-left: 13%;
 
   @media screen and (max-width: 1100px){
     //justify-content: flex-start;
