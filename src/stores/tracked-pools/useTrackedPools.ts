@@ -27,7 +27,8 @@ export function useTrackedPools() {
     const savedTrackedPools = localStorage.getItem("trackedTokenPairs");
 
     if(!savedTrackedPools) {
-      return setTrackedPoolsFn({});
+      setTrackedPoolsFn({});
+      return;
     }
 
     setTrackedPoolsFn(JSON.parse(savedTrackedPools));

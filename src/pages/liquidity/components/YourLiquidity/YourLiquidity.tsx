@@ -118,10 +118,9 @@ export function useTrackedTokenPairs(): [WrappedTokenInfo, WrappedTokenInfo][] {
   const { trackedPools } = useTrackedPools();
 
   const userPairs = useMemo(() => {
-    if(!trackedPools || !trackedPools[chainId]) {
+    if(!trackedPools || !chainId || !trackedPools[chainId]) {
       return [];
     }
-    console.log(trackedPools);
 
     return trackedPools[chainId].map(pool => getPairOfWrappedTokensByAddress(pool));
   }, [chainId, trackedPools]);
