@@ -118,14 +118,10 @@ export function useTrackedTokenPairs(): [WrappedTokenInfo, WrappedTokenInfo][] {
     return localStorage.getItem("trackedTokenPairs");
   }, []);
 
-  console.log(savedSerializedPairs);
-
   const userPairs = useMemo(() => {
     if(!savedSerializedPairs) {
       return [];
     }
-
-    console.log(JSON.parse(savedSerializedPairs)[0]);
 
     return getPairOfWrappedTokensByAddress(JSON.parse(savedSerializedPairs)["820"][0]);
   }, [savedSerializedPairs]);
@@ -134,8 +130,6 @@ export function useTrackedTokenPairs(): [WrappedTokenInfo, WrappedTokenInfo][] {
     () => userPairs.concat(generatedPairs),
     [generatedPairs, userPairs],
   );
-
-  console.log(combinedList);
 
   return useMemo(() => {
     const keyed = combinedList.reduce<{ [key: string]: [WrappedTokenInfo, WrappedTokenInfo] }>((memo, [tokenA, tokenB]) => {
@@ -200,8 +194,6 @@ export default function YourLiquidity({setActiveTab}) {
   const [content, setContent] = useState<"pools" | "import">("pools");
 
   const {pairsWithLiquidity, loading} = usePairsWithLiquidity();
-
-  console.log(pairsWithLiquidity);
 
   const tokens = useAllTokens();
 
@@ -324,6 +316,8 @@ export default function YourLiquidity({setActiveTab}) {
         </div>
 
         <Button fullWidth onClick={() => {
+          const currentTrackedPairs = localStorage.getItem("trackedTokenPairs");
+
           localStorage.setItem("trackedTokenPairs", JSON.stringify({
             820: [[importTokenA?.address, importTokenB?.address]]
           }))

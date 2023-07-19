@@ -63,9 +63,6 @@ export function useTokenBalance({address, chainId}) {
         return [c.address, c.callData];
       }));
 
-      console.log(returnData);
-
-
       addresses.forEach((address, index) => {
         const balance = ERC_20_INTERFACE.decodeFunctionResult(fragment, returnData[index])["balance"];
         const decimals = tokenList.tokens.find(t => t.address === address).decimals;

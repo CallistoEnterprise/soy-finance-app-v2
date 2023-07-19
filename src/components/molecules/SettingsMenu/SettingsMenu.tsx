@@ -125,6 +125,6 @@ export default function SettingsMenu({expandDirection = "bottom"}) {
         }} />
       </Portal>
     </div>
-    <WalletDialog defaultTab={defaultTab} />
+    {/*<WalletDialog defaultTab={defaultTab} />*/}
   </>;
 }

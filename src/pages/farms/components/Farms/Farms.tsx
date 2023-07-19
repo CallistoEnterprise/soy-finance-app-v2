@@ -95,7 +95,7 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
     try {
       const gas = await contract["transfer"]["estimateGas"](...args);
       const tx = await contract["transfer"](...args, {gasLimit: gas});
-      console.log(tx);
+
       setHarvesting(false);
     } catch (e: EthersError) {
       handleError(e);
@@ -107,10 +107,7 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
   const [ROILpAPR, setROILpAPR] = useState<any>(0);
   const [ROILinkHref, setROILinkHref] = useState<any>(0);
 
-  const lpLabel = farm?.lpSymbol && farm?.lpSymbol?.toUpperCase().replace('SOYFINANCE', '')
-
-  console.log(chainId)
-  console.log(farm.apr);
+  const lpLabel = farm?.lpSymbol && farm?.lpSymbol?.toUpperCase().replace('SOYFINANCE', '');
 
   return <div className={styles.farmWrapper} key={farm.pid}>
     <div role={"button"} onClick={() => setIsOpen(!isOpen)}  key={farm.pid} className={styles.farm}>

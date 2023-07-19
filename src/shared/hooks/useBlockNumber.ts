@@ -20,13 +20,11 @@ export function useBlockNumber() {
 
   useEffect(
     () => {
-      console.log("Effect block fired");
       const onBlockNumber = (val) => {
         throttled(val);
       }
 
       const updateBlockNumber = async () => {
-        console.log("Block fired");
         const blockNumber = await web3Provider?.getBlockNumber();
         throttled(blockNumber);
       }
@@ -34,16 +32,13 @@ export function useBlockNumber() {
       IIFE(async () => {
         if(chainIdRef.current !== chainId && web3Provider instanceof BrowserProvider) {
           chainIdRef.current = chainId;
-          console.log("Removing block listener");
           await web3Provider.off(
             "block",
             onBlockNumber
           );
 
-          console.log("Updating block");
           await updateBlockNumber();
 
-          console.log("Updating block listener");
           await web3Provider.on(
             "block",
             onBlockNumber
@@ -55,7 +50,6 @@ export function useBlockNumber() {
 
       return () => {
         if (web3Provider instanceof BrowserProvider) {
-          console.log("Block removed");
           web3Provider.off(
             "block",
             onBlockNumber

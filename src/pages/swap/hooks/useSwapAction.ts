@@ -11,6 +11,7 @@ import {isNativeToken} from "../../../shared/utils";
 import {addRecentTransaction} from "../../../shared/models";
 import {useAwaitingApproveDialog} from "../../../stores/awaiting-approve-dialog/useAwaitingApproveDialog";
 import {setSwapConfirmDialogOpened} from "../models";
+import {useReceipt} from "../../../shared/hooks/useReceipt";
 
 export function calculateSlippageAmount(value: BigInt, slippage: number): BigNumber {
   return BigNumber.from(value).mul(995).div(1000);
@@ -64,6 +65,7 @@ export function useSwapAction() {
   const slippage = useStore($swapSlippage);
 
   const addRecentTransactionFn = useEvent(addRecentTransaction);
+  const {wait} = useReceipt();
 
   const handleSwap = useCallback(
     async () => {
@@ -141,8 +143,7 @@ export function useSwapAction() {
           chainId
         });
 
-        addRecentTransactionFn({chainId, hash: tx.hash, summary: `Swap ${swapInputData.amountIn} ${swapInputData.tokenFrom.symbol} to ${swapInputData.amountOut} ${swapInputData.tokenTo.symbol}`})
-
+        wait({tx, chainId, summary: `Swap ${(+swapInputData.amountIn).toLocaleString('en-US', {maximumFractionDigits: 6})} ${swapInputData.tokenFrom.symbol} to ${(+swapInputData.amountOut).toLocaleString('en-US', {maximumFractionDigits: 6})} ${swapInputData.tokenTo.symbol}`});
 
         return tx;
       } catch (error: EthersError) {

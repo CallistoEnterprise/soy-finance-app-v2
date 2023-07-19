@@ -14,6 +14,7 @@ import DrawerDialog from "../../../../components/atoms/DrawerDialog";
 import {useEthersError} from "../../../swap/hooks/useEthersError";
 import {WrappedTokenInfo} from "../../../swap/functions";
 import {getLogo} from "../../../../shared/utils";
+import {useReceipt} from "../../../../shared/hooks/useReceipt";
 
 export default function StakeLPTokensModal() {
   const {web3Provider, account, chainId} = useWeb3();
@@ -48,16 +49,11 @@ export default function StakeLPTokensModal() {
       valueToSend
     ];
 
-    console.log(contract);
-    console.log(args);
-
-
-
     try {
       const gas = await contract["transfer"]["estimateGas"](...args);
 
       const tx = await contract["transfer"](...args, {gasLimit: gas});
-      console.log(tx);
+
     } catch (e: EthersError) {
       handleError(e);
     }

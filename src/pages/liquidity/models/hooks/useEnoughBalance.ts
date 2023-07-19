@@ -9,8 +9,6 @@ export function useEnoughBalance({token, amount, balance}) {
         return false;
       }
 
-      console.log(balance);
-
       const amountParsed = parseUnits(amount, token.decimals).toString();
 
       const tokenAmount = new TokenAmount(token, JSBI.BigInt(amountParsed));

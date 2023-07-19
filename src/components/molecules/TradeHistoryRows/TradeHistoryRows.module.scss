@@ -10,7 +10,7 @@
 
 .tableHeader {
   display: grid;
-  grid-template-columns: 194fr 94fr 147fr 185fr 137fr 65fr;
+  grid-template-columns: 194fr 94fr 147fr 185fr 137fr 72fr;
   padding: 20px;
   background-color: colors.$background-secondary;
   border-radius: 10px;
@@ -24,7 +24,7 @@
 
 .tableRow {
   display: grid;
-  grid-template-columns: 194fr 94fr 147fr 185fr 137fr 66fr;
+  grid-template-columns: 194fr 94fr 147fr 185fr 137fr 72fr;
   padding: 20px;
   color: colors.$text-primary;
 

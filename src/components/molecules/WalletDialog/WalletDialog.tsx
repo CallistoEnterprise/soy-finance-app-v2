@@ -19,6 +19,7 @@ import ExternalLink from "../../atoms/ExternalLink";
 import {useTokenBalance} from "../../../stores/balance/useTokenBalance";
 import {nativeTokens} from "../../../shared/hooks/useAllTokens";
 import {WrappedTokenInfo} from "../../../pages/swap/functions";
+import {getExpLink} from "../AwaitingApproveDialog/AwaitingApproveDialog";
 
 function Transaction({transaction}) {
   const {web3Provider, chainId} = useWeb3();
@@ -54,7 +55,7 @@ function Transaction({transaction}) {
   }, [web3Provider, chainId, transaction, editTransactionStatusFn]);
 
   return <div className={styles.transaction}>
-    <ExternalLink href={`https://explorer.callisto.network/tx/${transaction.hash}/token-transfers`} text={transaction.summary} />
+    <ExternalLink href={getExpLink(transaction.hash, "transaction", chainId || 820)} text={transaction.summary} />
     <div className={styles.status}>
       {transaction.status === "pending"
       ? <Preloader withLogo={false} size={20} />

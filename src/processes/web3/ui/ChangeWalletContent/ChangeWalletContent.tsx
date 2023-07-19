@@ -86,7 +86,6 @@ export default function ChangeWalletContent() {
         </div>
         <Button fullWidth onClick={async () => {
           if (!currentWallet) {
-            console.log("No walletr");
             return;
           }
 

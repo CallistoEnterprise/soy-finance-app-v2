@@ -15,8 +15,8 @@ import DialogCloseButton from "../../atoms/DialogCloseButton";
 const CHAINS_CONSTANTS = {
   [ChainId.MAINNET]: {
     explorer: {
-      name: 'BttcScan',
-      url: 'https://bttcscan.com/',
+      name: 'CallistoScan',
+      url: 'https://explorer.callisto.network',
     }
   },
   [ChainId.BTTMAINNET]: {

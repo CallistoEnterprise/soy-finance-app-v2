@@ -40,6 +40,8 @@ import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
 import {useAwaitingApproveDialog} from "../../../../stores/awaiting-approve-dialog/useAwaitingApproveDialog";
 import {$swapSlippage} from "../../../swap/models/stores";
 import {calculateSlippageAmount} from "./useLiquidity";
+import {addRecentTransaction, editTransactionStatus} from "../../../../shared/models";
+import {useReceipt} from "../../../../shared/hooks/useReceipt";
 
 export function tryParseAmount(value?: string, currency?: WrappedTokenInfo | Token | null, chainId?: number): CurrencyAmount | undefined {
   // console.log(value);
@@ -61,22 +63,6 @@ export function tryParseAmount(value?: string, currency?: WrappedTokenInfo | Tok
   // necessary for all paths to return a value
   return undefined
 }
-
-const contracts = {
-  bridge: {
-    820: "0x9a1fc8C0369D49f3040bF49c1490E7006657ea56",
-    56: "0x9a1fc8C0369D49f3040bF49c1490E7006657ea56",
-    1: "0x9a1fc8C0369D49f3040bF49c1490E7006657ea56",
-    61: "0x9a1fc8C0369D49f3040bF49c1490E7006657ea56",
-    199: "0x9a1fc8C0369D49f3040bF49c1490E7006657ea56",
-    137: "0x9a1fc8C0369D49f3040bF49c1490E7006657ea56"
-  },
-  router: {
-    820: "0xeB5B468fAacC6bBdc14c4aacF0eec38ABCCC13e7",
-    199: "0x8Cb2e43e5AEB329de592F7e49B6c454649b61929",
-    61: "0x8c5Bba04B2f5CCCe0f8F951D2DE9616BE190070D"
-  }
-};
 
 export function useRemoveLiquidity() {
   const {chainId, web3Provider, account, provider, walletName} = useWeb3();
@@ -112,9 +98,6 @@ export function useRemoveLiquidity() {
     return [[tokenA, tokenB]]
   }, [tokenA, tokenB]);
 
-  console.log("LP TOKEN");
-  console.log(lpToken);
-
   const pairs = usePairs(pairArray);
 
   const handleTokenAChange = useCallback((token: WrappedTokenInfo) => {
@@ -140,7 +123,6 @@ export function useRemoveLiquidity() {
       const [, pair] = pairs[0];
 
       if(pair) {
-        console.log("Setting lp");
         setRemoveLiquidityTokenLPFn(pair.liquidityToken);
       }
     }
@@ -183,14 +165,12 @@ export function useRemoveLiquidity() {
     }
 
     if (!chainId || !pairs || !totalPoolTokens) {
-      console.log("No total poools");
       return;
     }
 
     const [pairState, pair] = pairs[0];
 
     if (!pair) {
-      console.log("NO piar");
       return;
     }
 
@@ -203,18 +183,11 @@ export function useRemoveLiquidity() {
     const wrappedIndependentAmount = wrappedCurrencyAmount(parsedAmount, chainId);
 
     if (!lpToken || !wrappedIndependentAmount) {
-      console.log("NO lp token");
       return;
     }
 
     const price1 = pair.getLiquidityValue(pair.token0, totalPoolTokens, wrappedIndependentAmount, false);
     const price2 = pair.getLiquidityValue(pair.token1, totalPoolTokens, wrappedIndependentAmount, false);
-
-    //
-    // console.log("PRICE IS WHAT YOU GET");
-    // console.log(price1);
-    // console.log(price2);
-    // console.log(price3.toSignificant(6));
 
     setRemoveLiquidityAmountAFn(price1.toSignificant(6));
     setRemoveLiquidityAmountBFn(price2.toSignificant(6));
@@ -326,15 +299,12 @@ export function useRemoveLiquidity() {
     const pairContract = new Contract(lpToken.address, IUniswapV2PairABI, await web3Provider.getSigner(account))
 
     if (!pairContract) {
-      console.log("No contract");
       return;
     }
 
 
     // try to gather a signature for permission
     const nonce = await pairContract["nonces"](account)
-
-    console.log(nonce);
 
     const EIP712Domain = [
       {name: 'name', type: 'string'},
@@ -376,13 +346,9 @@ export function useRemoveLiquidity() {
     provider
       .send('eth_signTypedData_v4', [account, data])
       .then((data) => {
-        console.log("ETH SIGN");
-        console.log(data);
         return splitSignature(data.result);
       })
       .then((signature) => {
-        console.log(signature);
-
         setSignatureDataFn({
           v: signature.v,
           r: signature.r,
@@ -391,8 +357,6 @@ export function useRemoveLiquidity() {
         });
       })
       .catch(async (err) => {
-        console.log(err);
-        console.log(err.code);
         // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
         if (err?.code !== 4001 && err?.code !== -32603) {
           await approveCallback();
@@ -406,13 +370,12 @@ export function useRemoveLiquidity() {
   const {showMessage} = useSnackbar();
 
   const {handleOpen, setAwaitingApproveDialogInfo, setSubmitted, handleClose, setSubmittedInfo} = useAwaitingApproveDialog();
-
+  const {wait} = useReceipt();
 
   const removeLiquidity = useCallback(async () => {
     setConfirmRemoveLiquidityDialogOpenedFn(false);
 
     if (!tokenA || !tokenB || !chainId || !web3Provider || !account || !fragment || !lpToken || !deadline || !walletName) {
-      console.log("Not enough data");
       showMessage("Not enough data", "error");
       return;
     }
@@ -429,7 +392,6 @@ export function useRemoveLiquidity() {
     const parsedAmountLP = tryParseAmount(amountLP.toString(), lpToken, chainId);
 
     if (!parsedAmountA || !parsedAmountB || !parsedAmountLP) {
-      console.log("No parsed amounts");
       return;
     }
 
@@ -516,13 +478,10 @@ export function useRemoveLiquidity() {
       await web3Provider.getSigner(account)
     );
 
-    console.log(contract);
-
     setRemoving(true);
     try {
       const safeGasEstimates: (BigNumber | undefined)[] = await Promise.all(
         methodNames.map((methodName) => {
-          console.log(methodName);
             return contract[methodName]["estimateGas"](...args)
               .then(data => BigNumber.from(data)._hex)
               .catch((err) => {
@@ -532,8 +491,6 @@ export function useRemoveLiquidity() {
           }
         ),
       )
-
-      console.log(safeGasEstimates);
 
       const indexOfSuccessfulEstimation = 0;
 
@@ -553,7 +510,7 @@ export function useRemoveLiquidity() {
           hash: tx.hash,
           chainId
         });
-        console.log(tx);
+        wait({tx, chainId, summary: `Removed ${(+amountA).toLocaleString("en-US", {maximumFractionDigits: 6})} ${tokenA.symbol} and ${(+amountB).toLocaleString("en-US", {maximumFractionDigits: 6})} ${tokenB.symbol}`});
       }
     } catch (error) {
       handleClose();

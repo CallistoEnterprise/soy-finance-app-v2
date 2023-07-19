@@ -10,7 +10,6 @@ import {getAllowedPairs, toTokenAmount} from "../functions";
 import {Trade, TradeType} from "@callisto-enterprise/soy-sdk";
 
 export function useTrade() {
-  console.log("RENDEEER");
   const { web3Provider, chainId } = useWeb3();
   const blockNumber = useBlockNumber();
   const swapInputData = useStore($swapInputData);

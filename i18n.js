@@ -1,5 +1,5 @@
 module.exports = {
-  locales: ["en", "uk", "fr"],
+  locales: ["en"],
   defaultLocale: "en",
   extensionsRgx: /\.page\.(tsx|ts|js|jsx)$/,
   pages: {

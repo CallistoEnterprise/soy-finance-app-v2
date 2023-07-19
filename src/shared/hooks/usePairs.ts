@@ -35,9 +35,6 @@ export function usePairs(currencies: [WrappedTokenInfo | null, WrappedTokenInfo 
   const fragment = usePairFragment("getReserves");
   const {loading, result} = useMultiCallGetReserves({addresses: pairAddresses})
 
-  console.log(loading);
-  console.log(result);
-
   const results = useMemo(() => {
     if (loading || !fragment) {
       return;

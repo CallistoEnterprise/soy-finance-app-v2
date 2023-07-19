@@ -15,9 +15,6 @@ export function usePairsWithLiquidity(): {pairsWithLiquidity: Pair[], loading: b
 
   const {chainId} = useWeb3();
 
-  console.log("TRACKED PAIRS");
-  console.log(trackedTokenPairs);
-
   const setPairsWithLiquidityFn = useEvent(setPairsWithLiquidity);
   const setPairsWithLiquidityLoadingFn = useEvent(setPairsWithLiquidityLoading);
 

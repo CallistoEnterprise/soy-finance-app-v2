@@ -295,7 +295,6 @@ export function useWeb3() {
   const disconnect = useCallback(
     () => {
       if (provider && provider.disconnect) {
-        console.log("Triyng to disconnect");
         provider.disconnect();
       }
       setIsActiveFn(false);

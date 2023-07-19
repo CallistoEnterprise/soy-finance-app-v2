@@ -132,7 +132,7 @@ export function useSwapApprove({ token, amount }: {token: WrappedTokenInfo | nul
           );
           setRequesting(false);
           setEnabling(true);
-          addRecentTransactionFn({chainId, hash: tx.hash, summary: `Approve ${token.symbol}`})
+          addRecentTransactionFn({chainId, hash: tx.hash, summary: `Approve ${token.symbol}`});
 
           const receipt = await tx.wait();
 

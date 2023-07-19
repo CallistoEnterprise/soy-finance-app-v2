@@ -212,3 +212,14 @@ export const tokenEarnedPerThousandDollarsCompoundingForPools = ({
   const earnedSoy = tokenPrice === 0 ? 0 : (10 * farmApr) / tokenPrice
   return parseFloat(earnedSoy.toFixed(roundingDecimals))
 }
+
+export async function txWait(tx, updateFn, chainId) {
+  try {
+    await tx.wait();
+
+    updateFn({chainId, status: "succeed", hash: tx.hash});
+  } catch (e) {
+    console.log(e);
+  }
+
+}

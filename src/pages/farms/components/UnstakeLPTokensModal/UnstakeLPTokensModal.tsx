@@ -93,7 +93,6 @@ export default function UnStakeLPTokensModal() {
       const gas = await contract["withdraw"]["estimateGas"](...args);
 
       const tx = await contract["withdraw"](...args, {gasLimit: gas});
-      console.log(tx);
     } catch (e: EthersError) {
       handleError(e);
     }

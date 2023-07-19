@@ -168,8 +168,6 @@ const useTopPoolAddresses = (): string[] => {
   useEffect(() => {
     const fetch = async () => {
       const addresses = await fetchTopPools(timestamp24hAgo);
-      console.log("FETCHING ADDRESSES");
-      console.log(addresses);
       setTopPoolAddresses(addresses);
       setLoaded(true);
     }
@@ -576,10 +574,7 @@ const usePoolDatas = (poolAddresses: string[]): PoolDatas => {
 
     const allBlocksAvailable = block24h?.number && block48h?.number && block7d?.number && block14d?.number;
 
-    console.log(poolAddresses);
-
     if (poolAddresses.length > 0 && allBlocksAvailable && !blockError) {
-      console.log("FETHING NOW!");
       fetch()
     }
   }, [poolAddresses, block24h, block48h, block7d, block14d, blockError])
@@ -866,8 +861,6 @@ export default function FarmsPage() {
         return {...farm, apr: cakeRewardsApr, lpRewardsApr}
       });
 
-      console.log(farmsWithAPR);
-
       setData(farmsWithAPR);
     });
 
@@ -1011,7 +1004,6 @@ export default function FarmsPage() {
     if (!sortedFarms) {
       return null;
     }
-    console.log("Fired change farms");
 
     return sortedFarms.filter((farm) => Boolean(farm.multiplier));
   }, [sortedFarms]);

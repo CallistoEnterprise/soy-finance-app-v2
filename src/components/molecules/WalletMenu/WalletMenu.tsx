@@ -6,12 +6,13 @@ import Portal from "../../atoms/Portal";
 import Divider from "../../atoms/Divider";
 import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
 import useTranslation from "next-translate/useTranslation";
-import {useEvent} from "effector-react";
+import {useEvent, useStore} from "effector-react";
 import {setWalletDialogOpened} from "../../../shared/models";
 import WalletDialog from "../WalletDialog";
 import OpenDropdownButton from "../OpenDropdownButton";
 import DropdownItem from "../DropdownItem";
 import {formatAddress} from "../../../shared/utils";
+import {$walletDefaultTab, setWalletDefaultTab} from "../../../stores/wallet-tab/stores";
 
 export default function WalletMenu({expandDirection = "bottom"}) {
   const {t} = useTranslation('common');
@@ -27,7 +28,8 @@ export default function WalletMenu({expandDirection = "bottom"}) {
     right: 0
   });
 
-  const [defaultTab, setDefaultTab] = useState(0);
+  const defaultTab = useStore($walletDefaultTab);
+  const setDefaultTab = useEvent(setWalletDefaultTab);
 
   useEffect(
     () => {

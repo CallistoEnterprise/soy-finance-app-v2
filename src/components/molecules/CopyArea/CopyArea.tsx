@@ -34,7 +34,6 @@ export default function CopyArea({ text, view = "default", size = "regular" }) {
   useEffect(
     () => {
       const cropText = () => {
-        console.log("Cropping");
         ellipse(textRef.current);
       };
 

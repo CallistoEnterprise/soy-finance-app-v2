@@ -21,6 +21,7 @@ import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
 import {useAwaitingApproveDialog} from "../../../../stores/awaiting-approve-dialog/useAwaitingApproveDialog";
 import {isNativeToken} from "../../../../shared/utils";
 import {$swapSlippage} from "../../../swap/models/stores";
+import {useReceipt} from "../../../../shared/hooks/useReceipt";
 
 export function tryParseAmount(value?: string, currency?: WrappedTokenInfo | null, chainId?: number): CurrencyAmount | undefined {
   if (!value || !currency) {
@@ -277,7 +278,7 @@ export function useLiquidity() {
   }, [chainId, pairs, setLiquidityAmountAFn, setLiquidityAmountBFn, tokenB]);
 
   const {handleOpen, setAwaitingApproveDialogInfo, setSubmitted, handleClose, setSubmittedInfo} = useAwaitingApproveDialog();
-
+  const {wait} = useReceipt();
 
   const addLiquidity = useCallback(async () => {
     setConfirmAddLiquidityDialogOpenedFn(false);
@@ -311,9 +312,6 @@ export function useLiquidity() {
     let value;
     let args: any[];
 
-    console.log("IS NATIVE?");
-    console.log(isNativeToken(tokenA.address));
-
     if(isNativeToken(tokenA.address) || isNativeToken(tokenB.address)) {
       method = "addLiquidityCLO";
       value = isNativeToken(tokenA.address) ? parsedAmountA.raw.toString() : parsedAmountB.raw.toString();
@@ -340,10 +338,6 @@ export function useLiquidity() {
       ];
     }
 
-    console.log("ARGS");
-    console.log(args);
-    console.log(value);
-
     const router = new Contract(
       bridgeAddress,
       routerABI,
@@ -364,7 +358,8 @@ export function useLiquidity() {
         hash: tx.hash,
         chainId
       });
-      console.log(tx);
+
+      wait({tx, chainId, summary: `Add ${(+amountA).toLocaleString("en-US", {maximumFractionDigits: 6})} ${tokenA.symbol} and ${(+amountB).toLocaleString("en-US", {maximumFractionDigits: 6})} ${tokenB.symbol}`});
     } catch (error) {
       handleClose();
       if(error.code === "ACTION_REJECTED") {
@@ -373,7 +368,6 @@ export function useLiquidity() {
           "error"
         );
       } else {
-        console.log(error);
         showMessage(
           "Something went wrong, please try again later",
           "error"
@@ -381,7 +375,7 @@ export function useLiquidity() {
       }
     }
 
-  }, [setConfirmAddLiquidityDialogOpenedFn, tokenA, tokenB, chainId, web3Provider, account, walletName, setSubmitted, handleOpen, setAwaitingApproveDialogInfo, amountA, amountB, deadline, bridgeAddress, showMessage, setSubmittedInfo, handleClose]);
+  }, [setConfirmAddLiquidityDialogOpenedFn, tokenA, tokenB, chainId, web3Provider, account, walletName, setSubmitted, handleOpen, setAwaitingApproveDialogInfo, amountA, amountB, slippage, bridgeAddress, showMessage, deadline, setSubmittedInfo, wait, handleClose]);
 
   return {
     addLiquidity,

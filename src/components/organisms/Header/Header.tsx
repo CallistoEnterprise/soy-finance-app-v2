@@ -13,6 +13,8 @@ import IconButton from "../../atoms/IconButton";
 import Svg from "../../atoms/Svg/Svg";
 import SettingsMenu from "../../molecules/SettingsMenu";
 import {socialLinks} from "../../../shared/constants/links/socials";
+import Link from "next/link";
+import {useSnackbar} from "../../../shared/providers/SnackbarProvider";
 
 const DynamicHeaderNetwork = dynamic(() => import("../HeaderNetwork"), {
   ssr: false,
@@ -27,6 +29,8 @@ const DynamicWalletMenu = dynamic(() => import("../../molecules/WalletMenu"), {
 export default function Header() {
   const isActive = useStore($isActive);
   const { mode } = useColorMode();
+
+  const {showMessage} = useSnackbar();
 
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -62,32 +66,34 @@ export default function Header() {
               <div>
                 <h3 className={styles.blockTitle}>Exchange</h3>
                 <div className={styles.links}>
-                  <a className={styles.link} href="#">
+                  <Link className={styles.link} href="/swap">
                     <Svg iconName="swap" />
                     Swap
-                  </a>
-                  <a className={styles.link} href="#">
-                    <Svg iconName="orders" />
-                    Orders
-                  </a>
-                  <a className={styles.link} href="#">
+                  </Link>
+                  <Link className={styles.link} href="/liquidity">
                     <Svg iconName="liquidity" />
                     Liquidity
-                  </a>
-                  <a className={styles.link} href="#">
-                    <Svg iconName="dex-stats" />
-                    Dex stats
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div>
                 <h3 className={styles.blockTitle}>Farming</h3>
                 <div className={styles.links}>
-                  <a className={styles.link} href="#">
+                  <Link className={styles.link} href="/farms">
+                    <Svg iconName="farm" />
+                    Farms
+                  </Link>
+                  <a onClick={() => {
+                    setMenuOpen(false);
+                    showMessage("Coming soon...", "info");
+                  }} className={styles.link} href="#">
                     <Svg iconName="boost" />
                     Boost token
                   </a>
-                  <a className={styles.link} href="#">
+                  <a onClick={() => {
+                    setMenuOpen(false);
+                    showMessage("Coming soon...", "info");
+                  }} className={styles.link} href="#">
                     <Svg iconName="burn" />
                     Burn & Boost
                   </a>
@@ -96,11 +102,17 @@ export default function Header() {
               <div>
                 <h3 className={styles.blockTitle}>Safety On Yields</h3>
                 <div className={styles.links}>
-                  <a className={styles.link} href="#">
+                  <a onClick={() => {
+                    setMenuOpen(false);
+                    showMessage("Coming soon...", "info");
+                  }} className={styles.link} href="#">
                     <Svg iconName="safe-trading" />
                     Safe trading
                   </a>
-                  <a className={styles.link} href="#">
+                  <a onClick={() => {
+                    setMenuOpen(false);
+                    showMessage("Coming soon...", "info");
+                  }} className={styles.link} href="#">
                     <Svg iconName="listing" />
                     Safelisting
                   </a>
@@ -109,15 +121,21 @@ export default function Header() {
               <div>
                 <h3 className={styles.blockTitle}>More</h3>
                 <div className={styles.links}>
-                  <a className={styles.link} href="#">
+                  <a target="_blank" className={styles.link} href="https://app.soy.finance/pools">
                     <Svg iconName="staked" />
                     Staking
                   </a>
-                  <a className={styles.link} href="#">
+                  <a onClick={() => {
+                    setMenuOpen(false);
+                    showMessage("Coming soon...", "info");
+                  }} className={styles.link} href="#">
                     <Svg iconName="futures" />
                     Futures
                   </a>
-                  <a className={styles.link} href="#">
+                  <a onClick={() => {
+                    setMenuOpen(false);
+                    showMessage("Coming soon...", "info");
+                  }} className={styles.link} href="#">
                     <Svg iconName="bridge" />
                     Bridge
                   </a>

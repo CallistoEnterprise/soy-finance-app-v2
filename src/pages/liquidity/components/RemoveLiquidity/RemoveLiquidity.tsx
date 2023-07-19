@@ -105,8 +105,6 @@ export default function RemoveLiquidity() {
   const [isFromTokenPickDialogOpened, setFromTokenPickDialogOpened] = useState(false);
   const [isToTokenPickDialogOpened, setToTokenPickDialogOpened] = useState(false);
 
-  console.log(+amountLP, +balance?.toSignificant(6));
-
   return <div>
     <PageCardHeading title="Remove liquidity"/>
     <div style={{marginBottom: 20}}/>

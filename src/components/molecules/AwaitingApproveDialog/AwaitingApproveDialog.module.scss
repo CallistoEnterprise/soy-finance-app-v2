@@ -1,5 +1,6 @@
 @use "src/shared/styles/colors.module";
 @use "src/shared/styles/mixins";
+@use "src/shared/styles/media";
 
 .awaitingApproveDialog {
   width: 480px;
@@ -9,6 +10,11 @@
   align-items: center;
   flex-direction: column;
   padding: 40px;
+
+  @include media.for-mobile {
+    width: 100%;
+    padding: 24px;
+  }
 }
 
 .text {
