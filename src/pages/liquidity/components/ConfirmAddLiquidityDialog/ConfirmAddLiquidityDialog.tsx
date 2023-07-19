@@ -25,7 +25,8 @@ export default function ConfirmAddLiquidityDialog() {
 
   const {
     priceA,
-    priceB
+    priceB,
+    addLiquidity
   } = useLiquidity();
 
   const isOpen = useStore($isConfirmAddLiquidityDialogOpened);
@@ -35,7 +36,6 @@ export default function ConfirmAddLiquidityDialog() {
     setOpen(false);
   }, [setOpen]);
 
-  const { addLiquidity } = useLiquidity();
 
 
   return <DrawerDialog isOpen={isOpen} onClose={handleClose}>

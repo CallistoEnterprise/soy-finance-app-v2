@@ -22,7 +22,7 @@ export const nativeTokens = {
   }, []),
   61: new WrappedTokenInfo({
     chainId: 61,
-    address: '0xF5AD6F6EDeC824C7fD54A66d241a227F6503aD3a',
+    address: '0x35e9A89e43e45904684325970B2E2d258463e072',
     symbol: "ETC",
     name: "ETC",
     decimals: 18,

@@ -128,6 +128,8 @@ export function useRemoveLiquidity() {
     }
   }, [pairs, setRemoveLiquidityTokenLPFn]);
 
+  console.log("Error here!x4");
+  console.log(pairs?.[0]?.[1]?.liquidityToken);
   const userPoolBalance = useBalanceOf(pairs?.[0]?.[1]?.liquidityToken || null);
 
   const totalPoolTokens = useTotalSupply(pairs?.[0]?.[1]?.liquidityToken);

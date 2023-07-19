@@ -10,13 +10,15 @@ export function useTrackedPools() {
 
   const {showMessage} = useSnackbar();
 
-  const importPool = useCallback(({chainId, pair}: {chainId: number | null, pair: [string, string]}) => {
+  const importPool = useCallback(({chainId, pair, withMessage = true}: {chainId: number | null, pair: [string, string], withMessage?: boolean}) => {
     if(!chainId) {
       return;
     }
 
     addTrackedPoolFn({chainId, pairToTrack: pair});
-    showMessage("Successfully imported");
+    if(withMessage) {
+      showMessage("Successfully imported");
+    }
   }, [addTrackedPoolFn, showMessage]);
 
   useEffect(() => {

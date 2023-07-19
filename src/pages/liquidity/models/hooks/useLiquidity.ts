@@ -22,6 +22,7 @@ import {useAwaitingApproveDialog} from "../../../../stores/awaiting-approve-dial
 import {isNativeToken} from "../../../../shared/utils";
 import {$swapSlippage} from "../../../swap/models/stores";
 import {useReceipt} from "../../../../shared/hooks/useReceipt";
+import {useTrackedPools} from "../../../../stores/tracked-pools/useTrackedPools";
 
 export function tryParseAmount(value?: string, currency?: WrappedTokenInfo | null, chainId?: number): CurrencyAmount | undefined {
   if (!value || !currency) {
@@ -85,6 +86,15 @@ export function useLiquidity() {
 
   const amountA = useStore($liquidityAmountA);
   const amountB = useStore($liquidityAmountB);
+
+  const {importPool} = useTrackedPools();
+
+  useEffect(() => {
+    setLiquidityAmountAFn("0");
+    setLiquidityAmountBFn("0");
+    setLiquidityTokenAFn(null);
+    setLiquidityTokenBFn(null);
+  }, [chainId, setLiquidityAmountAFn, setLiquidityAmountBFn, setLiquidityTokenAFn, setLiquidityTokenBFn]);
 
   const [tokenChanged, setTokenChanged] = useState(false);
 
@@ -219,7 +229,7 @@ export function useLiquidity() {
   const handleAmountAChange = useCallback(async (amount: string) => {
     setLiquidityAmountAFn(amount);
 
-    if (!chainId || !pairs || !amount) {
+    if (!chainId || !pairs || !Boolean(amount)) {
       setLiquidityAmountBFn("");
       return;
     }
@@ -249,7 +259,7 @@ export function useLiquidity() {
 
   const handleAmountBChange = useCallback(async (amount: string) => {
     setLiquidityAmountBFn(amount);
-    if (!chainId || !pairs || !amount) {
+    if (!chainId || !pairs || !Boolean(amount)) {
       setLiquidityAmountAFn("");
       return;
     }
@@ -360,6 +370,7 @@ export function useLiquidity() {
       });
 
       wait({tx, chainId, summary: `Add ${(+amountA).toLocaleString("en-US", {maximumFractionDigits: 6})} ${tokenA.symbol} and ${(+amountB).toLocaleString("en-US", {maximumFractionDigits: 6})} ${tokenB.symbol}`});
+      importPool({chainId, pair: [tokenA?.address || "", tokenB?.address || ""], withMessage: false});
     } catch (error) {
       handleClose();
       if(error.code === "ACTION_REJECTED") {
@@ -375,7 +386,7 @@ export function useLiquidity() {
       }
     }
 
-  }, [setConfirmAddLiquidityDialogOpenedFn, tokenA, tokenB, chainId, web3Provider, account, walletName, setSubmitted, handleOpen, setAwaitingApproveDialogInfo, amountA, amountB, slippage, bridgeAddress, showMessage, deadline, setSubmittedInfo, wait, handleClose]);
+  }, [setConfirmAddLiquidityDialogOpenedFn, tokenA, tokenB, chainId, web3Provider, account, walletName, setSubmitted, handleOpen, setAwaitingApproveDialogInfo, amountA, amountB, slippage, bridgeAddress, showMessage, deadline, setSubmittedInfo, wait, importPool, handleClose]);
 
   return {
     addLiquidity,

@@ -42,7 +42,7 @@ export function useTokenBalance({address, chainId}) {
       return;
     }
 
-    const addresses = [...tokenList.tokens.map((tokenItem) => tokenItem.address), ];
+    const addresses = [...tokenList.tokens.map((tokenItem) => tokenItem.address)];
 
     const calls = addresses.map((address) => {
       return {

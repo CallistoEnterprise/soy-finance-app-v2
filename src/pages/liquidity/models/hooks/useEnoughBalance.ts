@@ -5,7 +5,7 @@ import JSBI from "jsbi";
 
 export function useEnoughBalance({token, amount, balance}) {
     return useMemo(() => {
-      if(!token || !balance || !amount) {
+      if(!token || !balance || !amount || isNaN(amount)) {
         return false;
       }
 

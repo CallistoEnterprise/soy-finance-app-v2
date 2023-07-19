@@ -75,6 +75,21 @@ const soy = new WrappedTokenInfo({
   logoURI: "https://app.soy.finance/images/coins/0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65.png"
 }, [])
 
+const walletBalanceAddresses = {
+  820: {
+    soy: "0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65",
+    clo: "0xF5AD6F6EDeC824C7fD54A66d241a227F6503aD3a"
+  },
+  199: {
+    soy: "0xcC00860947035a26Ffe24EcB1301ffAd3a89f910",
+    clo: "0xCcbf1C9E8b4f2cDF3Bfba1098b8f56f97d219D53"
+  },
+  61: {
+    soy: "0xcC67D978Ddf07971D9050d2b424f36f6C1a15893",
+    clo: "0xCcbf1C9E8b4f2cDF3Bfba1098b8f56f97d219D53"
+  }
+}
+
 export default function WalletDialog({defaultTab}) {
   const isWalletDialogOpened = useStore($isWalletDialogOpened);
   const setWalletDialogOpenedFn = useEvent(setWalletDialogOpened);
@@ -84,9 +99,10 @@ export default function WalletDialog({defaultTab}) {
   const recentTransactions = useStore($recentTransactions);
   const setRecentTransactionsFn = useEvent(setRecentTransactions);
 
-  const {tokenBalance} = useTokenBalance({address: nativeTokens[820], chainId: 820})
+  const {tokenBalance} = useTokenBalance({address: walletBalanceAddresses?.[chainId]?.clo, chainId})
+  const {tokenBalance: soyBalance} = useTokenBalance({address: walletBalanceAddresses?.[chainId]?.soy, chainId})
 
-  const soyBalance = useBalanceOf(soy);
+  // const soyBalance = useBalanceOf(soy);
 
   useEffect(() => {
     const recentT = localStorage.getItem("recentTransactions");
@@ -108,7 +124,7 @@ export default function WalletDialog({defaultTab}) {
               </div>
               <div className={styles.balances}>
                 <InfoRow label="CLO balance" value={formatBalance(tokenBalance)} />
-                <InfoRow label="SOY balance" value={soyBalance?.toSignificant(6)} />
+                <InfoRow label="SOY balance" value={formatBalance(soyBalance)} />
               </div>
               <div className={styles.explorerLinkContainer}>
                 <ExternalLink href={`https://explorer.callisto.network/address/${account}/transactions`} text="View on CallistoScan" />

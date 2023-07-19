@@ -40,6 +40,7 @@ export default function LiquidityCard({pair, setActiveTab}) {
   const currency0 = unwrappedToken(pair.token0)
   const currency1 = unwrappedToken(pair.token1)
 
+  console.log("Error here!");
   const userPoolBalance = useBalanceOf(pair.liquidityToken);
 
   const totalPoolTokens = useTotalSupply(pair.liquidityToken);

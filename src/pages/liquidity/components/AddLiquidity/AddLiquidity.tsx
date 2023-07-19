@@ -177,7 +177,7 @@ function Action() {
     return <Button disabled fullWidth>Choose tokens to proceed</Button>;
   }
 
-  if (!amountA || !amountB) {
+  if (isNaN(+amountA) || !Boolean(+amountA) || !Boolean(+amountB)) {
     return <Button disabled fullWidth>Enter an amount to proceed</Button>;
   }
 

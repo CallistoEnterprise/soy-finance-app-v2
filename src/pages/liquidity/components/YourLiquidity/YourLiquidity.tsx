@@ -9,7 +9,7 @@ import Button from "../../../../components/atoms/Button";
 import IconButton from "../../../../components/atoms/IconButton";
 import Svg from "../../../../components/atoms/Svg/Svg";
 import {useWeb3} from "../../../../processes/web3/hooks/useWeb3";
-import {useAllTokens} from "../../../../shared/hooks/useAllTokens";
+import {tokenListMap, useAllTokens} from "../../../../shared/hooks/useAllTokens";
 import {useErc20Fragment} from "../../../../shared/config/fragments";
 import {useMultiCallBalanceOf} from "../../../../shared/web3/hooks/useMultiCallBalanceOf";
 import {toCallState} from "../../../../shared/toCallState";
@@ -27,7 +27,6 @@ import {$importTokenA, $importTokenB} from "../../models/stores";
 import {setImportTokenA, setImportTokenB} from "../../models";
 import Divider from "../../../../components/atoms/Divider";
 import {useBalanceOf} from "../../../../shared/web3/hooks/useBalanceOf";
-import tokensListInClo from "../../../../shared/constants/tokenLists/tokenlistInCLO.json";
 import {WrappedTokenInfo} from "../../../swap/functions";
 import {useTrackedPools} from "../../../../stores/tracked-pools/useTrackedPools";
 
@@ -60,31 +59,37 @@ const BASES_TO_TRACK_LIQUIDITY_FOR = {
   ]
 }
 
-function getPairOfWrappedTokensByAddress(addressPair: [string, string]) {
+function getPairOfWrappedTokensByAddress(addressPair: [string, string], chainId) {
   const [addressA, addressB] = addressPair;
 
-  const tokenA = tokensListInClo.tokens.find((t) => t.address === addressA);
-  const tokenB = tokensListInClo.tokens.find((t) => t.address === addressB);
+  const tokenList = tokenListMap[chainId];
 
-  const wrappedTokenA = new WrappedTokenInfo({
-    address: addressA,
-    decimals: tokenA.decimals,
-    chainId: 820,
-    name: tokenA.name,
-    symbol: tokenA.symbol,
-    logoURI: tokenA.logoURI
-  }, []);
+  const tokenA = tokenList.tokens.find((t) => t.address.toLowerCase() === addressA.toLowerCase());
+  const tokenB = tokenList.tokens.find((t) => t.address.toLowerCase() === addressB.toLowerCase());
 
-  const wrappedTokenB = new WrappedTokenInfo({
-    address: addressB,
-    decimals: tokenB.decimals,
-    chainId: 820,
-    name: tokenB.name,
-    symbol: tokenB.symbol,
-    logoURI: tokenB.logoURI
-  }, []);
+  if(tokenA && tokenB) {
+    const wrappedTokenA = new WrappedTokenInfo({
+      address: addressA,
+      decimals: tokenA.decimals,
+      chainId,
+      name: tokenA.name,
+      symbol: tokenA.symbol,
+      logoURI: tokenA.logoURI
+    }, []);
 
-  return [wrappedTokenA, wrappedTokenB];
+    const wrappedTokenB = new WrappedTokenInfo({
+      address: addressB,
+      decimals: tokenB.decimals,
+      chainId,
+      name: tokenB.name,
+      symbol: tokenB.symbol,
+      logoURI: tokenB.logoURI
+    }, []);
+
+    return [wrappedTokenA, wrappedTokenB];
+  }
+
+  return null;
 }
 
 export function useTrackedTokenPairs(): [WrappedTokenInfo, WrappedTokenInfo][] {
@@ -122,7 +127,7 @@ export function useTrackedTokenPairs(): [WrappedTokenInfo, WrappedTokenInfo][] {
       return [];
     }
 
-    return trackedPools[chainId].map(pool => getPairOfWrappedTokensByAddress(pool));
+    return trackedPools[chainId].map(pool => getPairOfWrappedTokensByAddress(pool, chainId)).filter((p) => Boolean(p));
   }, [chainId, trackedPools]);
 
   console.log(userPairs);
@@ -256,6 +261,7 @@ export default function YourLiquidity({setActiveTab}) {
 
   const importPair = usePairs(currencyPair);
 
+  console.log("Error here!x3");
   const userPoolBalance = useBalanceOf(importPair?.[0]?.[1]?.liquidityToken || null);
 
   if (!isActive) {
