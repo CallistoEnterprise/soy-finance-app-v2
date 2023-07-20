@@ -78,7 +78,7 @@ export default function ConfirmSwapDialog() {
         </div>
       </div>
 
-      <p className="mt-20 mb-20 font-secondary font-400 font-14 text-center">Output it estimated. You will receive at least 31.01234 BUSDT or the transaction will revert</p>
+      <p className="mt-20 mb-20 font-secondary font-400 font-14 text-center">Output it estimated. You will receive at least {swapInputData.amountOut} {swapInputData.tokenTo?.symbol} or the transaction will revert</p>
 
       <div className={styles.bottomInfo}>
         <div className={styles.infoRow}>

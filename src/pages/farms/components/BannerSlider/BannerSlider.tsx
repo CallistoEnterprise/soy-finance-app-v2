@@ -5,10 +5,13 @@ import Text from "../../../../components/atoms/Text";
 import Button from "../../../../components/atoms/Button";
 import clsx from "clsx";
 import Image from "next/image";
+import {useSnackbar} from "../../../../shared/providers/SnackbarProvider";
 
 export default function BannerSlider({children}) {
   const [activeIndex, setActiveIndex] = useState(0);
   // const [paused, setPaused] = useState(false);
+
+  const { showMessage } = useSnackbar();
 
   const updateIndex = (newIndex) => {
     if (newIndex < 0) {
@@ -54,7 +57,9 @@ export default function BannerSlider({children}) {
             <div style={{height: 10}} />
             <Text color="static-primary">New to the Slothiverse? Get started with Farming in just a few easy steps!</Text>
             <div style={{height: 16}} />
-            <Button>Master Farming</Button>
+            <a href="https://docs.soy.finance/soy-products/trading/make-your-first-trade" target="_blank">
+              <Button>Master Farming</Button>
+            </a>
           </div>
           <div className={styles.bannerImage}>
             <Image width={434} height={224} src="/images/banners/banner1.svg" alt="" />
@@ -66,7 +71,9 @@ export default function BannerSlider({children}) {
             <div style={{height: 10}} />
             <Text color="static-primary">Fear not, Sloth friends! Our Sloth Shield has your back, keeping your funds safe and sound.</Text>
             <div style={{height: 16}} />
-            <Button>Protect your Funds</Button>
+            <a href="https://docs.soy.finance/soy-products/safety-on-yields" target="_blank">
+              <Button>Protect your Funds</Button>
+            </a>
           </div>
           <div className={styles.bannerImage}>
             <Image width={434} height={224} src="/images/banners/banner2.svg" alt="" />
@@ -78,7 +85,9 @@ export default function BannerSlider({children}) {
             <div style={{height: 10}} />
             <Text color="static-primary">Dive into the ultra-fast, ultra-cheap Callisto Network! The ideal environment for Soy-powered DeFi Sloths.</Text>
             <div style={{height: 16}} />
-            <Button>Explore Callisto Network</Button>
+            <a href="https://callisto.network/">
+              <Button>Explore Callisto Network</Button>
+            </a>
           </div>
           <div className={styles.bannerImage}>
             <Image width={434} height={224} src="/images/banners/banner3.svg" alt="" />
@@ -90,7 +99,7 @@ export default function BannerSlider({children}) {
             <div style={{height: 10}} />
             <Text color="static-primary">Hungry for juicy returns? Feast your eyes on our top-performing pools with the highest APRs, ripe for the picking!</Text>
             <div style={{height: 16}} />
-            <Button>Boost your Earnings</Button>
+            <Button onClick={() => showMessage("Coming soon", "info")}>Boost your Earnings</Button>
           </div>
           <div className={styles.bannerImage}>
             <Image width={434} height={224} src="/images/banners/banner4.svg" alt="" />

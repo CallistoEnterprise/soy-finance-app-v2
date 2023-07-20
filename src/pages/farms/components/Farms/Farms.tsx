@@ -22,6 +22,7 @@ import Image from "next/image";
 import Divider from "../../../../components/atoms/Divider";
 import {useEthersError} from "../../../swap/hooks/useEthersError";
 import ROIDialog from "../ROIDialog";
+import {getExpLink} from "../../../../components/molecules/AwaitingApproveDialog/AwaitingApproveDialog";
 
 interface Props {
   farms: Farm[],
@@ -176,9 +177,9 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
           <Text color="secondary" tag="h5">Links:</Text>
           <div style={{height: 30}}/>
           <div className={styles.linksContainer}>
-            <ExternalLink href={`https://explorer.callisto.network/address/${farm.lpAddresses?.["820"]}/transactions`}
-                          text="Get SOY LP"/>
-            <ExternalLink href={`https://explorer.callisto.network/address/${farm.lpAddresses?.["820"]}/transactions`}
+            <ExternalLink href={`/liquidity`}
+                          text="Get SOY LP" />
+            <ExternalLink href={getExpLink(farm.lpAddresses?.[chainId], "address", chainId || undefined)}
                           text="View contract"/>
           </div>
         </div>
@@ -225,9 +226,9 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
           </div>
         </div>
         <div className={styles.mobileFarmExternalLinks}>
-          <ExternalLink href={`https://explorer.callisto.network/address/${farm.lpAddresses?.["820"]}/transactions`}
+          <ExternalLink href={`/liquidity`}
                         text="Get SOY LP"/>
-          <ExternalLink href={`https://explorer.callisto.network/address/${farm.lpAddresses?.["820"]}/transactions`}
+          <ExternalLink href={getExpLink(farm.lpAddresses?.[chainId], "address", chainId || undefined)}
                         text="View contract"/>
         </div>
       </div>
