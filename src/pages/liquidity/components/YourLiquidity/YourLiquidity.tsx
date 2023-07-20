@@ -261,7 +261,6 @@ export default function YourLiquidity({setActiveTab}) {
 
   const importPair = usePairs(currencyPair);
 
-  console.log("Error here!x3");
   const userPoolBalance = useBalanceOf(importPair?.[0]?.[1]?.liquidityToken || null);
 
   if (!isActive) {

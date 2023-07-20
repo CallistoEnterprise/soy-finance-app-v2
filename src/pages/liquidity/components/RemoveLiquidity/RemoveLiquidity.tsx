@@ -89,7 +89,6 @@ export default function RemoveLiquidity() {
 
   const {tokenA, tokenB, lpToken} = useStore($removeLiquidityInputTokens);
 
-  console.log("Error here!x2");
   const balance = useBalanceOf(lpToken);
 
   const {

@@ -494,11 +494,25 @@ export default function TradingChart() {
     if (swapInputData.tokenFrom && chainId === 820) {
       setFirstToken(swapInputData.tokenFrom);
     }
+
+    if(!swapInputData.tokenFrom) {
+      setFirstToken(soy);
+    }
   }, [chainId, swapInputData.tokenFrom]);
+
+  useEffect(() => {
+    if(chainId !== 820) {
+      setCurrentGraph("first");
+    }
+  }, [chainId]);
 
   useEffect(() => {
     if (swapInputData.tokenTo && chainId === 820) {
       setSecondToken(swapInputData.tokenTo);
+    }
+
+    if(!swapInputData.tokenTo) {
+      setSecondToken(null);
     }
   }, [swapInputData.tokenTo, chainId]);
 

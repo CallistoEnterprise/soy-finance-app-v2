@@ -58,24 +58,27 @@ export function useTrade() {
 
       const currencyAmountIn = toTokenAmount(token, typedValueParsed);
 
-      const allowedPairs = await getAllowedPairs(token, currencyOut, web3Provider, blockNumber, chainId);
+      try {
+        const allowedPairs = await getAllowedPairs(token, currencyOut, web3Provider, blockNumber, chainId);
 
-      const trade1 = Trade.bestTradeExactIn(
-        allowedPairs,
-        currencyAmountIn,
-        tokenTo,
-        {
-          maxHops: 3, maxNumResults: 1
+        const trade1 = Trade.bestTradeExactIn(
+          allowedPairs,
+          currencyAmountIn,
+          tokenTo,
+          {
+            maxHops: 3, maxNumResults: 1
+          }
+        );
+
+        if(trade1[0]) {
+          setAmountOutFn(trade1[0].outputAmount.toSignificant());
+          setTradeFn(trade1[0]);
+          setRouteFn(trade1[0].route);
+          return;
         }
-      );
-
-      if(trade1[0]) {
-        setAmountOutFn(trade1[0].outputAmount.toSignificant());
-        setTradeFn(trade1[0]);
-        setRouteFn(trade1[0].route);
-        return;
+      } catch (e) {
+        console.log(e);
       }
-
     setTradeFn(null);
     setRouteFn(null);
 

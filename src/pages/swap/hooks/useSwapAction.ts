@@ -1,4 +1,4 @@
-import {useCallback, useMemo} from "react";
+import {useCallback, useEffect, useMemo} from "react";
 import {useSnackbar} from "../../../shared/providers/SnackbarProvider";
 import {BrowserProvider, Contract, ErrorCode, EthersError, parseUnits} from "ethers";
 import routerABI from "../../../shared/constants/abis/interfaces/router.json";
@@ -10,7 +10,7 @@ import useTransactionDeadline from "./useTransactionDeadline";
 import {isNativeToken} from "../../../shared/utils";
 import {addRecentTransaction} from "../../../shared/models";
 import {useAwaitingApproveDialog} from "../../../stores/awaiting-approve-dialog/useAwaitingApproveDialog";
-import {setSwapConfirmDialogOpened} from "../models";
+import {resetSwap, setSwapConfirmDialogOpened} from "../models";
 import {useReceipt} from "../../../shared/hooks/useReceipt";
 
 export function calculateSlippageAmount(value: BigInt, slippage: number): BigNumber {
@@ -39,6 +39,12 @@ export function useSwapAction() {
   const {handleOpen, setAwaitingApproveDialogInfo, setSubmitted, handleClose, setSubmittedInfo} = useAwaitingApproveDialog();
   const setSwapConfirmDialogOpenedFn = useEvent(setSwapConfirmDialogOpened);
 
+  const resetSwapFn = useEvent(resetSwap);
+
+  useEffect(() => {
+    resetSwapFn();
+  }, [chainId, resetSwapFn]);
+
   const bridgeAddress = useMemo(
     () => contracts.router[chainId],
     [chainId]
@@ -64,7 +70,6 @@ export function useSwapAction() {
 
   const slippage = useStore($swapSlippage);
 
-  const addRecentTransactionFn = useEvent(addRecentTransaction);
   const {wait} = useReceipt();
 
   const handleSwap = useCallback(
@@ -162,7 +167,7 @@ export function useSwapAction() {
         }
       }
     },
-    [setSwapConfirmDialogOpenedFn, account, web3Provider, trade, swapInputData.tokenFrom, swapInputData.tokenTo, swapInputData.amountIn, swapInputData.amountOut, chainId, walletName, setSubmitted, handleOpen, setAwaitingApproveDialogInfo, showMessage, bridgeAddress, slippage, deadline, functionName, setSubmittedInfo, addRecentTransactionFn, handleClose]
+    [setSwapConfirmDialogOpenedFn, account, web3Provider, trade, swapInputData.tokenFrom, swapInputData.tokenTo, swapInputData.amountIn, swapInputData.amountOut, chainId, walletName, setSubmitted, handleOpen, setAwaitingApproveDialogInfo, showMessage, bridgeAddress, slippage, deadline, functionName, setSubmittedInfo, wait, handleClose]
   );
 
   return { handleSwap };

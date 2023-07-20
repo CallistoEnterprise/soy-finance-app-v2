@@ -102,8 +102,6 @@ export default function WalletDialog({defaultTab}) {
   const {tokenBalance} = useTokenBalance({address: walletBalanceAddresses?.[chainId]?.clo, chainId})
   const {tokenBalance: soyBalance} = useTokenBalance({address: walletBalanceAddresses?.[chainId]?.soy, chainId})
 
-  // const soyBalance = useBalanceOf(soy);
-
   useEffect(() => {
     const recentT = localStorage.getItem("recentTransactions");
     if (chainId && recentT) {

@@ -16,7 +16,7 @@ import {ERC_20_INTERFACE} from "../../shared/config/interfaces";
 import {nativeTokens, tokenListMap} from "../../shared/hooks/useAllTokens";
 
 export function useTokenBalance({address, chainId}) {
-  const {account, web3Provider} = useWeb3();
+  const {account, web3Provider, isSupportedSwapNetwork} = useWeb3();
 
   const tokenBalances = useStore($tokenBalances);
   const loadingChains = useStore($loadingChains);
@@ -32,7 +32,7 @@ export function useTokenBalance({address, chainId}) {
   const fragment = useErc20Fragment("balanceOf");
 
   const updateBalanceNetwork = useCallback(async (networkId) => {
-    if (!networkId || !address || !multiCallContract || !fragment || !account || !web3Provider) {
+    if (!networkId || !address || !multiCallContract || !fragment || !account || !web3Provider || !isSupportedSwapNetwork) {
       return;
     }
 
@@ -76,7 +76,7 @@ export function useTokenBalance({address, chainId}) {
     } finally {
       removeLoadingChainFn(networkId);
     }
-  }, [account, addLoadingChainFn, address, fragment, multiCallContract, removeLoadingChainFn, setNetworkBalancesFn, web3Provider]);
+  }, [account, addLoadingChainFn, address, fragment, isSupportedSwapNetwork, multiCallContract, removeLoadingChainFn, setNetworkBalancesFn, web3Provider]);
 
   useEffect(() => {
     if(!tokenBalances[chainId]) {

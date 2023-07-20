@@ -89,13 +89,6 @@ export function useLiquidity() {
 
   const {importPool} = useTrackedPools();
 
-  useEffect(() => {
-    setLiquidityAmountAFn("0");
-    setLiquidityAmountBFn("0");
-    setLiquidityTokenAFn(null);
-    setLiquidityTokenBFn(null);
-  }, [chainId, setLiquidityAmountAFn, setLiquidityAmountBFn, setLiquidityTokenAFn, setLiquidityTokenBFn]);
-
   const [tokenChanged, setTokenChanged] = useState(false);
 
   const bridgeAddress = useMemo(

@@ -12,7 +12,7 @@ import {
 } from "./stores";
 import {
   changeOrder,
-  resetInputData,
+  resetInputData, resetSwap,
   setAmountIn,
   setAmountOut,
   setFiatPrices, setMobileChartOpened,
@@ -209,3 +209,5 @@ $isSwapHistoryOpened.on(
     return data;
   }
 )
+
+$swapInputData.reset(resetSwap);

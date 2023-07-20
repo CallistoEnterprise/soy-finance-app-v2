@@ -34,3 +34,5 @@ export const setSwapConfirmDialogOpened = createEvent<boolean>("Set opened or cl
 export const setMobileChartOpened = createEvent<boolean>("Open or close mobile chart");
 export const setSafeTradingOpened = createEvent<boolean>("Open or close mobile chart");
 export const setSwapHistoryOpened = createEvent<boolean>("Open or close mobile chart");
+
+export const resetSwap = createEvent("Reset tokens and amount for swap module");
