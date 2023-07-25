@@ -14,7 +14,6 @@ import DrawerDialog from "../../../../components/atoms/DrawerDialog";
 import {useEthersError} from "../../../swap/hooks/useEthersError";
 import {WrappedTokenInfo} from "../../../swap/functions";
 import {getLogo} from "../../../../shared/utils";
-import {useReceipt} from "../../../../shared/hooks/useReceipt";
 
 export default function StakeLPTokensModal() {
   const {web3Provider, account, chainId} = useWeb3();
@@ -25,7 +24,7 @@ export default function StakeLPTokensModal() {
 
   const farmToStake: Farm = useStore($lpTokenToStake);
 
-  const [value, setValue] = useState("0");
+  const [value, setValue] = useState("");
 
   const handleClose = useCallback(() => {
     closeStakeLPTokensDialogFn();
@@ -85,6 +84,8 @@ export default function StakeLPTokensModal() {
     return [undefined, undefined];
   }, [chainId, farmToStake?.quoteToken, farmToStake?.token]);
 
+  console.log(farmsUserData[farmToStake?.pid]?.lpBalance[0]);
+
   return <DrawerDialog isOpen={isOpened} onClose={handleClose}>
     <div className={styles.stakeLpTokensModal}>
       <DialogHeader handleClose={handleClose} title="Stake lp tokens" />
@@ -101,7 +102,7 @@ export default function StakeLPTokensModal() {
           balance={farmsUserData[farmToStake?.pid]?.lpBalance ? formatUnits(farmsUserData[farmToStake?.pid]?.lpBalance[0]) : 0} />
         <div className={styles.buttons}>
           <Button onClick={handleClose} fullWidth variant="outlined">Cancel</Button>
-          <Button loading={staking} disabled={!value} onClick={async () => {
+          <Button loading={staking} disabled={!Boolean(value) || !Boolean(farmsUserData[farmToStake?.pid]?.lpBalance?.[0])} onClick={async () => {
             setStaking(true);
             try {
               await handleStake();

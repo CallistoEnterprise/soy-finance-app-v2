@@ -13,6 +13,8 @@ export default function TradeHistory() {
     setVisibleItems(visibleItems + itemsPerPage);
   };
 
+  console.log(swap);
+
   return <div className={styles.paper}>
     <PageCardHeading title="Trade history"/>
 

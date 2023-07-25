@@ -32,7 +32,7 @@ export function useTokenBalance({address, chainId}) {
   const fragment = useErc20Fragment("balanceOf");
 
   const updateBalanceNetwork = useCallback(async (networkId) => {
-    if (!networkId || !address || !multiCallContract || !fragment || !account || !web3Provider || !isSupportedSwapNetwork) {
+    if (!networkId || !multiCallContract || !fragment || !account || !web3Provider || !isSupportedSwapNetwork) {
       return;
     }
 
@@ -76,14 +76,13 @@ export function useTokenBalance({address, chainId}) {
     } finally {
       removeLoadingChainFn(networkId);
     }
-  }, [account, addLoadingChainFn, address, fragment, isSupportedSwapNetwork, multiCallContract, removeLoadingChainFn, setNetworkBalancesFn, web3Provider]);
+  }, [account, addLoadingChainFn, fragment, isSupportedSwapNetwork, multiCallContract, removeLoadingChainFn, setNetworkBalancesFn, web3Provider]);
 
   useEffect(() => {
     if(!tokenBalances[chainId]) {
       updateBalanceNetwork(chainId);
     }
   }, [chainId, tokenBalances, updateBalanceNetwork]);
-
 
   return {
     tokenBalance: tokenBalances[chainId]?.[address],

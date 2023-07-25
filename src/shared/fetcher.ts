@@ -677,8 +677,8 @@ export const mapSwaps = (swap: SwapResponse) => {
     token0Address: swap.pair.token0.id,
     token1Address: swap.pair.token1.id,
     amountUSD: parseFloat(swap.amountUSD),
-    amountToken0: parseFloat(swap.amount0In) - parseFloat(swap.amount0Out),
-    amountToken1: parseFloat(swap.amount1In) - parseFloat(swap.amount1Out),
+    amountToken0: parseFloat(swap.amount0Out) - parseFloat(swap.amount0In),
+    amountToken1: parseFloat(swap.amount1Out) - parseFloat(swap.amount1In),
   }
 }
 

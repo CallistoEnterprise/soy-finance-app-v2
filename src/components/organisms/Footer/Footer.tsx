@@ -3,7 +3,7 @@ import styles from "./Footer.module.scss";
 import Image from "next/image";
 import Svg from "../../atoms/Svg/Svg";
 import IconButton from "../../atoms/IconButton";
-import {useSoyPrice} from "../../../shared/hooks/useSoyPrice";
+// import {useSoyPrice} from "../../../shared/hooks/useSoyPrice";
 // import {formatBalanceToSix} from "../../../shared/utils/utils";
 import {useSnackbar} from "../../../shared/providers/SnackbarProvider";
 import {socialLinks} from "../../../shared/constants/links/socials";
@@ -11,12 +11,15 @@ import {footerLinks} from "../../../shared/constants/links/footer-links";
 import Divider from "../../atoms/Divider";
 import {useColorMode} from "../../../shared/providers/ThemeProvider";
 import Text from "../../atoms/Text";
+import {useSoyPrice} from "../../../stores/soy-price/useSoyPrice";
 
 export default function Footer() {
-  const { price } = useSoyPrice();
+  // const { price } = useSoyPrice();
 
   const {mode} = useColorMode();
   const {showMessage} = useSnackbar();
+
+  const {price} = useSoyPrice();
 
   return <div className="container">
     <footer className={styles.footer}>

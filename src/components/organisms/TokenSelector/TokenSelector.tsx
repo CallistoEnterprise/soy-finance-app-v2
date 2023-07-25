@@ -29,7 +29,7 @@ export default function TokenSelector({setDialogOpened, isDialogOpened, pickedTo
   return <div className={styles.swapCard}>
     <div className={styles.swapCardHeader}>
       <Text variant={14} weight={700} tag="h3">{label}</Text>
-      {chainId && pickedToken && !!Number(balance) && <PercentageButtons
+      {chainId && (pickedToken || pair) && !!Number(balance) && <PercentageButtons
         handleClick={handleInputChange}
         balance={balance}
         inputValue={inputValue}
