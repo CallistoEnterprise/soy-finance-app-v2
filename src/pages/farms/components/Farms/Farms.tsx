@@ -113,10 +113,10 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
   return <div className={styles.farmWrapper} key={farm.pid}>
     <div role={"button"} onClick={() => setIsOpen(!isOpen)}  key={farm.pid} className={styles.farm}>
       <div className={styles.meta}>
-        <Image width={35} height={35} src={getLogo({address: farm.token.address?.[chainId]?.toLowerCase()})} alt=""/>
+        <Image width={35} height={35} src={getLogo({address: farm.token.address?.[chainId || 820]?.toLowerCase()})} alt=""/>
         <Image width={35} height={35} className={styles.secondImg}
-               src={getLogo({address: farm.quoteToken.address?.[chainId]?.toLowerCase()})} alt=""/>
-        <Text>{farm.token.symbol} - {farm.quoteToken.symbol} {(!chainId || chainId === 820) && farm.pid >= 42 && farm.pid <= 52 && "(new)"}</Text>
+               src={getLogo({address: farm.quoteToken.address?.[chainId || 820]?.toLowerCase()})} alt=""/>
+        <Text>{farm.token.symbol.replace("WCLO", "CLO")} - {farm.quoteToken.symbol.replace("WCLO", "CLO")} {(!chainId || chainId === 820) && farm.pid >= 42 && farm.pid <= 52 && "(new)"}</Text>
       </div>
       {/*<div><Label type={["standard", "supreme", "select", ""][index % 4]}/></div>*/}
       <div className={styles.earnedCell}>
