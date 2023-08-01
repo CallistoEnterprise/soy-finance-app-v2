@@ -52,7 +52,7 @@ const menuItems: {
   },
   {
     title: "staking",
-    url: "#"
+    url: "https://app2.soy.finance/pools"
   },
   {
     title: "safety",
@@ -74,7 +74,7 @@ const menuItems: {
   },
   {
     title: "v2",
-    url: "https://app.soy.finance"
+    url: "https://app2.soy.finance"
   }
 ];
 
@@ -122,7 +122,7 @@ export default function HeaderNav() {
       {menuItems.map(link => <li key={link.title}>{
         link.menu ? <NavItemWithMenu menu={link.menu} title={t(link.title)} /> :
           <a target="_blank" onClick={(e) => {
-            if(link.title === "bridge" || link.title === "v2") {
+            if(link.title === "bridge" || link.title === "v2" || link.title === "staking") {
               return;
             }
 

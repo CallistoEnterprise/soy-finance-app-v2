@@ -66,15 +66,6 @@ function Transaction({transaction}) {
   </div>
 }
 
-const soy = new WrappedTokenInfo({
-  chainId: 820,
-  address: '0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65',
-  symbol: "SOY",
-  name: "Soy-ERC223",
-  decimals: 18,
-  logoURI: "https://app.soy.finance/images/coins/0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65.png"
-}, [])
-
 const walletBalanceAddresses = {
   820: {
     soy: "0x9FaE2529863bD691B4A7171bDfCf33C7ebB10a65",

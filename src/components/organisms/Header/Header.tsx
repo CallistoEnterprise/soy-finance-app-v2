@@ -121,7 +121,7 @@ export default function Header() {
               <div>
                 <h3 className={styles.blockTitle}>More</h3>
                 <div className={styles.links}>
-                  <a target="_blank" className={styles.link} href="https://app.soy.finance/pools">
+                  <a target="_blank" className={styles.link} href="https://app2.soy.finance/pools">
                     <Svg iconName="staked" />
                     Staking
                   </a>
@@ -136,7 +136,7 @@ export default function Header() {
                     <Svg iconName="bridge" />
                     Bridge
                   </a>
-                  <a target="_blank" className={styles.link} href="https://app.soy.finance/">
+                  <a target="_blank" className={styles.link} href="https://app2.soy.finance/">
                     <Svg iconName="history" />
                     Soy Finance V2
                   </a>
