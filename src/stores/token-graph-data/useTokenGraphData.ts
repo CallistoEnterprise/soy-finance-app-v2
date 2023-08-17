@@ -17,12 +17,12 @@ function getTime(timeline: Timeline) {
         startTimestamp: getUnixTime(startOfHour(sub(utcCurrentTime, {days: 1}))),
         interval: 1800
       }
-    case Timeline.MONTH:
+    case Timeline.WEEK:
       return {
         startTimestamp: getUnixTime(startOfHour(sub(utcCurrentTime, {weeks: 1}))),
         interval: 3600
       }
-    case Timeline.WEEK:
+    case Timeline.MONTH:
       return {
         startTimestamp: getUnixTime(startOfHour(sub(utcCurrentTime, {months: 1}))),
         interval: 3600 * 4
