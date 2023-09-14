@@ -3,7 +3,7 @@ export function isNativeToken(address) {
     return false;
   }
 
-  return Boolean(["0xF5AD6F6EDeC824C7fD54A66d241a227F6503aD3a",
+  return Boolean([
     "0xF5AD6F6EDeC824C7fD54A66d241a227F6503aD3a",
     "0x33e85f0e26600a6644b6c910639B0bc7a99fd34e"].filter((ad) => ad.toLowerCase() === address.toLowerCase()).length)
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styles from "./TokenSelector.module.scss";
 import {formatBalance} from "../../../shared/utils";
 import PickTokenDialog from "../PickTokenDialog";
@@ -9,6 +9,9 @@ import PercentageButtons from "../../molecules/PercentageButtons";
 import Text from "../../atoms/Text";
 import {TokenAmount} from "@callisto-enterprise/soy-sdk";
 import {WrappedTokenInfo} from "../../../pages/swap/functions";
+import {fetchCloPrices} from "../../../shared/fetcher";
+import {IIFE} from "../../../shared/web3/functions/iife";
+import {getDeltaTimestamps, useBlocksFromTimestamps} from "../../../pages/farms/FarmsPage";
 
 interface Props {
   setDialogOpened: any,
@@ -25,6 +28,21 @@ interface Props {
 export default function TokenSelector({setDialogOpened, isDialogOpened, pickedToken, inputValue, handleInputChange, handleTokenChange, label, pair, balance}: Props) {
   const {chainId} = useWeb3();
   const {loading, price} = useFiatPrice(pickedToken?.address, chainId);
+
+  const [t24, t48, tWeek] = getDeltaTimestamps();
+
+  const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek])
+
+  useEffect(() => {
+    IIFE(async () => {
+      if(blocks) {
+        const [block24, block48, blockWeek] = blocks;
+
+        const fetchPrices = await fetchCloPrices(block24.number, block48.number, blockWeek.number)
+        console.log(fetchPrices);
+      }
+    });
+  }, [blocks]);
 
   return <div className={styles.swapCard}>
     <div className={styles.swapCardHeader}>

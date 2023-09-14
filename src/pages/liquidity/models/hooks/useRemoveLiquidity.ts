@@ -42,6 +42,7 @@ import {$swapSlippage} from "../../../swap/models/stores";
 import {calculateSlippageAmount} from "./useLiquidity";
 import {addRecentTransaction, editTransactionStatus} from "../../../../shared/models";
 import {useReceipt} from "../../../../shared/hooks/useReceipt";
+import {isNativeToken} from "../../../../shared/utils";
 
 export function tryParseAmount(value?: string, currency?: WrappedTokenInfo | Token | null, chainId?: number): CurrencyAmount | undefined {
   // console.log(value);
@@ -403,8 +404,8 @@ export function useRemoveLiquidity() {
     let methodNames: string[]
     let args: Array<string | string[] | number | boolean>
 
-    const currencyBIsETH = tokenA === ETHERS[chainId]
-    const oneCurrencyIsETH = tokenB === ETHERS[chainId] || currencyBIsETH
+    const currencyBIsETH = isNativeToken(tokenA.address);
+    const oneCurrencyIsETH = isNativeToken(tokenB) || currencyBIsETH
 
     if (approval === ApprovalState.APPROVED) {
       // removeLiquidityCLO

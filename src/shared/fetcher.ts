@@ -759,6 +759,67 @@ export const fetchTopTransactions = async (): Promise<{ add: Transaction[], remo
   }
 }
 
+interface PricesResponse {
+  current: {
+    cloPrice: string
+  }
+  oneDay: {
+    cloPrice: string
+  }
+  twoDay: {
+    cloPrice: string
+  }
+  oneWeek: {
+    cloPrice: string
+  }
+}
+
+const CLO_PRICES = gql`
+  query prices($block24: Int!, $block48: Int!, $blockWeek: Int!) {
+    current: bundle(id: "1") {
+      cloPrice
+    }
+    oneDay: bundle(id: "1", block: { number: $block24 }) {
+      cloPrice
+    }
+    twoDay: bundle(id: "1", block: { number: $block48 }) {
+      cloPrice
+    }
+    oneWeek: bundle(id: "1", block: { number: $blockWeek }) {
+      cloPrice
+    }
+  }
+`
+
+export const fetchCloPrices = async (
+  block24: number,
+  block48: number,
+  blockWeek: number,
+): Promise<{ cloPrices: any | undefined; error: boolean }> => {
+  try {
+    const data = await request<PricesResponse>(infoClient, CLO_PRICES, {
+      block24,
+      block48,
+      blockWeek,
+    })
+    return {
+      error: false,
+      cloPrices: {
+        current: parseFloat(data.current?.cloPrice ?? '0'),
+        oneDay: parseFloat(data.oneDay?.cloPrice ?? '0'),
+        twoDay: parseFloat(data.twoDay?.cloPrice ?? '0'),
+        week: parseFloat(data.oneWeek?.cloPrice ?? '0'),
+      },
+    }
+  } catch (error) {
+    console.error('Failed to fetch CLO prices', error)
+    return {
+      error: true,
+      cloPrices: undefined,
+    }
+  }
+}
+
 export const fetchTopSwapTransactions = async (): Promise<Transaction[] | undefined> => {
   try {
     const data = await request<TransactionResults>(infoClient, SWAP_TRANSACTIONS)
