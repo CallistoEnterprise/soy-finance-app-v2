@@ -330,7 +330,7 @@ export function useRemoveLiquidity() {
       owner: account,
       spender: ROUTER_ADDRESS[chainId ?? 820].toString(),
       value: parsedAmountLP.raw.toString(),
-      nonce: "0x" + nonce.toString() + "0",
+      nonce: nonce.toHexString(),
       deadline: +deadline,
     }
     const data = JSON.stringify({
@@ -436,6 +436,7 @@ export function useRemoveLiquidity() {
     }
     // we have a signataure, use permit versions of remove liquidity
     else if (signatureData !== null) {
+      console.log(signatureData);
       // removeLiquidityCLOWithPermit
       if (oneCurrencyIsETH) {
         methodNames = ['removeLiquidityCLOWithPermit', 'removeLiquidityCLOWithPermitSupportingFeeOnTransferTokens']
