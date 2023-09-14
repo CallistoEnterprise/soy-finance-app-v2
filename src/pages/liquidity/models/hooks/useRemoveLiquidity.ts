@@ -307,6 +307,9 @@ export function useRemoveLiquidity() {
     // try to gather a signature for permission
     const nonce = await pairContract["nonces"](account)
 
+    console.log("nonce");
+    console.log(nonce);
+
     const EIP712Domain = [
       {name: 'name', type: 'string'},
       {name: 'version', type: 'string'},
@@ -330,7 +333,7 @@ export function useRemoveLiquidity() {
       owner: account,
       spender: ROUTER_ADDRESS[chainId ?? 820].toString(),
       value: parsedAmountLP.raw.toString(),
-      nonce: nonce.toHexString(),
+      nonce: nonce.toString(),
       deadline: +deadline,
     }
     const data = JSON.stringify({
