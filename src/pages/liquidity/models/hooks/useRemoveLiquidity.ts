@@ -404,8 +404,8 @@ export function useRemoveLiquidity() {
     let methodNames: string[]
     let args: Array<string | string[] | number | boolean>
 
-    const currencyBIsETH = isNativeToken(tokenA.address);
-    const oneCurrencyIsETH = isNativeToken(tokenB.address) || currencyBIsETH
+    const currencyBIsETH = isNativeToken(tokenB.address);
+    const oneCurrencyIsETH = isNativeToken(tokenA.address) || currencyBIsETH
 
     if (approval === ApprovalState.APPROVED) {
       // removeLiquidityCLO
