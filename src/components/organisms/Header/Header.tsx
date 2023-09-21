@@ -140,6 +140,10 @@ export default function Header() {
                     <Svg iconName="history" />
                     Soy Finance V2
                   </a>
+                  <a target="_blank" className={styles.link} href="https://app2.soy.finance/lottery">
+                    <Svg iconName="lottery" />
+                    Lottery
+                  </a>
                 </div>
               </div>
               <div>
