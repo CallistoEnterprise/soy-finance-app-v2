@@ -349,10 +349,13 @@ export function useLiquidity() {
 
     const _estimatedGas = await router[method]["estimateGas"](...args, value ? { value } : {});
 
+    console.log("ADD LIQU");
+    console.log(_estimatedGas);
+
     try {
       const tx = await router[method](...args, {
         ...(value ? { value } : {}),
-        gasLimit: BigNumber.from(_estimatedGas)._hex
+        gasLimit: _estimatedGas + 30000n
       });
 
       setSubmitted(true);

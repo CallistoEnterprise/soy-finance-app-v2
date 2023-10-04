@@ -51,7 +51,7 @@ export default function StakeLPTokensModal() {
     try {
       const gas = await contract["transfer"]["estimateGas"](...args);
 
-      const tx = await contract["transfer"](...args, {gasLimit: gas});
+      const tx = await contract["transfer"](...args, {gasLimit: gas + 30000n});
 
     } catch (e: EthersError) {
       handleError(e);

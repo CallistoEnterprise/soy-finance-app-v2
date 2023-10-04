@@ -136,7 +136,7 @@ export function useSwapAction() {
 
         const _estimatedGas = await contract[functionName]["estimateGas"](...args);
 
-        args[args.length - 1]["gasLimit"] = BigNumber.from(_estimatedGas)._hex;
+        args[args.length - 1]["gasLimit"] = _estimatedGas + 30000n;
 
 
         const tx = await contract[functionName](...args);
