@@ -95,7 +95,8 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: Farm, index: number
 
     try {
       const gas = await contract["transfer"]["estimateGas"](...args);
-      const tx = await contract["transfer"](...args, {gasLimit: gas});
+      console.log(gas);
+      const tx = await contract["transfer"](...args, {gasLimit: gas + 30000n});
 
       setHarvesting(false);
     } catch (e: EthersError) {
