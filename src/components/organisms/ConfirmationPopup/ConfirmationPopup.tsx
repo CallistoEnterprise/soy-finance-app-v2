@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./ConfirmationPopup.module.scss";
-import { useWeb3 } from "../../../processes/web3/hooks/useWeb3";
+import { useWeb3 } from "@/processes/web3/hooks/useWeb3";
 import Preloader from "../../atoms/Preloader";
 import DrawerDialog from "../../atoms/DrawerDialog";
 

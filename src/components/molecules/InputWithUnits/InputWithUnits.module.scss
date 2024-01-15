@@ -31,8 +31,9 @@
   right: 0;
   top: 0;
   bottom: 0;
-  width: 47px;
+  min-width: 47px;
   height: 40px;
+  padding: 10px;
   border-left: 1px solid colors.$border-primary;
   color: colors.$text-primary;
   display: flex;

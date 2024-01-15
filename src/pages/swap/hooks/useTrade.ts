@@ -1,10 +1,10 @@
-import {useBlockNumber} from "../../../shared/hooks/useBlockNumber";
-import {useWeb3} from "../../../processes/web3/hooks/useWeb3";
+import {useBlockNumber} from "@/shared/hooks/useBlockNumber";
+import {useWeb3} from "@/processes/web3/hooks/useWeb3";
 import {useEvent, useStore} from "effector-react";
 import {$swapInputData, $trade} from "../models/stores";
 import {setAmountIn, setAmountOut, setRoute, setTrade} from "../models";
 import {useCallback, useEffect, useRef} from "react";
-import {useSnackbar} from "../../../shared/providers/SnackbarProvider";
+import {useSnackbar} from "@/shared/providers/SnackbarProvider";
 import {parseUnits} from "ethers";
 import {getAllowedPairs, toTokenAmount} from "../functions";
 import {Trade, TradeType} from "@callisto-enterprise/soy-sdk";
@@ -61,6 +61,11 @@ export function useTrade() {
       try {
         const allowedPairs = await getAllowedPairs(token, currencyOut, web3Provider, blockNumber, chainId);
 
+        console.log("TRADE META");
+        console.log(allowedPairs);
+        console.log(currencyAmountIn);
+        console.log(tokenTo);
+
         const trade1 = Trade.bestTradeExactIn(
           allowedPairs,
           currencyAmountIn,
@@ -71,6 +76,7 @@ export function useTrade() {
         );
 
         if(trade1[0]) {
+          console.log(trade1[0]);
           setAmountOutFn(trade1[0].outputAmount.toSignificant());
           setTradeFn(trade1[0]);
           setRouteFn(trade1[0].route);

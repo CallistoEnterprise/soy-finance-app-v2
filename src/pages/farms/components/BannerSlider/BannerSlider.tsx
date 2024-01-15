@@ -107,13 +107,6 @@ export default function BannerSlider({children}) {
         </BannerSliderItem>
       </div>
       <div className={styles.indicators}>
-        {/*<button*/}
-        {/*  onClick={() => {*/}
-        {/*    updateIndex(activeIndex - 1);*/}
-        {/*  }}*/}
-        {/*>*/}
-        {/*  Prev*/}
-        {/*</button>*/}
         {[1, 2, 3, 4].map((z, index) => {
           return (
             <button
@@ -125,13 +118,6 @@ export default function BannerSlider({children}) {
             />
           );
         })}
-        {/*<button*/}
-        {/*  onClick={() => {*/}
-        {/*    updateIndex(activeIndex + 1);*/}
-        {/*  }}*/}
-        {/*>*/}
-        {/*  Next*/}
-        {/*</button>*/}
       </div>
     </div>
   );

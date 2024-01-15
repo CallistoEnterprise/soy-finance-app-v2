@@ -14,13 +14,13 @@ import {
   useLocalFarmFragment,
   useLocalFarmV2Fragment,
   useMasterChefFragment
-} from "../../shared/config/fragments";
+} from "@/shared/config/fragments";
 import {
   ERC_20_INTERFACE,
   LOCAL_FARM_INTERFACE,
   LOCAL_FARM_V2_INTERFACE,
   MASTER_CHEF_INTERFACE
-} from "../../shared/config/interfaces";
+} from "@/shared/config/interfaces";
 import {FixedNumber, FunctionFragment} from "ethers";
 import {fetchFarmsPrices} from "./utils";
 import clsx from "clsx";
@@ -595,6 +595,7 @@ const getFarmApr = (
   chainId = 820,
   swapApr = 0,
 ): { cakeRewardsApr: number; lpRewardsApr: number } => {
+  console.log(poolWeight, farmAddress);
 
   const yearlySoyRewardAllocation = FixedNumber.fromValue(50000000 * (multipliers[chainId] || 0.1)).mul(poolWeight);
   const p = soyPriceUsd || FixedNumber.fromValue(0);
@@ -840,6 +841,8 @@ export default function FarmsPage() {
           tokenPriceVsQuote
         }
       });
+
+      console.log(serializedResults);
 
       const farmsWithPrices = fetchFarmsPrices(serializedResults);
       const mainFarmPrice = farmsWithPrices.find((farm) => farm.pid === 2)?.token.usdcPrice;

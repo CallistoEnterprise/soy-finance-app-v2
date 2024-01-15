@@ -1,0 +1,65 @@
+@use "../../shared/styles/media";
+@use "../../shared/styles/colors.module";
+
+.contentWrapper {
+  margin-top: 20px;
+
+  @include media.for-mobile {
+    margin-top: 0;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+
+  @include media.for-mobile {
+    gap: 0;
+  }
+}
+
+.swapColumn {
+  //@include media.for-tablet {
+  //  display: grid;
+  //  grid-template-columns: 1fr 1fr;
+  //  //max-width: 453px;
+  //  margin: 0 auto;
+  //  order: -1;
+  //  width: 100%;
+  //}
+
+  @media screen and (max-width: 1150px){
+    grid-template-columns: 1fr;
+    width: 492px;
+    margin: 0 auto;
+  }
+
+  @include media.for-mobile {
+    grid-template-columns: 1fr;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+.mobileNone {
+  @media screen and (max-width: 1150px) {
+    display: none;
+  }
+}
+
+.block {
+  padding: 16px;
+  border-radius: 12px;
+  background: colors.$background-secondary;
+  display: grid;
+  gap: 12px;
+}
+
+.blocks {
+  display: grid;
+  gap: 20px;
+  margin: 0 auto;
+  max-width: 500px;
+}

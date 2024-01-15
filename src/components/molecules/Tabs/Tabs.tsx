@@ -9,7 +9,7 @@ interface Props {
   size?: "default" | "small",
   className?: string,
   defaultTab?: number
-  activeTab?: number,
+  activeTab?: number | null,
   setActiveTab?: any
 }
 

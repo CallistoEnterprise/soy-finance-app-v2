@@ -130,14 +130,10 @@ export function useTrackedTokenPairs(): [WrappedTokenInfo, WrappedTokenInfo][] {
     return trackedPools[chainId].map(pool => getPairOfWrappedTokensByAddress(pool, chainId)).filter((p) => Boolean(p));
   }, [chainId, trackedPools]);
 
-  console.log(userPairs);
-
   const combinedList = useMemo(
     () => [...userPairs, ...generatedPairs],
     [generatedPairs, userPairs],
   );
-
-  console.log(combinedList);
 
   return useMemo(() => {
     const keyed = combinedList.reduce<{ [key: string]: [WrappedTokenInfo, WrappedTokenInfo] }>((memo, [tokenA, tokenB]) => {
@@ -202,9 +198,6 @@ export default function YourLiquidity({setActiveTab}) {
   const [content, setContent] = useState<"pools" | "import">("pools");
 
   const {pairsWithLiquidity, loading} = usePairsWithLiquidity();
-
-  console.log("PWL");
-  console.log(pairsWithLiquidity);
 
   const tokens = useAllTokens();
 

@@ -223,9 +223,6 @@ export function useRemoveLiquidity() {
 
     const wrappedIndependentAmount = wrappedCurrencyAmount(parsedAmount, chainId);
 
-    // console.log("FUUUUCK");
-    // console.log(userPoolBalance.equalTo());
-
     if (!tokenA || !wrappedIndependentAmount || userPoolBalance.raw.toString() === '0') {
       return;
     }
@@ -506,7 +503,7 @@ export function useRemoveLiquidity() {
         const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
         const tx = await contract[methodName](...args, {
-          gasLimit: safeGasEstimate,
+          gasLimit: safeGasEstimate + 30000n,
         });
 
         setSubmitted(true);

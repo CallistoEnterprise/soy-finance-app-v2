@@ -8,7 +8,6 @@ import {$swapDeadline, $swapInputData, $swapSlippage, $trade} from "../models/st
 import {BigNumber} from "@ethersproject/bignumber";
 import useTransactionDeadline from "./useTransactionDeadline";
 import {isNativeToken} from "../../../shared/utils";
-import {addRecentTransaction} from "../../../shared/models";
 import {useAwaitingApproveDialog} from "../../../stores/awaiting-approve-dialog/useAwaitingApproveDialog";
 import {resetSwap, setSwapConfirmDialogOpened} from "../models";
 import {useReceipt} from "../../../shared/hooks/useReceipt";

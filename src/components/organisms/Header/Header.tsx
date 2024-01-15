@@ -3,18 +3,18 @@ import styles from "./Header.module.scss";
 import Image from "next/image";
 import HeaderNav from "../../molecules/HeaderNav";
 import { useStore } from "effector-react";
-import {$isActive} from "../../../processes/web3/models/stores";
+import {$isActive} from "@/processes/web3/models/stores";
 import dynamic from "next/dynamic";
 import ChangeWalletModal from "../../../processes/web3/ui/ChangeWalletModal";
 import ConnectWalletButton from "../../../processes/web3/ui/ConnectWalletButton";
-import {useColorMode} from "../../../shared/providers/ThemeProvider";
+import {useColorMode} from "@/shared/providers/ThemeProvider";
 import Drawer from "../../atoms/Drawer/Drawer";
 import IconButton from "../../atoms/IconButton";
 import Svg from "../../atoms/Svg/Svg";
 import SettingsMenu from "../../molecules/SettingsMenu";
-import {socialLinks} from "../../../shared/constants/links/socials";
+import {socialLinks} from "@/shared/constants/links/socials";
 import Link from "next/link";
-import {useSnackbar} from "../../../shared/providers/SnackbarProvider";
+import {useSnackbar} from "@/shared/providers/SnackbarProvider";
 
 const DynamicHeaderNetwork = dynamic(() => import("../HeaderNetwork"), {
   ssr: false,

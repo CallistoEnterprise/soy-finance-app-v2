@@ -26,10 +26,12 @@ import {BrowserProvider, ethers} from "ethers";
 
 import {SUPPORTED_NETWORKS, SUPPORTED_SWAP_NETWORKS} from "../constants/supportedNetworks";
 import {WalletType} from "../types";
-import {useSnackbar} from "../../../shared/providers/SnackbarProvider";
+import {useSnackbar} from "@/shared/providers/SnackbarProvider";
 
 function getRPCMap(chains: number[]) {
-  const result = {};
+  const result: {
+    [key: number]: string
+  } = {};
   for(const chain of chains) {
     result[chain] = {
       1: "https://mainnet.infura.io/v3/d819f1add1a34a60adab4df578e0e741",
@@ -38,7 +40,7 @@ function getRPCMap(chains: number[]) {
       820: "https://rpc.callisto.network/",
       61: "https://etc.etcdesktop.com/",
       137: "https://polygon-rpc.com"
-    }[chain];
+    }[chain] || "";
   }
 
   return result;
@@ -114,7 +116,7 @@ export function useWeb3() {
         if (wallet === "walletConnect") {
 
           newProvider = await EthereumProvider.init({
-            projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID,
+            projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID!,
             chains: wc2Blockchains,
             showQrModal: false,
             rpcMap: getRPCMap(wc2Blockchains)
@@ -228,21 +230,7 @@ export function useWeb3() {
       }
 
     },
-    [
-      setAccountFn,
-      setChainIdFn,
-      setChangingWalletFn,
-      setConnectionURIFn,
-      setIsActiveFn,
-      setIsSupportedNetworkFn,
-      setIsSupportedSwapNetworkFn,
-      setProviderFn,
-      setWalletChangeModalOpenFn,
-      setWalletNameFn,
-      setWeb3ProviderFn,
-      wc2Blockchains,
-      showMessage
-    ]
+    [setAccountFn, setChainIdFn, setChangingWalletFn, setConnectionURIFn, setIsActiveFn, setIsSupportedNetworkFn, setIsSupportedSwapNetworkFn, setProviderFn, setWalletChangeModalOpenFn, setWalletNameFn, setWeb3ProviderFn, wc2Blockchains]
   );
 
   const changeNetwork = useCallback(

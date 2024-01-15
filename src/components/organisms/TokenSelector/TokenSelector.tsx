@@ -39,7 +39,6 @@ export default function TokenSelector({setDialogOpened, isDialogOpened, pickedTo
         const [block24, block48, blockWeek] = blocks;
 
         const fetchPrices = await fetchCloPrices(block24.number, block48.number, blockWeek.number)
-        console.log(fetchPrices);
       }
     });
   }, [blocks]);

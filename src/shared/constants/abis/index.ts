@@ -6,6 +6,7 @@ import MASTERCHEF from "./interfaces/masterchef.json";
 import LOCAL_FARM from "./interfaces/localFarm.json";
 import LOCAL_FARM_V2 from "./interfaces/localFarmV2.json";
 import LP_TOKEN from "./interfaces/lpToken.json";
+import MIGRATE from "./interfaces/migrate.json";
 
 export const ERC_20_ABI = ERC_20;
 export const PAIR_ABI = PAIR;
@@ -15,3 +16,4 @@ export const MASTERCHEF_ABI = MASTERCHEF;
 export const LOCAL_FARM_ABI = LOCAL_FARM;
 export const LOCAL_FARM_V2_ABI = LOCAL_FARM_V2;
 export const LP_TOKEN_ABI = LP_TOKEN;
+export const MIGRATE_ABI = MIGRATE;

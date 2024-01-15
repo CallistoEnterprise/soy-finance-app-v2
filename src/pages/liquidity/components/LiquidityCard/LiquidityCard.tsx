@@ -12,8 +12,6 @@ import Text from "../../../../components/atoms/Text";
 import Button from "../../../../components/atoms/Button";
 import clsx from "clsx";
 import {useEvent} from "effector-react";
-import {openRemoveLiquidityDialog} from "../../models";
-import RemoveLiquidityDialog from "../RemoveLiquidityDialog";
 import {
   setLiquidityTokenA, setLiquidityTokenB, setRemoveLiquidityLPToken,
   setRemoveLiquidityTokenA,

@@ -1,5 +1,5 @@
 import {EthersError} from "ethers";
-import {useSnackbar} from "../../../shared/providers/SnackbarProvider";
+import {useSnackbar} from "@/shared/providers/SnackbarProvider";
 import {useCallback} from "react";
 
 const errorMessages = {

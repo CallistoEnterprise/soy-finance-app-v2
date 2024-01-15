@@ -84,8 +84,6 @@ export default function StakeLPTokensModal() {
     return [undefined, undefined];
   }, [chainId, farmToStake?.quoteToken, farmToStake?.token]);
 
-  console.log(farmsUserData[farmToStake?.pid]?.lpBalance[0]);
-
   return <DrawerDialog isOpen={isOpened} onClose={handleClose}>
     <div className={styles.stakeLpTokensModal}>
       <DialogHeader handleClose={handleClose} title="Stake lp tokens" />

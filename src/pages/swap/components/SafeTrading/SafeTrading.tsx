@@ -61,14 +61,6 @@ export default function SafeTrading({ token, meta }: {token: WrappedTokenInfo, m
     <Text tag="p">Security audit score</Text>
     <div className="mb-10" />
     <Progress percents={meta.score * 10} color="green" />
-    {/*<div className="mb-10" />*/}
-    {/*<Text tag="p">Decentralized insurance fund</Text>*/}
-    {/*<div className="mb-10" />*/}
-    {/*<Progress percents={70} color="purple" />*/}
-    {/*<div className="mb-10" />*/}
-    {/*<Text tag="p">Community trust</Text>*/}
-    {/*<div className="mb-10" />*/}
-    {/*<Progress percents={60} color="pink" />*/}
     <div className="center mt-20">
       <a target="_blank" href={meta.link}>
         <Button variant="outlined">Learn more</Button>
