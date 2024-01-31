@@ -51,6 +51,15 @@ export function useLiquidity() {
   const [tokenChanged, setTokenChanged] = useState(false);
 
   const pair = usePair({ tokenA, tokenB });
+
+  const newPool = useMemo(() => {
+    if(!pair && tokenA && tokenB) {
+      return true;
+    }
+
+    return false;
+  }, [pair, tokenA, tokenB]);
+
   const priceA = useMemo(() => {
     if (!pair || !tokenB || !tokenA) {
       return null;
@@ -157,7 +166,11 @@ export function useLiquidity() {
   const handleAmountAChange = useCallback(async (amount: string) => {
     setAmountA(amount, tokenA?.decimals);
 
-    if (!chainId || !pair || !Boolean(amount) || !tokenB || !tokenA) {
+    if(!pair) {
+      return;
+    }
+
+    if (!chainId || !Boolean(amount) || !tokenB || !tokenA) {
       setAmountB("");
       return;
     }
@@ -176,7 +189,12 @@ export function useLiquidity() {
 
   const handleAmountBChange = useCallback(async (amount: string) => {
     setAmountB(amount, tokenB?.decimals);
-    if (!chainId || !pair || !Boolean(amount) || !tokenA || !tokenB) {
+
+    if(!pair) {
+      return;
+    }
+
+    if (!chainId || !Boolean(amount) || !tokenA || !tokenB) {
       setAmountA("");
       return;
     }

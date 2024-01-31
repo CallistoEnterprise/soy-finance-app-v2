@@ -54,34 +54,6 @@ export function useTrackedTokenPairs(): [WrappedToken, WrappedToken][] {
 
   const wrappedTokens = useAllTokens();
 
-  const tokensForChainId = useMemo(() => {
-      return chainId === 820 ? BASES_TO_TRACK_LIQUIDITY_FOR[chainId] : [];
-  }, [chainId]);
-
-  const generatedPairs: [WrappedToken, WrappedToken][] = useMemo(
-    () =>
-      chainId
-        ? Object.keys(wrappedTokens).flatMap((tokenAddress) => {
-          const token = wrappedTokens[+tokenAddress]
-          // for each token on the current chain,
-          return (
-            // loop though all bases on the current chain
-            tokensForChainId
-              // to construct pairs of the given token with each base
-              .map((base) => {
-                if (base.address === token.address) {
-                  return null
-                }
-                return [base, token]
-              })
-              .filter((p): p is [WrappedToken, WrappedToken] => p !== null)
-          )
-        })
-        : [],
-    [chainId, wrappedTokens, tokensForChainId],
-  )
-
-  const { trackedPools } = useTrackedPools();
   const {userTokens} = useUserTokensStore();
 
   const wrappedUserTokens = useMemo(() => {
@@ -97,6 +69,40 @@ export function useTrackedTokenPairs(): [WrappedToken, WrappedToken][] {
       )
     })
   }, [chainId, userTokens]);
+
+  const tokensForChainId = useMemo(() => {
+      return chainId === 820 ? BASES_TO_TRACK_LIQUIDITY_FOR[chainId] : [];
+  }, [chainId]);
+
+  const allTokens = useMemo(() => {
+    return [...wrappedTokens, ...wrappedUserTokens];
+  }, [wrappedTokens, wrappedUserTokens]);
+
+  const generatedPairs: [WrappedToken, WrappedToken][] = useMemo(
+    () =>
+      chainId
+        ? Object.keys(allTokens).flatMap((tokenAddress) => {
+          const token = allTokens[+tokenAddress]
+          // for each token on the current chain,
+          return (
+            // loop though all bases on the current chain
+            tokensForChainId
+              // to construct pairs of the given token with each base
+              .map((base) => {
+                if (base.address === token.address) {
+                  return null
+                }
+                return [base, token]
+              })
+              .filter((p): p is [WrappedToken, WrappedToken] => p !== null)
+          )
+        })
+        : [],
+    [chainId, allTokens, tokensForChainId],
+  )
+
+  const { trackedPools } = useTrackedPools();
+
 
   const userPairs = useMemo(() => {
     if (!trackedPools || !chainId || !trackedPools[chainId]) {
