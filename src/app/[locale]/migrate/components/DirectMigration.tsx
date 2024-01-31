@@ -21,7 +21,7 @@ import InlineIconButton from "@/components/buttons/InlineIconButton";
 import InfoRow from "@/components/InfoRow";
 import addToast from "@/other/toast";
 
-function DirectMigrationActionButton({isOpened}) {
+function DirectMigrationActionButton({isOpened}: {isOpened: boolean}) {
   const { amountIn } = useMigrateAmountsStore();
   const { data: blockNumber } = useBlockNumber({ watch: true })
   const { tokenFrom } = useMigrateTokensStore();
