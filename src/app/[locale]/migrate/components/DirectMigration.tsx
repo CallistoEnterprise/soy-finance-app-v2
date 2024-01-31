@@ -19,8 +19,9 @@ import { migrateContractAddress } from "@/config/addresses/migration";
 import useDirectMigration from "@/app/[locale]/migrate/hooks/useDirectMigration";
 import InlineIconButton from "@/components/buttons/InlineIconButton";
 import InfoRow from "@/components/InfoRow";
+import addToast from "@/other/toast";
 
-function DirectMigrationActionButton() {
+function DirectMigrationActionButton({isOpened}) {
   const { amountIn } = useMigrateAmountsStore();
   const { data: blockNumber } = useBlockNumber({ watch: true })
   const { tokenFrom } = useMigrateTokensStore();
@@ -60,7 +61,13 @@ function DirectMigrationActionButton() {
   }
 
   if (tokenFrom.symbol === test1Token.symbol) {
-    return <PrimaryButton fullWidth onClick={handleMigrateSOY}>Migrate</PrimaryButton>
+    return <PrimaryButton fullWidth onClick={() => {
+      if(!isOpened) {
+        addToast("Migration is currently closed", "info");
+        return;
+      }
+      handleMigrateSOY();
+    }}>Migrate</PrimaryButton>
   }
 
   if (tokenFrom.symbol === test2Token.symbol) {
@@ -82,8 +89,12 @@ export default function DirectMigration() {
     functionName: "getRates"
   });
 
+  const [soyRatio, cloeRatio] = useMemo(() => {
+    return data || [undefined, undefined]
+  }, [data]);
+
   useEffect(() => {
-    if (data && amountIn) {
+    if (data && amountIn && soyRatio && cloeRatio) {
       const [soyRatio, cloeRatio] = data;
 
       if (tokenFrom.symbol === test1Token.symbol) {
@@ -102,11 +113,8 @@ export default function DirectMigration() {
     if (!amountIn) {
       setAmountOut("");
     }
-  }, [amountIn, data, setAmountOut, tokenFrom?.symbol]);
+  }, [amountIn, cloeRatio, data, setAmountOut, soyRatio, tokenFrom.symbol]);
 
-  const [soyRatio, cloeRatio] = useMemo(() => {
-    return data || [undefined, undefined]
-  }, [data]);
 
   const [showInverted, setShowInverted] = useState(false);
 
@@ -172,6 +180,6 @@ export default function DirectMigration() {
         <InlineIconButton onClick={() => setShowInverted(!showInverted)} icon="swap" className="rotate-90"/>
       </span>}/>
     <div className="mb-5"/>
-    <DirectMigrationActionButton/>
+    <DirectMigrationActionButton isOpened={Boolean(soyRatio) && Boolean(cloeRatio)}/>
   </div>
 }
