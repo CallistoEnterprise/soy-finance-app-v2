@@ -27,11 +27,9 @@ import { startOfMinute, subDays, subWeeks } from "date-fns";
 import { LOCAL_FARM_ABI } from "@/config/abis/localFarm";
 import UnStakeLPTokensModal from "@/app/[locale]/farms/components/UnstakeLPTokensDialog";
 import StakeLPTokensModal from "./components/StakeLPTokensDialog";
-import { useStakeLPTokensStore } from "@/app/[locale]/farms/stores/stake";
 import { config } from "@/config/wagmi/config";
 import Select from "@/components/atoms/Select";
 import SearchInput from "@/components/atoms/SearchInput";
-import { useRACAPrice } from "@/hooks/useCLOPrice";
 import useUSDPrices from "@/hooks/useUSDPrices";
 import { AvailableChains } from "@/components/dialogs/stores/useConnectWalletStore";
 import { LP_TOKEN_ABI } from "@/config/abis/lpToken";
@@ -188,12 +186,7 @@ const fetchFarmsPrices = (farms: any[], chainId: AvailableChains) => {
 
 
     if(farm.pid === 45) {
-      console.log("POOL CALCULATION:")
-      console.log(farm.quoteTokenAmountMc);
-      console.log(formatUnits(farm.quoteTokenAmountMc, farm.quoteToken.decimals));
-      console.log(Number(quoteTokenPrice))
       const poolLiquidity = Number(farm.quoteTokenAmountMc) * Number(quoteTokenPrice);
-      console.log(poolLiquidity);
     }
 
     const poolLiquidity = Number(formatUnits(farm.lpTotalInQuoteToken, farm.quoteToken.decimals)) * Number(quoteTokenPrice);
@@ -1069,11 +1062,7 @@ export default function FarmsPage() {
     }
   }, [isActive]);
 
-
   const usdPrices = useUSDPrices();
-
-  console.log("usdPrices");
-  console.log(usdPrices);
 
   return <Container>
     <div className="bg-primary-bg rounded-5 p-5 xl:flex flex-col gap-5 xl:mt-5 border border-primary-border hidden">

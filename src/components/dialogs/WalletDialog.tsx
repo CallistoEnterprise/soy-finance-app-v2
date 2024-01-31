@@ -1,5 +1,5 @@
 import DialogHeader from "@/components/DialogHeader";
-import React from "react";
+import React, { useMemo } from "react";
 import ExternalLink from "@/components/atoms/ExternalLink";
 import { useAccount, useBalance, useDisconnect } from "wagmi";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
@@ -14,6 +14,11 @@ import DrawerDialog from "@/components/atoms/DrawerDialog";
 import SimpleBar from "simplebar-react";
 import { tokensInClo, wclo } from "@/config/token-lists/tokenListInCLO";
 import { formatUnits } from "viem";
+import { availableChainIds } from "@/config/networks";
+import { tokensInEtc } from "@/config/token-lists/tokenlistInETC";
+import { tokensInBtt } from "@/config/token-lists/tokenlistInBTT";
+import { nativeTokens } from "@/config/token-lists/nativeTokens";
+import { formatFloat } from "@/other/formatFloat";
 
 function InfoRow({ label, value }: { label: any, value: any }) {
   return <div className="text-14 leading-[18px] flex justify-between items-center text-secondary-text">
@@ -23,7 +28,7 @@ function InfoRow({ label, value }: { label: any, value: any }) {
 }
 
 export default function WalletDialog() {
-  const { address } = useAccount();
+  const { address, chainId } = useAccount();
   const { disconnect } = useDisconnect();
 
   const transactions = useZustandStore(useRecentTransactionsStore, state => {
@@ -37,14 +42,42 @@ export default function WalletDialog() {
 
   const { isOpen, setIsOpen, activeTab, setActiveTab } = useWalletDialogStore();
 
-  const cloBalance = useBalance({
+
+
+  const coin = useMemo(() => {
+    if(!chainId || !nativeTokens[chainId]) {
+      return nativeTokens[820]
+    }
+
+    return nativeTokens[chainId]
+  }, [chainId]);
+
+  const tokens = useMemo(() => {
+    if(!chainId || !availableChainIds.includes(chainId)) {
+      return tokensInClo;
+    }
+
+    if(chainId === 61) {
+      return tokensInEtc;
+    }
+
+    if(chainId === 199) {
+      return tokensInBtt;
+    }
+
+    return tokensInClo;
+
+  }, [chainId]);
+
+
+  const coinBalance = useBalance({
     address: address,
-    token: wclo.address
+    token: undefined
   });
 
   const soyBalance = useBalance({
     address: address,
-    token: tokensInClo.soy.address
+    token: tokens.soy.address
   });
 
   return <DrawerDialog isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -68,8 +101,8 @@ export default function WalletDialog() {
             <CopyArea text={address as string}/>
           </div>
           <div className="border border-primary-border rounded-2 p-4 flex justify-center flex-col gap-2.5">
-            <InfoRow label="CLO balance" value={cloBalance.data ? formatUnits(cloBalance.data.value, 18) : "Loading..."}/>
-            <InfoRow label="SOY balance" value={soyBalance.data ? formatUnits(soyBalance.data.value, 18) : "Loading..."}/>
+            <InfoRow label={`${coin.symbol} balance`} value={coinBalance.data ? formatFloat(formatUnits(coinBalance.data.value, 18)) : "Loading..."}/>
+            <InfoRow label="SOY balance" value={soyBalance.data ? formatFloat(formatUnits(soyBalance.data.value, 18)) : "Loading..."}/>
           </div>
           <div className="my-5">
             <ExternalLink href={`https://explorer.callisto.network/address/${address}/transactions`}

@@ -4,7 +4,6 @@ import React, { useCallback } from "react";
 import { Transaction } from "@/other/fetchRecentTransactions";
 import { tokenListInCLO } from "@/config/token-lists/tokenListInCLO";
 import { useMediaQuery } from "react-responsive";
-import Skeleton from "@/components/atoms/Skeleton";
 
 interface Props {
   item: Transaction,

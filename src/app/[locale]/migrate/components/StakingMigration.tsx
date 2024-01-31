@@ -13,7 +13,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Abi, Address, formatUnits } from "viem";
 import { MIGRATE_ABI } from "@/config/abis/migrate";
 import { migrateContractAddress } from "@/config/addresses/migration";
-import { useAccount, useBlockNumber, useContractRead, usePublicClient, useReadContract, useWalletClient } from "wagmi";
+import { useAccount, useBlockNumber, useReadContract } from "wagmi";
 import useStakingMigration from "@/app/[locale]/migrate/hooks/useStakingMigration";
 import TokenSelector from "@/components/TokenSelector";
 import RoundedIconButton from "@/components/buttons/RoundedIconButton";
@@ -76,18 +76,9 @@ export default function StakingMigration() {
     targetDate
   );
 
-  const todayDate = useMemo(() => {
-    const today = new Date(Date.now());
-
-    if(stakingMigrationDate) {
-      const migrationDate = new Date(stakingMigrationDate);
-      if(today.getDay() === migrationDate.getDay() && today.getMonth() === migrationDate.getMonth()) {
-        return true;
-      }
-    }
-
-    return false;
-  }, [stakingMigrationDate]);
+  const availableStaking = useMemo(() => {
+    return +seconds < 0;
+  }, [seconds])
 
   const [migratedAmount, reservedAmount, rate] = useMemo(() => {
     return stakingRateReserved || [undefined, undefined, undefined]
@@ -165,7 +156,7 @@ export default function StakingMigration() {
     </div>
   }
 
-  if(rate && todayDate) {
+  if(rate && !availableStaking) {
     return <div className="p-5">
       <h2 className="text-24 font-bold mb-2.5">Staking migration SOY to SLOFI</h2>
       <div className="flex justify-center items-center my-5">

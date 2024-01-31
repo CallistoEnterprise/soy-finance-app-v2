@@ -20,7 +20,6 @@ import useDirectMigration from "@/app/[locale]/migrate/hooks/useDirectMigration"
 import InlineIconButton from "@/components/buttons/InlineIconButton";
 import InfoRow from "@/components/InfoRow";
 
-
 function DirectMigrationActionButton() {
   const { amountIn } = useMigrateAmountsStore();
   const { data: blockNumber } = useBlockNumber({ watch: true })

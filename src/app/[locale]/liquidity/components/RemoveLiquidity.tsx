@@ -1,7 +1,7 @@
 import TokenSelector from "@/components/TokenSelector";
 import PageCardHeading from "@/components/PageCardHeading";
 import RoundedIconButton from "@/components/buttons/RoundedIconButton";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import {
   useRemoveLiquidityAmountsStore,
@@ -12,13 +12,15 @@ import PickTokenDialog from "@/components/dialogs/PickTokenDialog";
 import ActionIconButton from "@/components/buttons/ActionIconButton";
 import TransactionSettingsDialog from "@/components/dialogs/TransactionSettingsDialog";
 import Svg from "@/components/atoms/Svg";
+import { useAccount, useBalance, useBlockNumber } from "wagmi";
+import { isNativeToken } from "@/other/isNativeToken";
 
-export default function RemoveLiquidity({setContent}: {setContent: any}) {
+function RemoveLiquidityAction() {
+  const { amountAString, amountLPString, amountBString, amountLP } = useRemoveLiquidityAmountsStore();
   const { tokenA, tokenB, tokenLP } = useRemoveLiquidityTokensStore();
-  const { amountAString, amountLPString, amountBString } = useRemoveLiquidityAmountsStore();
+  const {address} = useAccount();
+  const { data: blockNumber } = useBlockNumber({ watch: true })
 
-  const [pickDialogContext, setPickDialogContext] = useState<"remove-liquidity-tokenA" | "remove-liquidity-tokenB">("remove-liquidity-tokenA");
-  const [isPickTokenOpened, setPickOpened] = useState(false);
 
   const {
     handleAmountAChange,
@@ -32,6 +34,49 @@ export default function RemoveLiquidity({setContent}: {setContent: any}) {
     token0Deposited,
     token1Deposited,
     pair,
+    priceA,
+    priceB
+  } = useRemoveLiquidity();
+
+  const { data, refetch } = useBalance({
+    address: tokenLP ? address : undefined,
+    token: tokenLP ? tokenLP.address : undefined
+  });
+
+  useEffect(() => {
+    refetch();
+  }, [blockNumber, refetch]);
+
+  if(!amountLPString) {
+    return <PrimaryButton disabled fullWidth>Enter amount</PrimaryButton>
+  }
+
+  if(amountLP && data && amountLP > data.value) {
+    return <PrimaryButton disabled fullWidth>Insufficient balance</PrimaryButton>
+  }
+
+  return <>
+    {readyToRemove
+      ? <PrimaryButton onClick={removeLiquidity} fullWidth>Remove liquidity</PrimaryButton>
+      : <PrimaryButton onClick={onAttemptToApprove} fullWidth>Approve</PrimaryButton>
+    }
+  </>
+}
+export default function RemoveLiquidity({setContent}: {setContent: any}) {
+  const { tokenA, tokenB, tokenLP } = useRemoveLiquidityTokensStore();
+  const { amountAString, amountLPString, amountBString } = useRemoveLiquidityAmountsStore();
+
+  const [pickDialogContext, setPickDialogContext] = useState<"remove-liquidity-tokenA" | "remove-liquidity-tokenB">("remove-liquidity-tokenA");
+  const [isPickTokenOpened, setPickOpened] = useState(false);
+
+  const {
+    handleAmountAChange,
+    handleAmountBChange,
+    handleLiquidityAmountLPChange,
+    handleTokenAChange,
+    handleTokenBChange,
+    token0Deposited,
+    token1Deposited,
     priceA,
     priceB
   } = useRemoveLiquidity();
@@ -123,10 +168,7 @@ export default function RemoveLiquidity({setContent}: {setContent: any}) {
         setIsOpen={setPickOpened}
       />
 
-      {readyToRemove
-        ? <PrimaryButton onClick={removeLiquidity} fullWidth>Remove liquidity</PrimaryButton>
-        : <PrimaryButton onClick={onAttemptToApprove} fullWidth>Approve</PrimaryButton>
-      }
+      <RemoveLiquidityAction />
     </div>
   </div>
 }

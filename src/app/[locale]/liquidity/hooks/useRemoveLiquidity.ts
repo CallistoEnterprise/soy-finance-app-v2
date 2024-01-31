@@ -242,17 +242,6 @@ export function useRemoveLiquidity() {
       return;
     }
 
-    // const price = pair.priceOf(tokenA).quote(wrappedIndependentAmount);
-
-    // const totalPoolAmount = new TokenAmount(tokenLP, totalPoolTokens);
-    // const userPoolAmount = new TokenAmount(tokenLP, userPoolBalance.value);
-
-    // const totalSupply = pair.getLiquidityValue(pair.token0, totalPoolAmount, userPoolAmount, false);
-
-    // const percentage = new Percent(wrappedIndependentAmount.raw, totalSupply.raw);
-
-    // const price1 = new TokenAmount(tokenLP, percentage.multiply(userPoolBalance.value).quotient)
-
     const _priceLP = parsedAmount * totalPoolTokens / reserves[0];
     const _priceB = reserves[1] * _priceLP / totalPoolTokens;
 
@@ -302,7 +291,12 @@ export function useRemoveLiquidity() {
 
   async function onAttemptToApprove() {
 
-    if (!account || !deadline || !chainId || !tokenLP || !walletClient) throw new Error('missing dependencies')
+    if (!account || !deadline || !chainId || !tokenLP || !walletClient) {
+      addToast("Unexpected error, try again later", "error");
+      return;
+    }
+
+    setOpened("Permit remove liquidity");
 
     const parsedAmountLP = parseUnits(amountLPString, tokenLP.decimals);
 
@@ -364,6 +358,8 @@ export function useRemoveLiquidity() {
 
     const splitted = splitSignature(signature);
     setSignatureData({ ...splitted, deadline });
+    setClose();
+    addToast("Successfully approved");
   }
 
   const removeLiquidity = useCallback(async () => {
@@ -394,35 +390,7 @@ export function useRemoveLiquidity() {
     //
     const currencyBIsETH = isNativeToken(tokenB.address);
     const oneCurrencyIsETH = isNativeToken(tokenA.address) || currencyBIsETH
-    //
-    // if (approval === ApprovalState.APPROVED) {
-    //   // removeLiquidityCLO
-    //   if (oneCurrencyIsETH) {
-    //     methodNames = ['removeLiquidityCLO', 'removeLiquidityCLOSupportingFeeOnTransferTokens']
-    //     args = [
-    //       currencyBIsETH ? tokenA.address : tokenB.address,
-    //       parsedAmountLP.raw.toString(),
-    //       amountsMin.a.toString(),
-    //       amountsMin.b.toString(),
-    //       account,
-    //       deadline,
-    //     ]
-    //   }
-    //   // removeLiquidity
-    //   else {
-    //     methodNames = ['removeLiquidity']
-    //     args = [
-    //       tokenA.address,
-    //       tokenB.address,
-    //       parsedAmountLP.raw.toString(),
-    //       amountsMin.a.toString(),
-    //       amountsMin.b.toString(),
-    //       account,
-    //       deadline,
-    //     ]
-    //   }
-    // }
-    // // we have a signataure, use permit versions of remove liquidity
+
     if (signatureData !== null) {
       // removeLiquidityCLOWithPermit
       if (oneCurrencyIsETH) {

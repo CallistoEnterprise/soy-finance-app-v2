@@ -18,7 +18,7 @@ import {
   Tooltip
 } from "chart.js";
 import 'chartjs-adapter-date-fns';
-import { useAccount, useChainId } from "wagmi";
+import { useAccount } from "wagmi";
 import PageCard from "@/components/PageCard";
 import { useSwapTokensStore } from "@/app/[locale]/swap/stores";
 import SmallOutlineTabButton from "@/components/buttons/SmallOutlineTabButton";
@@ -27,7 +27,6 @@ import useTokenGraphData from "../hooks/useTokenGraphData";
 import Preloader from "@/components/atoms/Preloader";
 import { useTheme } from "next-themes";
 import { WrappedToken } from "@/config/types/WrappedToken";
-import { computePosition } from "@floating-ui/dom";
 import getAllowedPairs from "@/app/[locale]/swap/hooks/useAllowedPairs";
 import { IIFE } from "@/other/IIFE";
 import { formatFloat } from "@/other/formatFloat";

@@ -8,8 +8,7 @@ import { IconName } from "@/config/types/IconName";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { getExpLink } from "@/components/RecentTransaction";
 import ExternalLink from "@/components/atoms/ExternalLink";
-import { getLogo } from "@/app/[locale]/farms/utils";
-import { Abi, Address, formatUnits, parseUnits } from "viem";
+import { Abi, Address, formatUnits } from "viem";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import ROIDialog from "./ROIDialog";
 import { useStakeLPTokensStore, useUnstakeLPTokensStore } from "@/app/[locale]/farms/stores/stake";
@@ -20,6 +19,7 @@ import { useMediaQuery } from "react-responsive";
 import ExpandButton from "@/components/buttons/ExpandButton";
 import EmptyStateIcon from "@/components/atoms/EmptyStateIcon";
 import { useConnectWalletDialogStateStore } from "@/components/dialogs/stores/useConnectWalletStore";
+import { useFarmsUserDataStore } from "@/app/[locale]/farms/stores";
 
 type LabelType = "supreme" | "select" | "standard" | "new";
 
@@ -70,13 +70,6 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
   }, [apr, lpRewardsApr])
 
   const [roiOpened, setRoiOpened] = useState(false);
-
-  // const openStakeLPTokensDialogFn = useEvent(openStakeLPTokensDialog);
-  // const openUnStakeLPTokensDialogFn = useEvent(openUnStakeLPTokensDialog);
-
-  // const setLpTokenToStakeFn = useEvent(setLpTokenToStake);
-  // const setLpTokenToUnStakeFn = useEvent(setLpTokenToUnStake);
-  // const {handleError} = useEthersError();
 
   const [harvesting, setHarvesting] = useState(false);
   const {setOpened, setClose, setSubmitted} = useAwaitingDialogStore();
@@ -151,13 +144,14 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
   const isMobile = useMediaQuery({ query: '(max-width: 449px)' });
 
   const {setIsOpened: openWalletConnect} = useConnectWalletDialogStateStore()
+  const { farmsUserData } = useFarmsUserDataStore();
 
   return <div className="rounded-2 border border-primary-border" key={farm.pid}>
     <div role={"button"} onClick={() => setIsOpen(!isOpen)}  key={farm.pid} className="flex justify-between lg:grid min-h-[60px] py-2 px-4 sm:px-5 lg:grid-cols-farm items-center gap-4 xl:gap-[30px]">
       <div className="flex items-center gap-2">
-        <Image width={isMobile ? 28 : 35} height={isMobile ? 28 : 35} src={getLogo({address: farm.token.address?.toLowerCase()})} alt=""/>
+        <Image width={isMobile ? 28 : 35} height={isMobile ? 28 : 35} src={farm.token.logoURI} alt=""/>
         <Image width={isMobile ? 28 : 35} height={isMobile ? 28 : 35} className="relative -ml-[18px]"
-               src={getLogo({address: farm.quoteToken.address?.toLowerCase()})} alt=""/>
+               src={farm.quoteToken.logoURI} alt=""/>
         <p className="text-14 xs:text-16">{farm.token.symbol.replace("WCLO", "CLO")} - {farm.quoteToken.symbol.replace("WCLO", "CLO")}</p>
       </div>
       <div className="hidden lg:block">{(!chainId || chainId === 820) && farm.pid >= 42 && farm.pid <= 52 && <Label type="new"/>}</div>
@@ -261,7 +255,7 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
             </div>
           </div>
           <div className="flex justify-between">
-            <PrimaryButton disabled={!staked} onClick={handleHarvest} fullWidth>
+            <PrimaryButton disabled={!reward} onClick={handleHarvest} fullWidth>
               Harvest
             </PrimaryButton>
           </div>
@@ -278,7 +272,7 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
           <div style={{height: 16}}/>
           <div className="flex justify-between w-full">
             {!isActive && <PrimaryButton fullWidth onClick={() => openWalletConnect(true)}>Connect wallet</PrimaryButton>}
-            {isActive && !staked && <PrimaryButton disabled={!Boolean(farm.multiplier)} onClick={() => {
+            {isActive && !staked && <PrimaryButton disabled={!Boolean(farm.multiplier) || !Boolean(farmsUserData[farm.pid]?.lpBalance)} onClick={() => {
               setLpTokenToStake(farm);
               setIsStakeLPTokensDialogOpened(true);
             }} fullWidth>Stake LP</PrimaryButton>}

@@ -3,10 +3,13 @@ import Container from "@/components/atoms/Container";
 import LiquidityChart from "@/app/[locale]/liquidity/components/LiquidityChart";
 import LiquidityHistory from "@/app/[locale]/liquidity/components/LiquidityHistory";
 import Liquidity from "@/app/[locale]/liquidity/components/Liquidity";
-import { PropsWithChildren } from "react";
-import { useAccount, useChainId } from "wagmi";
+import React, { PropsWithChildren } from "react";
+import { useAccount } from "wagmi";
 import { availableChainIds } from "@/config/networks";
 import PageCard from "@/components/PageCard";
+import EmptyStateIcon from "@/components/atoms/EmptyStateIcon";
+import PrimaryButton from "@/components/buttons/PrimaryButton";
+import { useConnectWalletDialogStateStore } from "@/components/dialogs/stores/useConnectWalletStore";
 
 function Column({ children }: PropsWithChildren) {
   return <div className="flex flex-col lg:gap-5 min-w-0">
@@ -16,6 +19,7 @@ function Column({ children }: PropsWithChildren) {
 
 export default function LiquidityPage() {
   const { chainId } = useAccount();
+  const {setIsOpened: setConnectWalletOpened} = useConnectWalletDialogStateStore();
 
   return <Container>
     <div className="grid grid-cols-1 lg:grid-cols-content mb-5 sm:my-5 lg:gap-5">
@@ -26,7 +30,11 @@ export default function LiquidityPage() {
       <Column>
         <div className="md:w-[492px] md:mx-auto lg:w-auto lg:mx-0">
           {chainId && availableChainIds.includes(chainId) ? <Liquidity/> : <PageCard>
-            Current network is not supported
+            <div className="min-h-[400px] flex flex-col justify-center items-center gap-5">
+              <EmptyStateIcon iconName="wallet" />
+              <h2 className="bold text-16 lg:text-20">Connect wallet to view your liquidity</h2>
+              <PrimaryButton onClick={() => setConnectWalletOpened(true)}>Connect wallet</PrimaryButton>
+            </div>
           </PageCard>}
         </div>
       </Column>

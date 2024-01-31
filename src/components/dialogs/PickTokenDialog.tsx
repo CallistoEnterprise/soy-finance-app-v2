@@ -140,14 +140,15 @@ function PickTokenItem({ token, isFavorite, handlePick, isImported = false }: {
         "flex items-center duration-200 justify-center w-10 h-10 rounded-full border border-transparent hover:border-green flex-shrink-0",
         isFavorite ? "text-green" : "text-grey-light")}
       onClick={() => {
-        if (!token?.address || !chainId) {
-          return;
+        let _chainId = chainId;
+        if (!_chainId) {
+          _chainId = 820;
         }
 
         if (isFavorite) {
-          removeFavoriteToken(chainId, token.address);
+          removeFavoriteToken(_chainId, token.address);
         } else {
-          addFavoriteToken(chainId, token.address);
+          addFavoriteToken(_chainId, token.address);
         }
       }}>
       <Svg iconName="star"/>
@@ -187,10 +188,11 @@ export default function PickTokenDialog({ pickToken, isOpen, setIsOpen }: Props)
   const { chainId } = useAccount();
   const [searchRequest, setSearchRequest] = useState("");
 
+  console.log(chainId);
   const { userTokens } = useUserTokensStore();
 
   const wrappedUserTokens = useMemo(() => {
-    const tokensForChain = userTokens.filter(t => t.chainId === chainId || 820);
+    const tokensForChain = userTokens.filter(t => t.chainId === (chainId || 820));
     return tokensForChain.map((t) => {
       return new WrappedToken(
         chainId || 820,

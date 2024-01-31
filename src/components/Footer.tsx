@@ -3,7 +3,7 @@ import Container from "@/components/atoms/Container";
 import { IconName } from "@/config/types/IconName";
 import SocialIconButton from "@/components/buttons/SocialIconLink";
 import ThemedLogo from "@/components/ThemedLogo";
-import useCLOPrice, { useSOYPrice } from "@/hooks/useCLOPrice";
+import { useSOYPrice } from "@/hooks/useCLOPrice";
 
 type FooterLink = {
   label: string,
@@ -134,9 +134,6 @@ export const socialLinks: Array<{
 
 
 export default function Footer() {
-  // const { showMessage } = useSnackbar();
-
-  const cloPrice = useCLOPrice();
   const soyPrice = useSOYPrice();
 
   return <Container>

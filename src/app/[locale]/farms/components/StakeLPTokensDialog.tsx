@@ -12,7 +12,6 @@ import DrawerDialog from "@/components/atoms/DrawerDialog";
 import { useAwaitingDialogStore } from "@/stores/useAwaitingDialogStore";
 import addToast from "@/other/toast";
 import { WrappedToken } from "@/config/types/WrappedToken";
-import { getLogo } from "@/app/[locale]/farms/utils";
 
 export default function StakeLPTokensModal() {
   const { chainId } = useAccount();
@@ -96,7 +95,7 @@ export default function StakeLPTokensModal() {
           farmToStake.token.decimals!,
           farmToStake.token.symbol,
           farmToStake.token.name,
-          getLogo({address: farmToStake.token.address?.toLowerCase()}),
+          farmToStake.token.logoURI,
         ),
         new WrappedToken(
           chainId,
@@ -104,7 +103,7 @@ export default function StakeLPTokensModal() {
           farmToStake.quoteToken.decimals!,
           farmToStake.quoteToken.symbol,
           farmToStake.quoteToken.name,
-          getLogo({address: farmToStake.quoteToken.address?.toLowerCase()}),
+          farmToStake.quoteToken.logoURI,
         )
       ]
     }

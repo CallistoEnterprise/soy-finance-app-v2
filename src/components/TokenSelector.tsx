@@ -163,7 +163,7 @@ export default function TokenSelector({
       return BigInt(0);
     }
 
-    if (balance) {
+    if (balance != null) {
       return balance;
     }
 

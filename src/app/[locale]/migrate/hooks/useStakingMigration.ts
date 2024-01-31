@@ -3,7 +3,6 @@ import { Abi, Address, ContractFunctionExecutionError } from "viem";
 import { MIGRATE_ABI } from "@/config/abis/migrate";
 import { migrateContractAddress } from "@/config/addresses/migration";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
-import { tokensInClo } from "@/config/token-lists/tokenListInCLO";
 import { useStakingMigrateAmountsStore, useStakingMigrateTokensStore } from "@/app/[locale]/migrate/stores";
 import { ERC223_ABI } from "@/config/abis/erc223";
 import { useStakingMigrationDateStore } from "@/app/[locale]/migrate/stores/staking-migration-timer";

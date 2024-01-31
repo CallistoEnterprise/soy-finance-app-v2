@@ -1,11 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { fetchTopTransactions, Transaction } from "@/other/fetchRecentTransactions";
-import { tokenListInCLO } from "@/config/token-lists/tokenListInCLO";
 import Skeleton from "@/components/atoms/Skeleton";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import HistoryItem from "@/components/HistoryItem";
-import { useMediaQuery } from "react-responsive";
-import ExternalLink from "@/components/atoms/ExternalLink";
 import Svg from "@/components/atoms/Svg";
 
 
