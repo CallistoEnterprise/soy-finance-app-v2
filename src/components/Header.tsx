@@ -54,7 +54,7 @@ export default function Header() {
               <ChangeNetworkMenu/>
               <WalletMenu pending={pending}/>
             </div>
-            : <PrimaryButton onClick={() => setIsOpened(true)}>Connect wallet</PrimaryButton>}
+            : <PrimaryButton fullWidth onClick={() => setIsOpened(true)}>Connect wallet</PrimaryButton>}
         </div>
       </div>
     </header>

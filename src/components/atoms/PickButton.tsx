@@ -21,7 +21,7 @@ export default function PickButton({
                                      ...props
                                    }: PropsWithChildren<Props>) {
   return <button className={clsx(
-    "flex flex-col gap-2 justify-center items-center py-4 border hover:border-green rounded-1 w-full duration-200 px-3",
+    "flex flex-col gap-2 justify-center items-center py-4 border hover:border-green rounded-1 w-full duration-200 px-3 ",
     isActive ? "text-font-primary bg-green/20 hover:bg-green/30 border-green" : "text-font-secondary border-primary-border"
   )} {...props}>
     <div className="relative">
@@ -37,6 +37,6 @@ export default function PickButton({
         <Svg size={19} iconName="done" className="z-10 absolute"/>
       </span>}
     </div>
-    <span className="text-14 whitespace-nowrap">{label}</span>
+    <span className="text-12 md:text-14 whitespace-nowrap">{label}</span>
   </button>
 }

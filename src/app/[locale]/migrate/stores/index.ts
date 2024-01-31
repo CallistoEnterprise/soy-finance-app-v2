@@ -32,7 +32,7 @@ export const test2Token = new WrappedToken(
 
 export const slofiToken = new WrappedToken(
   820,
-  "0x12a3d7A3247Da63eB84Fa916278825920db86eC1",
+  "0x8c5Bba04B2f5CCCe0f8F951D2DE9616BE190070D",
   18,
   "SLOFI",
   "Sloth Finance Token",

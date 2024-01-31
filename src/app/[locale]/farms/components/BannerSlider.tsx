@@ -77,47 +77,47 @@ export default function BannerSlider() {
             </a>
           </div>
           <div className="absolute right-0 bottom-0 h-[224px] w-[434px]">
-            <Image width={434} height={224} src="/images/banners/banner1.svg" alt="" />
+            <Image width={434} height={224} src="/images/banners/1.svg" alt="" />
           </div>
         </BannerSliderItem>
         <BannerSliderItem active={activeIndex === 1} index={1}>
           <div className="flex flex-col items-start max-w-[535px]">
             <p className="text-[#122110] text-28 font-semibold" >Secure your Slothvestments</p>
             <div style={{height: 10}} />
-            <p className="text-[#122110]  whitespace-normal">Fear not, Sloth friends! Our Sloth Shield has your back, keeping your funds safe and sound.</p>
+            <p className="text-[#122110]  whitespace-normal">Fear not, Sloth friends! Our Distributed Insurance has your back, keeping your funds safe and sound.</p>
             <div style={{height: 16}} />
             <a href="https://docs.soy.finance/soy-products/safety-on-yields" target="_blank">
-              <PrimaryButton>Protect your Funds</PrimaryButton>
+              <PrimaryButton>Invest in Your Safety</PrimaryButton>
             </a>
           </div>
           <div className="absolute right-0 bottom-0 h-[224px] w-[434px]">
-            <Image width={434} height={224} src="/images/banners/banner2.svg" alt="" />
+            <Image width={434} height={224} src="/images/banners/2.svg" alt="" />
           </div>
         </BannerSliderItem>
         <BannerSliderItem active={activeIndex === 2} index={2}>
           <div className="flex flex-col items-start max-w-[535px]">
-            <p className="text-[#122110] text-28 font-semibold">Callisto Network - Sloth`s Safe Haven</p>
+            <p className="text-[#122110] text-28 font-semibold">Callisto Network - Sloths&apos; Safe Haven</p>
             <div style={{height: 10}} />
-            <p className="text-[#122110]  whitespace-normal">Dive into the ultra-fast, ultra-cheap Callisto Network! The ideal environment for Soy-powered DeFi Sloths.</p>
+            <p className="text-[#122110]  whitespace-normal">Dive into the ultra-fast, ultra-cheap Callisto Network! The ideal environment for DeFi Sloths.</p>
             <div style={{height: 16}} />
             <a href="https://callisto.network/">
               <PrimaryButton>Explore Callisto Network</PrimaryButton>
             </a>
           </div>
           <div className="absolute right-0 bottom-0 h-[224px] w-[434px]">
-            <Image width={434} height={224} src="/images/banners/banner3.svg" alt="" />
+            <Image width={434} height={224} src="/images/banners/3.svg" alt="" />
           </div>
         </BannerSliderItem>
         <BannerSliderItem active={activeIndex === 3} index={3}>
           <div className="flex flex-col items-start max-w-[535px]">
-            <p className="text-[#122110] text-28 font-semibold">Juicy APR Hotspots</p>
+            <p className="text-[#122110] text-28 font-semibold">Juicy Hotspots</p>
             <div style={{height: 10}} />
-            <p className="text-[#122110]  whitespace-normal">Hungry for juicy returns? Feast your eyes on our top-performing pools with the highest APRs, ripe for the picking!</p>
+            <p className="text-[#122110]  whitespace-normal">Looking for juicy returns? Discover our top-performing pools with the Boost NFTs.</p>
             <div style={{height: 16}} />
             <PrimaryButton onClick={() => {}}>Boost your Earnings</PrimaryButton>
           </div>
           <div className="absolute right-0 bottom-0 h-[224px] w-[434px]">
-            <Image width={434} height={224} src="/images/banners/banner4.svg" alt="" />
+            <Image width={434} height={224} src="/images/banners/4.svg" alt="" />
           </div>
         </BannerSliderItem>
       </div>

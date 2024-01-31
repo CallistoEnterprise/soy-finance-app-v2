@@ -72,7 +72,7 @@ export default function StakingMigration() {
     return new Date(2024, month, day, 23, 59,59, 0);
   }, [stakingMigrationDate]);
 
-  const [days, hours, minutes, seconds] = useCountdown(
+  const [seconds] = useCountdown(
     targetDate
   );
 
@@ -167,10 +167,7 @@ export default function StakingMigration() {
         </div>
       </div>
       <p className="text-secondary-text text-center">
-        <b>{formatFloat(formatUnits(migratedAmount, 18))} SOY</b> were migrated to <b>{formatFloat(formatUnits(migratedAmount / BigInt(rate), 18))} SLOFI</b>. {formatFloat(formatUnits(reservedAmount, 18))} SOY were reserved with rate {rate} SOY per SLOFI. You can migrate reserved tokens in <b className="whitespace-nowrap inline-block">
-        <span className="inline-block w-[22px]">{hours}</span> h : {" "}
-        <span className="inline-block w-[22px]">{minutes}</span> mins : {" "}
-        <span className="inline-block w-[22px]">{seconds}</span> sec</b>
+        <b>{formatFloat(formatUnits(migratedAmount, 18))} SOY</b> were migrated to <b>{formatFloat(formatUnits(migratedAmount / BigInt(rate), 18))} SLOFI</b>. {formatFloat(formatUnits(reservedAmount, 18))} SOY were reserved with rate {rate} SOY per SLOFI. You can migrate reserved tokens when you&apos;ll receive it from staking.
       </p>
     </div>
   }

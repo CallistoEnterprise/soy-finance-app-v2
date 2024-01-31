@@ -12,10 +12,6 @@ type FooterLink = {
 
 export const supportLinks: FooterLink[] = [
   {
-    label: "FAQ",
-    url: null
-  },
-  {
     label: "Telegram",
     url: "https://t.me/Soy_Finance"
   },
@@ -24,8 +20,8 @@ export const supportLinks: FooterLink[] = [
     url: "https://docs.soy.finance/soy-products/soy-token/monetary-policy-vision"
   },
   {
-    label: "Investor deck",
-    url: "https://clo.click/SOY-Deck"
+    label: "Documentation",
+    url: "https://docs.soy.finance/"
   }
 ];
 
@@ -37,18 +33,6 @@ export const tradingLinks: FooterLink[] = [
   {
     label: "ERC 223 token standard",
     url: "https://docs.soy.finance/soy-products/safety-on-yields/erc-223-token-standard"
-  },
-  {
-    label: "Platform audit report",
-    url: "https://docs.soy.finance/soy-products/safety-on-yields/soy-finance-security-audit"
-  },
-  {
-    label: "Bug bounty",
-    url: "https://docs.soy.finance/soy-products/safety-on-yields/soy-finance-bug-bounty"
-  },
-  {
-    label: "Documentation",
-    url: "https://docs.soy.finance/"
   }
 ];
 
@@ -56,14 +40,6 @@ export const engageLinks: FooterLink[] = [
   {
     label: "SlothTV",
     url: "https://www.youtube.com/watch?v=vbtED4Z_82I&list=PLY-khVKjGjWgLeiBI3Y3jP5nIrqpoEkRK"
-  },
-  {
-    label: "Developer grants",
-    url: ""
-  },
-  {
-    label: "Governance",
-    url: ""
   },
   {
     label: "Github",
@@ -144,7 +120,7 @@ export default function Footer() {
             <ThemedLogo/>
           </div>
 
-          <span className="text-16 text-secondary-text font-medium">Where DeFi Meets Safety</span>
+          <span className="text-16 text-secondary-text font-medium">Be Lazy, DeFi is EazZzy</span>
           <div className="flex gap-2.5 my-5">
             <div className="flex items-center h-10 px-2.5 border border-primary-border rounded-2 gap-0.5">
               <img src="/images/all-tokens/SOY-TRANSPARENT.svg" alt=""/>
@@ -181,7 +157,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="p-4 mb-5 sm:mb-0 sm:px-10 sm:py-5 flex justify-between items-center text-12 sm:text-16">
-        <span className="text-secondary-text text-12 sm:text-16">©2023 All rights reserved</span>
+        <span className="text-secondary-text text-12 sm:text-16">©{new Date(Date.now()).getFullYear()} All rights reserved</span>
         <div className="flex items-center gap-3 sm:gap-5">
           <a href="#">Terms</a>
           <a href="#">Privacy Policy</a>

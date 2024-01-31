@@ -77,15 +77,15 @@ export default function ConnectWalletDialog() {
   return <DrawerDialog isOpen={isOpened} setIsOpen={setIsOpened}>
     <div className="w-full xl:min-w-[500px]">
       <DialogHeader handleClose={() => setIsOpened(false)} title="Connect wallet" />
-      <div className="p-10">
+      <div className="md:p-10 p-4">
         <StepLabel step="1" label="Choose wallet" />
-        <div className="grid grid-cols-3 gap-3 mt-3 mb-5">
+        <div className="grid grid-cols-3 gap-1 md:gap-3 mt-3 mb-5">
           <MetamaskCard isLoading={false} />
           {/*<CoinbaseCard isLoading={false} />*/}
           <WalletConnectCard />
         </div>
         <StepLabel step="2" label="Choose network" />
-        <div className="grid grid-cols-3 gap-3 mt-3 mb-5">
+        <div className="grid grid-cols-3 gap-1 md:gap-3 mt-3 mb-5">
           {(walletName === "metamask" || walletName === "wc") && <>{networks.map(({name, chainId, logo}) => {
             return <PickButton key={chainId} isActive={chainId === chainToConnect} onClick={() => {
               setChainToConnect(chainId);
