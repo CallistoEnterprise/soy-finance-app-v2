@@ -24,6 +24,10 @@ export const wallets: {
     name: "Coinbase",
     image: "/wallets/coinbase.svg"
   },
+  trustWallet: {
+    name: "Trust Wallet",
+    image: "/wallets/trust.svg"
+  },
   unknown: {
     name: "Unknown",
     image: "/wallets/default.svg"

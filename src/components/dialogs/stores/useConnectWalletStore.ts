@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type WalletName = "metamask" | "wc" | "coinbase";
+export type WalletName = "metamask" | "wc" | "coinbase" | "trustWallet";
 export type AvailableChains = 820 | 61 | 199;
 interface ConnectWalletStore {
   walletName: WalletName,

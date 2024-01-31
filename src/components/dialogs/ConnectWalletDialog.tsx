@@ -15,6 +15,7 @@ import {
 import addToast from "@/other/toast";
 import { useConnect } from "wagmi";
 import { config } from "@/config/wagmi/config";
+import TrustWalletCard from "@/components/wallet-cards/TrustWalletCard";
 
 interface Props {
   isOpen: boolean,
@@ -72,6 +73,23 @@ export default function ConnectWalletDialog() {
         }
       });
     }
+
+    if(walletName === "trustWallet") {
+      connectAsync({
+        connector: connectors[2],
+        chainId: chainToConnect
+      }).then(() => {
+        setIsOpened(false);
+        addToast("Successfully connected!")
+      }).catch((e) => {
+        console.log(e);
+        if(e.code && e.code === 4001) {
+          addToast("User rejected the request", "error");
+        } else {
+          addToast("Error: something went wrong", "error");
+        }
+      });
+    }
   }, [chainToConnect, connectAsync, connectors, setIsOpened, walletName]);
 
   return <DrawerDialog isOpen={isOpened} setIsOpen={setIsOpened}>
@@ -83,10 +101,11 @@ export default function ConnectWalletDialog() {
           <MetamaskCard isLoading={false} />
           {/*<CoinbaseCard isLoading={false} />*/}
           <WalletConnectCard />
+          <TrustWalletCard isLoading={false}  />
         </div>
         <StepLabel step="2" label="Choose network" />
         <div className="grid grid-cols-3 gap-1 md:gap-3 mt-3 mb-5">
-          {(walletName === "metamask" || walletName === "wc") && <>{networks.map(({name, chainId, logo}) => {
+          {(walletName === "metamask" || walletName === "wc" || walletName === "trustWallet") && <>{networks.map(({name, chainId, logo}) => {
             return <PickButton key={chainId} isActive={chainId === chainToConnect} onClick={() => {
               setChainToConnect(chainId);
             }} image={logo} label={name} />

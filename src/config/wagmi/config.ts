@@ -7,9 +7,12 @@ import { bttc } from "@/config/chains/btt";
 
 export const config = createConfig({
   chains: [callisto, classic, bttc],
-  connectors: [injected({target: "metaMask"}), walletConnect({
-    projectId: "0af4613ea1c747c660416c4a7a114616"
-  })],
+  connectors: [
+    injected({target: "metaMask"}),
+    walletConnect({
+      projectId: "0af4613ea1c747c660416c4a7a114616"
+    }),
+    injected({target: "trust"})],
   ssr: true,
   storage: createStorage({
     storage: cookieStorage,
