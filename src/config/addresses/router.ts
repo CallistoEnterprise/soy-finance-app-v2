@@ -1,0 +1,7 @@
+export const ROUTER_ADDRESS: {
+  [key: number]: `0x${string}`
+} = {
+  820: '0xeB5B468fAacC6bBdc14c4aacF0eec38ABCCC13e7',
+  199: '0x8Cb2e43e5AEB329de592F7e49B6c454649b61929',
+  61: '0x8c5Bba04B2f5CCCe0f8F951D2DE9616BE190070D'
+};

@@ -1,0 +1,19 @@
+{
+  "Navigation": {
+      "connect_wallet": "Connect wallet",
+      "language": "Language",
+      "exchange": "Exchange",
+      "staking": "Staking",
+      "farming": "Farming",
+      "safety": "Safety on yields",
+      "future": "Futures",
+      "bridge": "Міст",
+      "connect": "Connect",
+      "wallet": "Wallet",
+      "recent_transactions": "Recent transactions",
+      "disconnect": "Disconnect",
+      "v2": "SOY Finance V2",
+      "lottery": "Lottery",
+      "migrate": "Migrate"
+  }
+}
