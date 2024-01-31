@@ -502,8 +502,13 @@ export function useRemoveLiquidity() {
         const methodName = methodNames[indexOfSuccessfulEstimation]
         const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
+        console.log("SAFE GAS ESTIMATE");
+        console.log(safeGasEstimate);
+
+        console.log(BigInt(safeGasEstimate) + 30000n);
+
         const tx = await contract[methodName](...args, {
-          gasLimit: safeGasEstimate + 30000n,
+          gasLimit: BigInt(safeGasEstimate) + 30000n,
         });
 
         setSubmitted(true);
