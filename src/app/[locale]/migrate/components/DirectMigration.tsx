@@ -83,11 +83,20 @@ export default function DirectMigration() {
   const { tokenTo, tokenFrom, setTokenFrom } = useMigrateTokensStore();
   const { amountIn, amountInString, amountOutString, setAmountIn, setAmountOut } = useMigrateAmountsStore();
 
-  const { data } = useReadContract({
+
+  const { data, refetch } = useReadContract({
     address: migrateContractAddress,
     abi: MIGRATE_ABI,
     functionName: "getRates"
   });
+
+  const {data: blockNumber} = useBlockNumber({watch: !data || !Boolean(data[0]) || !Boolean(data[1])});
+
+
+  useEffect(() => {
+    console.log("Rates: " + data);
+    refetch();
+  }, [refetch, blockNumber, data]);
 
   const [soyRatio, cloeRatio] = useMemo(() => {
     return data || [undefined, undefined]

@@ -128,8 +128,6 @@ export default function UnstakeLPTokensModal() {
     return null;
   }, [chainId, farmToUnstake]);
 
-  console.log(farmToUnstake);
-
   return <DrawerDialog isOpen={isOpened} setIsOpen={setIsOpened}>
     <div className="w-full xl:w-[480px]">
       <DialogHeader handleClose={() => setIsOpened(false)} title="Unstake lp tokens" />

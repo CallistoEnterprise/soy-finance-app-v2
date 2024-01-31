@@ -47,7 +47,6 @@ export function getExpLink(
   }
 }
 export default function RecentTransaction({transaction}: {transaction: RecentTransaction}) {
-  console.log(transaction);
   return <div className="border-b border-primary-border h-11 flex justify-between items-center last-of-type:border-b-0 gap-4">
     <a href={getExpLink(transaction.hash, "transaction", [820, 199, 61].includes(transaction.chainId) ? transaction.chainId as 820 | 199 | 61 : 820)} target="_blank" className="cursor-pointer min-w-0 items-center gap-1 relative flex text-green after:absolute after:left-0 after:w-0 after:h-[1px] after:block after:bg-green after:bottom-0 after:duration-300 hover:after:w-full">
       <span className="whitespace-nowrap overflow-ellipsis overflow-hidden">{transaction.title}</span>

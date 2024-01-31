@@ -259,10 +259,6 @@ const externalTooltipHandler = (context: { tooltip: any; chart: ChartJS; }) => {
     return;
   }
 
-  // console.log("CHART AND TOOLTIP");
-  // console.log(tooltip);
-  // console.log(chart);
-
   if (tooltip.opacity === 0) {
     tooltipEl.style.opacity = "0";
     return;

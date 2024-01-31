@@ -125,7 +125,6 @@ export default function useStakingMigration() {
     // const transaction = await publicClient.waitForTransactionReceipt({ hash });
     // const result = await publicClient.getTransactionReceipt({ hash });
 
-    // console.log(transaction);
   }, [address, amountIn, publicClient, tokenFrom.address, walletClient]);
 
   return {handleMigrateStaking, handleMigrateRateStaking, loadingNoRate}

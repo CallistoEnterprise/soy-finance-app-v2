@@ -96,8 +96,6 @@ export default function useDirectMigration() {
           ]
         }
 
-        console.log(params);
-
         const estimatedGas = await publicClient.estimateContractGas(params)
 
         const { request } = await publicClient.simulateContract({

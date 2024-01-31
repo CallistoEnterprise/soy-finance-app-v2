@@ -51,15 +51,6 @@ export function useLiquidity() {
   const [tokenChanged, setTokenChanged] = useState(false);
 
   const pair = usePair({ tokenA, tokenB });
-
-  console.log("Liquidity smth");
-  console.log(pair);
-  console.log(tokenA);
-  console.log(tokenB);
-
-  // const noLiquidity: boolean =
-  //   pairState === PairState.NOT_EXISTS || Boolean(totalSupply && JSBI.equal(totalSupply.raw, ZERO))
-
   const priceA = useMemo(() => {
     if (!pair || !tokenB || !tokenA) {
       return null;

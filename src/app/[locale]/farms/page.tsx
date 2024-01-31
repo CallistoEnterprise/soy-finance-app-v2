@@ -687,7 +687,6 @@ const getFarmApr = (
   chainId = 820,
   swapApr = 0,
 ): { cakeRewardsApr: number | null; lpRewardsApr: number } => {
-  // console.log(poolWeight, farmAddress);
 
   const yearlySoyRewardAllocation = 50000000 * (multipliers[chainId as 820] || 0.1) * poolWeight;
   const p = soyPriceUsd || 0;
@@ -806,11 +805,8 @@ export default function FarmsPage() {
               { error: Error; result?: undefined; status: "failure"; } | { error?: undefined; result: bigint; status: "success"; },
               { error: Error; result?: undefined; status: "failure"; } | { error?: undefined; result: any[]; status: "success"; },
           ];
-          console.log("SUBARRAY: ", subarray);
           chunks.push(subarray);
         }
-
-        // console.log(chunks);
 
         const serializedResult = chunks.map((chunk, i) => {
           const [
@@ -821,42 +817,19 @@ export default function FarmsPage() {
             { result: multiplierData },
           ] = chunk;
 
-          // console.log("POOL RESERVES: ", poolReserves);
-
-          // let lpTokenRatio;
           let tokenAmountMc;
           let quoteTokenAmountMc;
           let tokenPriceVsQuote;
           let lpTotalInQuoteToken;
 
-          // let poolLiquidity;
-
           if (poolReserves && lpTokenBalance && totalSupply) {
-            if(farmsToFetch[i].pid === 45) {
-              console.log("POOL res");
-              console.log(poolReserves);
-            }
 
             const [tokenBalance, quoteTokenBalance] = poolReserves;
-            // lpTokenRatio = Number(lpTokenBalance) / Number(totalSupply);
             tokenAmountMc = tokenBalance;
             quoteTokenAmountMc = quoteTokenBalance;
             lpTotalInQuoteToken = quoteTokenAmountMc * BigInt(2);
             tokenPriceVsQuote = Number(quoteTokenAmountMc) / Number(tokenAmountMc);
           }
-          // if (lpTokenBalance && totalSupply && tokenBalance && quoteTokenBalance) {
-          //   poolLiquidity =
-          //
-
-          //
-          //   tokenAmountMc = Number(tokenBalance) * lpTokenRatio;
-          //
-          //   quoteTokenAmountMc = Number(quoteTokenBalance) * lpTokenRatio;
-          //
-          //   lpTotalInQuoteToken = quoteTokenAmountMc * 2;
-          //
-          //   tokenPriceVsQuote = Number(quoteTokenBalance) / Number(tokenBalance);
-          // }
 
           const poolWeight = allocData ? Number(allocData) / 1000 : 0;
 
@@ -875,19 +848,11 @@ export default function FarmsPage() {
         });
 
         const cloETHFarm = serializedResult.find((f) => f.pid === 45);
-        console.log(cloETHFarm);
 
         const farmsWithPrices = fetchFarmsPrices(serializedResult, chainId as AvailableChains || 820);
-
-        // console.log("FARMS WITH PRICES");
-        // console.log(farmsWithPrices);
-
-        //
         const mainFarmPrice = farmsWithPrices.find((farm) => farm.pid === 44)?.token.usdcPrice;
         setFPrice(mainFarmPrice);
 
-        console.log(mainFarmPrice);
-        //
         const farmsWithAPR = farmsWithPrices.map((farm) => {
           const poolKey = farm.lpAddress.toLowerCase();
           const farmSwapAPR = poolsDatas.data && poolsDatas.data[poolKey] ? poolsDatas.data[poolKey].lpApr7d : 0
@@ -904,7 +869,6 @@ export default function FarmsPage() {
           return { ...farm, apr: cakeRewardsApr ? cakeRewardsApr : 0, lpRewardsApr }
         });
 
-        // console.log("FARMS with APR: ", farmsWithAPR);
         setData(farmsWithAPR);
       }
     });

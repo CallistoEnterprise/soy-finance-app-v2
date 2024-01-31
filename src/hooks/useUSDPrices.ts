@@ -80,9 +80,6 @@ export default function useUSDPrices() {
       });
     }).filter((p) => Boolean(p));
 
-    console.log("POOLS");
-    console.log(pools);
-
     const poolsMap: {[key: string]: FarmConfig} = {};
 
     for(const pool of pools) {

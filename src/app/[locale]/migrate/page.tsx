@@ -71,8 +71,6 @@ export default function MigratePage() {
     return [undefined, undefined, undefined, undefined]
   }, [beneficiaries]);
 
-  console.log(alreadyClaimed);
-
   const [unlockedAmount, reward] = useMemo(() => {
     if(unlockedAmountData) {
       return unlockedAmountData;

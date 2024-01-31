@@ -188,7 +188,6 @@ export default function PickTokenDialog({ pickToken, isOpen, setIsOpen }: Props)
   const { chainId } = useAccount();
   const [searchRequest, setSearchRequest] = useState("");
 
-  console.log(chainId);
   const { userTokens } = useUserTokensStore();
 
   const wrappedUserTokens = useMemo(() => {

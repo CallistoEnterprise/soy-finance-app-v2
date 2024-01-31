@@ -82,10 +82,6 @@ export function useTrackedTokenPairs(): [WrappedToken, WrappedToken][] {
   )
 
   const { trackedPools } = useTrackedPools();
-
-  console.log("TRACKED POOLS");
-  console.log(trackedPools);
-
   const {userTokens} = useUserTokensStore();
 
   const wrappedUserTokens = useMemo(() => {
@@ -109,9 +105,6 @@ export function useTrackedTokenPairs(): [WrappedToken, WrappedToken][] {
 
     return trackedPools[chainId].map(pool => getPairOfWrappedTokensByAddress(pool, chainId, wrappedUserTokens)).filter((p) => p.length) as [WrappedToken, WrappedToken][];
   }, [chainId, trackedPools, wrappedUserTokens]);
-
-  console.log("USER PAIRS");
-  console.log(userPairs);
 
   const combinedList = useMemo(
     () => [...userPairs, ...generatedPairs],

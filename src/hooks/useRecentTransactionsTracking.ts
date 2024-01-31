@@ -13,10 +13,6 @@ export function useRecentTransactionTracking() {
   const publicClient = usePublicClient();
   const notified = useRef<string[]>([]);
 
-  useEffect(() => {
-    console.log("Tracking fired");
-  }, []);
-
   const transactionsForAddress = useMemo(() => {
     if(!address) {
       return [];
@@ -66,8 +62,6 @@ export function useRecentTransactionTracking() {
     );
     if (transaction.status === "success") {
       updateTransactionStatus(hash, RecentTransactionStatus.SUCCESS, account);
-      console.log("NOTIFIED");
-      console.log(notified.current.includes(hash));
       if(!notified.current.includes(hash)) {
         addToast(`Success: ${title}`);
         notified.current = [...notified.current, hash];

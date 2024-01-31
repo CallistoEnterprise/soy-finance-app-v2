@@ -244,10 +244,8 @@ const hexToString = (hex: Address) => {
 
 const preparedFarms = farms.map((farm) => {
   if(BigInt(farm.token.address) < BigInt(farm.quoteToken.address)) {
-    console.log(farm.token.name + " < " + farm.quoteToken.name)
     return farm;
   } else {
-    console.log(farm.token.name + " > " + farm.quoteToken.name)
     return {
       ...farm,
       quoteToken: farm.token,
@@ -255,7 +253,4 @@ const preparedFarms = farms.map((farm) => {
     }
   }
 });
-
-console.log(preparedFarms);
-
 export default preparedFarms;

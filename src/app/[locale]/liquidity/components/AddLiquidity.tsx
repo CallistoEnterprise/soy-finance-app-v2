@@ -178,9 +178,6 @@ export default function AddLiquidity() {
     handleTokenBChange
   } = useLiquidity();
 
-  console.log("TTT");
-  console.log(tokenA, tokenB, priceA, priceB);
-
   const importPair = usePair({ tokenA, tokenB });
 
   const { data: totalPoolTokens } = useReadContract({
