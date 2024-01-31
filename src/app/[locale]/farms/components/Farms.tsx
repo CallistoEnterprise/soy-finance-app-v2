@@ -154,7 +154,7 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
                src={farm.quoteToken.logoURI} alt=""/>
         <p className="text-14 xs:text-16">{farm.token.symbol.replace("WCLO", "CLO")} - {farm.quoteToken.symbol.replace("WCLO", "CLO")}</p>
       </div>
-      <div className="hidden lg:block">{(!chainId || chainId === 820) && farm.pid >= 42 && farm.pid <= 52 && <Label type="new"/>}</div>
+      <div className="hidden lg:block" />
       <div className={clsx("hidden lg:flex flex-col xl:flex-row justify-start pl-[10%] items-center gap-1", !Boolean(reward) && "text-grey-light")}>
         <p>Earned: </p>
         <p>{reward ? Number(formatUnits(reward, 18)).toFixed(4) : 0}</p>
@@ -180,7 +180,7 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
         <p>{`$${farm.liquidity.toLocaleString('en-US', {maximumFractionDigits: 2})}`}</p></div>
       <div className="hidden lg:flex flex-col xl:flex-row items-center gap-1"><p>Multiplier:</p> <p>{farm.multiplier?.toString()}X</p></div>
       <div className="flex items-center gap-2.5">
-        <div className="lg:hidden">{(!chainId || chainId === 820) && farm.pid >= 42 && farm.pid <= 52 && <Label type="new"/>}</div>
+        <div className="lg:hidden" />
         <ExpandButton isOpened={isOpen} />
       </div>
     </div>
