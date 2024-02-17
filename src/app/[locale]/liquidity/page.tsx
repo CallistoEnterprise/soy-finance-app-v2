@@ -10,6 +10,7 @@ import PageCard from "@/components/PageCard";
 import EmptyStateIcon from "@/components/atoms/EmptyStateIcon";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import { useConnectWalletDialogStateStore } from "@/components/dialogs/stores/useConnectWalletStore";
+import {useTranslations} from "use-intl";
 
 function Column({ children }: PropsWithChildren) {
   return <div className="flex flex-col lg:gap-5 min-w-0">
@@ -18,6 +19,8 @@ function Column({ children }: PropsWithChildren) {
 }
 
 export default function LiquidityPage() {
+  const t = useTranslations("Liquidity");
+  const navT = useTranslations("Navigation");
   const { chainId } = useAccount();
   const {setIsOpened: setConnectWalletOpened} = useConnectWalletDialogStateStore();
 
@@ -32,8 +35,8 @@ export default function LiquidityPage() {
           {chainId && availableChainIds.includes(chainId) ? <Liquidity/> : <PageCard>
             <div className="min-h-[400px] flex flex-col justify-center items-center gap-5">
               <EmptyStateIcon iconName="wallet" />
-              <h2 className="bold text-16 lg:text-20">Connect wallet to view your liquidity</h2>
-              <PrimaryButton onClick={() => setConnectWalletOpened(true)}>Connect wallet</PrimaryButton>
+              <h2 className="bold text-16 lg:text-20 text-center">{t("connect_wallet_to_view_liquidity")}</h2>
+              <PrimaryButton onClick={() => setConnectWalletOpened(true)}>{navT("connect_wallet")}</PrimaryButton>
             </div>
           </PageCard>}
         </div>

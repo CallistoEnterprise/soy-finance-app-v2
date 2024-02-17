@@ -7,8 +7,11 @@ import Image from "next/image";
 import DropdownItem from "@/components/DropdownItem";
 import { useAwaitingDialogStore } from "@/stores/useAwaitingDialogStore";
 import addToast from "@/other/toast";
+import {useTranslations} from "use-intl";
 
 export default function ChangeNetworkMenu() {
+  const t = useTranslations("Navigation");
+
   const [changeNetworkOpened, setChangeNetworkOpened] = useState(false);
   const {chainId} = useAccount();
 
@@ -33,7 +36,7 @@ export default function ChangeNetworkMenu() {
                               {currentNetwork.name}
                             </p>
                         </div>
-                        : "Unknown network"}
+                        : t("unknown_network")}
                     </SelectButton>}>
     <div className="bg-primary-bg border border-primary-border rounded-2 py-1 z-[1000]">
       <ul className="flex flex-col gap-1">

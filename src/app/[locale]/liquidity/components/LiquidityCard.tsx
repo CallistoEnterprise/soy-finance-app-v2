@@ -15,6 +15,8 @@ import { useLiquidityAmountsStore, useLiquidityTokensStore } from "@/app/[locale
 import { IIFE } from "@/other/IIFE";
 import { LP_TOKEN_ABI } from "@/config/abis/lpToken";
 import { formatUnits } from "viem";
+import {useTranslations} from "use-intl";
+import {formatFloat} from "@/other/formatFloat";
 
 export function unwrappedToken(token: Token): Currency {
   if (token.equals(WETH[token.chainId])) return ETHERS[token.chainId]
@@ -22,6 +24,8 @@ export function unwrappedToken(token: Token): Currency {
 }
 
 export default function LiquidityCard({ pair, setActiveTab, setContent }: { pair: any, setActiveTab: any, setContent: any }) {
+  const t = useTranslations("Liquidity");
+
   const { address: account } = useAccount();
 
   const {setTokenA: setRemoveLiquidityTokenA, setTokenB: setRemoveLiquidityTokenB, setTokenLP: setRemoveLiquidityTokenLP} = useRemoveLiquidityTokensStore();
@@ -107,19 +111,19 @@ export default function LiquidityCard({ pair, setActiveTab, setContent }: { pair
       {/*<Divider />*/}
       <div className="flex flex-col gap-2.5 py-5 border-t border-primary-border">
         <div className="flex items-center justify-between">
-          <p>Pooled {currency0.symbol}:</p>
-          <p>{formatUnits(_token0Deposited, currency0.decimals)}</p>
+          <p>{t("pooled_token", {symbol: currency0.symbol})}:</p>
+          <p>{formatFloat(formatUnits(_token0Deposited, currency0.decimals))}</p>
         </div>
         <div className="flex items-center justify-between">
-          <p>Pooled {currency1.symbol}:</p>
-          <p>{formatUnits(_token1Deposited, currency1.decimals)}</p>
+          <p>{t("pooled_token", {symbol: currency1.symbol})}:</p>
+          <p>{formatFloat(formatUnits(_token1Deposited, currency1.decimals))}</p>
         </div>
         <div className="flex items-center justify-between">
-          <p>Your pool tokens:</p>
+          <p>{t("your_pool_tokens")}:</p>
           <p>{userPoolBalance ? userPoolBalance.formatted : 0}</p>
         </div>
         <div className="flex items-center justify-between">
-          <p>Your pool share:</p>
+          <p>{t("your_pool_share")}:</p>
           <p>{poolTokenPercentage?.toSignificant(2)}</p>
         </div>
 
@@ -132,14 +136,14 @@ export default function LiquidityCard({ pair, setActiveTab, setContent }: { pair
             setRemoveLiquidityAmountB("");
             setRemoveLiquidityAmountLP("");
             setContent("remove");
-          }}>Remove</OutlineButtonWithIcon>
+          }}>{t("remove")}</OutlineButtonWithIcon>
           <OutlineButtonWithIcon icon="add-token" fullWidth onClick={() => {
             setAddLiquidityTokenA(pair.tokenAmounts[0].token);
             setAddLiquidityTokenB(pair.tokenAmounts[1].token);
             setAddLiquidityAmountA("");
             setAddLiquidityAmountB("");
             setActiveTab(1);
-          }}>Add</OutlineButtonWithIcon>
+          }}>{t("add")}</OutlineButtonWithIcon>
         </div>
       </div>
     </Collapse>

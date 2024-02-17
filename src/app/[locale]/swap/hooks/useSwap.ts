@@ -118,7 +118,7 @@ export default function useSwap() {
 
         const { request } = await publicClient.simulateContract({
           ...params,
-          gas: estimatedGas + BigInt(30000),
+          gas: estimatedGas + BigInt(300000),
         })
         const hash = await walletClient.writeContract(request);
         if(hash) {

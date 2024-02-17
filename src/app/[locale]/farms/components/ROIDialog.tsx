@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import DialogHeader from "@/components/DialogHeader";
 import Dialog from "@/components/atoms/Dialog";
 import DrawerDialog from "@/components/atoms/DrawerDialog";
+import {useTranslations} from "use-intl";
 
 export const tokenEarnedPerThousandDollarsCompounding = ({
                                                            numberOfDays,
@@ -77,6 +78,8 @@ export default function ROIDialog({
                                     roundingDecimals = 2,
                                     compoundFrequency = 1
                                   }: Props) {
+  const t = useTranslations("ROIDialog");
+
   const oneThousandDollarsWorthOfToken = 1000 / tokenPrice;
 
   const apr = useMemo(() => {
@@ -122,28 +125,28 @@ export default function ROIDialog({
 
   return <DrawerDialog setIsOpen={setIsOpen} isOpen={isOpen}>
     <div className="w-full xl:w-[480px]">
-      <DialogHeader title="ROI" handleClose={() => setIsOpen(false)}/>
+      <DialogHeader title={t("roi")} handleClose={() => setIsOpen(false)}/>
       <div className="p-10">
         <div className="grid gap-3 mb-5 text-14">
           <div className="flex justify-between items-center">
-            <p className="text-secondary-text">APR (incl. LP rewards)</p>
+            <p className="text-secondary-text">{t("apr_incl_lp_rewards")}</p>
             <p>{getDisplayApr(apr)}%</p>
           </div>
           <div className="flex justify-between items-center">
-            <p className="text-secondary-text">Base APR (yield only)</p>
+            <p className="text-secondary-text">{t("base_apr")}</p>
             <p>{getDisplayApr(farmApr, 0)}%</p>
           </div>
         </div>
 
         <div className="border border-primary-border rounded-2 mb-5">
           <div className="grid grid-cols-roi bg-green/20 rounded-t-2 h-10 px-5">
-            <div className="flex items-center"><p>Timeframe</p></div>
-            <div className="flex items-center justify-end"><p>ROI</p></div>
-            <div className="flex items-center justify-end"><p>SOY per $1,000</p></div>
+            <div className="flex items-center"><p>{t("timeframe")}</p></div>
+            <div className="flex items-center justify-end"><p>{t("roi")}</p></div>
+            <div className="flex items-center justify-end"><p>{t("soy_per_thousand")}</p></div>
           </div>
           <div className="grid gap-2.5 p-5">
             <div className="grid grid-cols-roi">
-              <div className="flex items-center"><p>1d</p></div>
+              <div className="flex items-center"><p>{t("1d")}</p></div>
               <div className="flex items-center justify-end"><p>{getRoi({amountEarned: tokenEarnedPerThousand1D, amountInvested: oneThousandDollarsWorthOfToken}).toFixed(
                 roundingDecimals,
               )}
@@ -153,7 +156,7 @@ export default function ROIDialog({
               </div>
             </div>
             <div className="grid grid-cols-roi">
-              <div className="flex items-center"><p>7d</p></div>
+              <div className="flex items-center"><p>{t("7d")}</p></div>
               <div className="flex items-center justify-end"><p>{getRoi({amountEarned: tokenEarnedPerThousand7D, amountInvested: oneThousandDollarsWorthOfToken}).toFixed(
                 roundingDecimals,
               )}
@@ -163,7 +166,7 @@ export default function ROIDialog({
               </div>
             </div>
             <div className="grid grid-cols-roi">
-              <div className="flex items-center"><p>30d</p></div>
+              <div className="flex items-center"><p>{t("30d")}</p></div>
               <div className="flex items-center justify-end"><p>{getRoi({amountEarned: tokenEarnedPerThousand30D, amountInvested: oneThousandDollarsWorthOfToken}).toFixed(
                 roundingDecimals,
               )}
@@ -173,7 +176,7 @@ export default function ROIDialog({
               </div>
             </div>
             <div className="grid grid-cols-roi">
-              <div className="flex items-center"><p>365d (APY)</p></div>
+              <div className="flex items-center"><p>{t("365d")}</p></div>
               <div className="flex items-center justify-end"><p>{getRoi({amountEarned: tokenEarnedPerThousand365D, amountInvested: oneThousandDollarsWorthOfToken}).toFixed(
                 roundingDecimals,
               )}
@@ -185,10 +188,10 @@ export default function ROIDialog({
           </div>
         </div>
         <ul className="grid gap-3 text-14 -tracking-[0.28px]">
-          <li className="relative pl-4 before:w-2 before:h-2 before:rounded-2 before:bg-green before:absolute before:left-0 before:top-1.5"><p>Calculated based on current rates.</p></li>
-          <li className="relative pl-4 before:w-2 before:h-2 before:rounded-2 before:bg-green before:absolute before:left-0 before:top-1.5"><p>Compounding 1x daily.</p></li>
-          <li className="relative pl-4 before:w-2 before:h-2 before:rounded-2 before:bg-green before:absolute before:left-0 before:top-1.5"><p>LP rewards: 0.2% trading fees, distributed proportionally among LP token holders.</p></li>
-          <li className="relative pl-4 before:w-2 before:h-2 before:rounded-2 before:bg-green before:absolute before:left-0 before:top-1.5"><p>All figures are estimates provided for your convenience only, and by no means represent guaranteed returns.</p></li>
+          <li className="relative pl-4 before:w-2 before:h-2 before:rounded-2 before:bg-green before:absolute before:left-0 before:top-1.5"><p>{t("calculated_based_point")}</p></li>
+          <li className="relative pl-4 before:w-2 before:h-2 before:rounded-2 before:bg-green before:absolute before:left-0 before:top-1.5"><p>{t("compounding_point")}</p></li>
+          <li className="relative pl-4 before:w-2 before:h-2 before:rounded-2 before:bg-green before:absolute before:left-0 before:top-1.5"><p>{t("rewards_point")}</p></li>
+          <li className="relative pl-4 before:w-2 before:h-2 before:rounded-2 before:bg-green before:absolute before:left-0 before:top-1.5"><p>{t("all_figures_point")}</p></li>
         </ul>
       </div>
     </div>

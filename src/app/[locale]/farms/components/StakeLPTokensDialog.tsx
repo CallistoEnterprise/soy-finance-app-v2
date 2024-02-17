@@ -12,8 +12,12 @@ import DrawerDialog from "@/components/atoms/DrawerDialog";
 import { useAwaitingDialogStore } from "@/stores/useAwaitingDialogStore";
 import addToast from "@/other/toast";
 import { WrappedToken } from "@/config/types/WrappedToken";
+import {useTranslations} from "use-intl";
 
 export default function StakeLPTokensModal() {
+  const t = useTranslations("Farms");
+  const formT = useTranslations("Form");
+
   const { chainId } = useAccount();
   const {address: account} = useAccount();
 
@@ -128,7 +132,7 @@ export default function StakeLPTokensModal() {
 
   return <DrawerDialog isOpen={isOpened} setIsOpen={setIsOpened}>
     <div className="w-full xl:w-[480px]">
-      <DialogHeader handleClose={() => setIsOpened(false)} title="Stake lp tokens" />
+      <DialogHeader handleClose={() => setIsOpened(false)} title={t("stake_lp_tokens")} />
       <div className="p-10">
         <TokenSelector
           token={lpToken}
@@ -137,12 +141,12 @@ export default function StakeLPTokensModal() {
             setValue(value);
           }}
           onPick={() => undefined}
-          label="Stake"
+          label={t("stake")}
           balance={farmsUserData[farmToStake?.pid]?.lpBalance}
           pair={pair}
         />
         <div className="flex gap-2.5 mt-5">
-          <PrimaryButton onClick={() => setIsOpened(false)} fullWidth variant="outlined">Cancel</PrimaryButton>
+          <PrimaryButton onClick={() => setIsOpened(false)} fullWidth variant="outlined">{formT("cancel")}</PrimaryButton>
           <PrimaryButton disabled={!Boolean(value) || !Boolean(farmsUserData[farmToStake?.pid]?.lpBalance)} onClick={async () => {
             setStaking(true);
             try {
@@ -151,7 +155,7 @@ export default function StakeLPTokensModal() {
             } catch (e) {
               setStaking(false);
             }
-          }} fullWidth>Stake</PrimaryButton>
+          }} fullWidth>{t("stake")}</PrimaryButton>
         </div>
       </div>
     </div>

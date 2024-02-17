@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import {useEffect, useMemo, useState} from "react";
 import { fetchChartData, getOverviewChartData } from "@/other/fetchRecentTransactions";
 import { useLiquidityGraphStore } from "@/app/[locale]/liquidity/stores/useLiquidityGraphDataStore";
 
-export function useLiquidityGraphData() {
+export function useLiquidityGraphData(locale: string) {
   const {
     liquidityGraphData,
     liquidityLabelsData,
@@ -34,9 +34,12 @@ export function useLiquidityGraphData() {
     }
   }, [liquidityGraphDataLoaded, setLiquidityGraphData, setLiquidityGraphDataLoaded, setLiquidityLabelsData]);
 
-  return {
-    data: liquidityGraphData,
-    labels: liquidityLabelsData,
-    loading: !liquidityGraphDataLoaded
-  }
+  return useMemo(() => {
+   return {
+     data: liquidityGraphData,
+     labels: liquidityLabelsData.map((d) => new Date(d).toLocaleString(locale, {month: "short", day: "numeric"})),
+     loading: !liquidityGraphDataLoaded,
+     lastDay: liquidityLabelsData[liquidityLabelsData?.length - 1]?.toLocaleString(locale, {year: "numeric", day: "numeric", month: "short"})
+   }
+  }, [liquidityGraphData, liquidityGraphDataLoaded, liquidityLabelsData, locale]);
 }
