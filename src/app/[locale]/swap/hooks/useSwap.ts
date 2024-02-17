@@ -5,7 +5,7 @@ import {
   useTransactionSettingsStore
 } from "@/app/[locale]/swap/stores";
 import { useCallback } from "react";
-import { useAccount, useChainId, usePublicClient, useWalletClient } from "wagmi";
+import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { ROUTER_ABI } from "@/config/abis/router";
 import { Abi, formatUnits } from "viem";
 import { isNativeToken } from "@/other/isNativeToken";
@@ -16,8 +16,11 @@ import { useAwaitingDialogStore } from "@/stores/useAwaitingDialogStore";
 import { useConfirmSwapDialogStore } from "@/app/[locale]/swap/stores/confirm";
 import useRouterAddress from "@/hooks/useRouterAddress";
 import addToast from "@/other/toast";
+import {useTranslations} from "use-intl";
 
 export default function useSwap() {
+  const t = useTranslations("Toast");
+
   const {tokenTo, tokenFrom} = useSwapTokensStore();
   const {amountIn, amountOut} = useSwapAmountsStore();
   const {trade} = useTradeStore();
@@ -132,11 +135,11 @@ export default function useSwap() {
         }
       } catch (e) {
         console.log(e);
-        addToast("Something went wrong, try again later", "error");
+        addToast(t("something_went_wrong"), "error");
         setClose();
       }
     }
-  }, [walletClient, routerAddress, trade, address, amountIn, tokenFrom, tokenTo, amountOut, setOpened, setSwapConfirmDialogOpened, publicClient, slippage, deadline, addTransaction, chainId, setSubmitted, setClose]);
+  }, [walletClient, routerAddress, trade, address, amountIn, tokenFrom, tokenTo, amountOut, chainId, setOpened, setSwapConfirmDialogOpened, publicClient, slippage, deadline, addTransaction, setSubmitted, t, setClose]);
 
   return {handleSwap};
 }
