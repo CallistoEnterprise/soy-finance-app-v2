@@ -37,7 +37,7 @@ export function useLiquidityGraphData(locale: string) {
   return useMemo(() => {
    return {
      data: liquidityGraphData,
-     labels: liquidityLabelsData.map((d) => new Date(d).toLocaleString(locale, {month: "short", day: "numeric"})),
+     labels: liquidityLabelsData,
      loading: !liquidityGraphDataLoaded,
      lastDay: liquidityLabelsData[liquidityLabelsData?.length - 1]?.toLocaleString(locale, {year: "numeric", day: "numeric", month: "short"})
    }

@@ -23,7 +23,7 @@ function InputWithUnits({units, value, setValue}: {units: string, value: number,
 }
 
 export default function TransactionSettingsDialog({isOpen, setIsOpen}: Props) {
-  const t = useTranslations("SettingsDialog");
+  const t = useTranslations("TransactionSettingsDialog");
 
   const {deadline, slippage, setSlippage, setDeadline} = useTransactionSettingsStore();
 
@@ -76,8 +76,8 @@ export default function TransactionSettingsDialog({isOpen, setIsOpen}: Props) {
           </div>
 
           <div className="grid grid-cols-2 gap-2.5">
-            <PrimaryButton onClick={handleClose} variant="outlined" fullWidth>Cancel</PrimaryButton>
-            <PrimaryButton onClick={handleSave} disabled={!slippageValue || !deadlineValue} fullWidth>Save</PrimaryButton>
+            <PrimaryButton onClick={handleClose} variant="outlined" fullWidth>{t("cancel")}</PrimaryButton>
+            <PrimaryButton onClick={handleSave} disabled={!slippageValue || !deadlineValue} fullWidth>{t("save")}</PrimaryButton>
           </div>
         </div>
       </div>

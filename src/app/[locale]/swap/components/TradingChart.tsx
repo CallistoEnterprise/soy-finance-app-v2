@@ -32,6 +32,9 @@ import { IIFE } from "@/other/IIFE";
 import { formatFloat } from "@/other/formatFloat";
 import { tokensInClo } from "@/config/token-lists/tokenListInCLO";
 import { isNativeToken } from "@/other/isNativeToken";
+import { useTranslations } from "use-intl";
+import { useLocale } from "next-intl";
+import { getFNSLocale } from "@/other/getFNSLocale";
 
 
 const tooltipLine = {
@@ -105,7 +108,7 @@ ChartJS.register(
 
 
 const getCandleData = (data: any) => ({
-  // labels: [1, 2, 3, 4, 5],
+  // labels: labels,
   datasets: [
     {
       backgroundColor: ((ctx: { raw: any; }) => {
@@ -133,7 +136,7 @@ const getCandleData = (data: any) => ({
   ],
 });
 
-const financialOptions = (timeline: string): ChartOptions => ({
+const financialOptions = (timeline: string, locale: string, openT: string, closedT: string): ChartOptions => ({
   responsive: true,
   animation: false,
   interaction: {
@@ -150,6 +153,11 @@ const financialOptions = (timeline: string): ChartOptions => ({
       type: "timeseries",
       time: {
         unit: timeline === "day" ? "hour" : 'day'
+      },
+      adapters: {
+        date: {
+          locale: getFNSLocale(locale)
+        }
       },
       ticks: {
         maxTicksLimit: 6,
@@ -184,7 +192,7 @@ const financialOptions = (timeline: string): ChartOptions => ({
     tooltip: {
       // Disable the on-canvas tooltip
       enabled: false,
-      external: externalTooltipHandler,
+      external: (ctx) => externalTooltipHandler(ctx, locale, openT, closedT),
       position: "nearest",
       mode: "index",
       intersect: false,
@@ -248,7 +256,7 @@ const getOrCreateTooltip = (chart: ChartJS) => {
   return tooltipEl;
 };
 
-const externalTooltipHandler = (context: { tooltip: any; chart: ChartJS; }) => {
+const externalTooltipHandler = (context: { tooltip: any; chart: ChartJS; }, locale: string, openT?: string, closedT?: string) => {
   // Tooltip Element
   const { chart, tooltip } = context;
   const tooltipEl = getOrCreateTooltip(chart);
@@ -272,10 +280,10 @@ const externalTooltipHandler = (context: { tooltip: any; chart: ChartJS; }) => {
   }
 
   const dayBlock = document.createElement("div");
-  dayBlock.innerText = new Date(x).toLocaleString('en-US', { year: "numeric", day: "numeric", month: "short" });
+  dayBlock.innerText = new Date(x).toLocaleString(locale || 'en-US', { year: "numeric", day: "numeric", month: "short" });
 
   const timeBlock = document.createElement("div");
-  timeBlock.innerText = new Date(x).toLocaleString('en-US', { minute: "2-digit", second: "2-digit", hour: "2-digit" });
+  timeBlock.innerText = new Date(x).toLocaleString(locale || 'en-US', { minute: "2-digit", second: "2-digit", hour: "2-digit" });
 
   const dateRow = document.createElement("div");
   dateRow.style.display = "flex";
@@ -308,8 +316,8 @@ const externalTooltipHandler = (context: { tooltip: any; chart: ChartJS; }) => {
     cryptoSumRow.style.flexDirection = "column";
     cryptoSumRow.style.gap = "4px";
 
-    firstRow.innerText = `Open: $${context.tooltip.dataPoints[0].raw.s[0].toFixed(18)}`;
-    secondRow.innerText = `Closed: $${context.tooltip.dataPoints[0].raw.s[1].toFixed(18)}`;
+    firstRow.innerText = `${openT}: $${context.tooltip.dataPoints[0].raw.s[0].toFixed(18)}`;
+    secondRow.innerText = `${closedT}: $${context.tooltip.dataPoints[0].raw.s[1].toFixed(18)}`;
 
     cryptoSumRow.appendChild(firstRow);
     cryptoSumRow.appendChild(secondRow);
@@ -358,7 +366,8 @@ const externalTooltipHandler = (context: { tooltip: any; chart: ChartJS; }) => {
   tooltipEl.style.padding = tooltip.options.padding + "px " + tooltip.options.padding + "px";
 };
 
-export const options = (timeline: string): ChartOptions => ({
+
+export const options = (timeline: string, locale: string): ChartOptions => ({
   responsive: true,
   animation: false,
   interaction: {
@@ -377,7 +386,7 @@ export const options = (timeline: string): ChartOptions => ({
     },
     tooltip: {
       enabled: false,
-      external: externalTooltipHandler,
+      external: (ctx) => externalTooltipHandler(ctx, locale),
       mode: "index",
       intersect: false,
       yAlign: "bottom",
@@ -405,6 +414,11 @@ export const options = (timeline: string): ChartOptions => ({
       type: "timeseries",
       time: {
         unit: timeline === "day" ? "hour" : 'day'
+      },
+      adapters: {
+        date: {
+          locale: getFNSLocale(locale)
+        }
       },
       grid: {
         tickColor: "black",
@@ -503,6 +517,8 @@ export default function TradingChart() {
   const [timeline, setTimeline] = useState<Timeline>(Timeline.WEEK);
   const [secondToken, setSecondToken] = useState<WrappedToken | null>(null);
 
+  const locale = useLocale();
+
   const {
     data,
     candleData,
@@ -510,7 +526,8 @@ export default function TradingChart() {
     labels
   } = useTokenGraphData({
     address: currentGraph === "first" ? firstToken.address : secondToken?.address || "",
-    timeline
+    timeline,
+    locale: locale || "en-US"
   });
 
   const [isMounted, setIsMounted] = useState(false);
@@ -594,6 +611,7 @@ export default function TradingChart() {
     return +change.toFixed(1);
   }, [data]);
 
+  const t = useTranslations("Swap");
 
   return <PageCard>
     <>
@@ -635,19 +653,19 @@ export default function TradingChart() {
             <SmallOutlineTabButton isActive={selectedTab === 0} onClick={() => {
               setSelectedTab(0);
               setTimeline(Timeline.DAY);
-            }}>1D</SmallOutlineTabButton>
+            }}>{t("1D")}</SmallOutlineTabButton>
             <SmallOutlineTabButton isActive={selectedTab === 1} onClick={() => {
               setSelectedTab(1);
               setTimeline(Timeline.WEEK);
-            }}>1W</SmallOutlineTabButton>
+            }}>{t("1W")}</SmallOutlineTabButton>
             <SmallOutlineTabButton isActive={selectedTab === 2} onClick={() => {
               setSelectedTab(2);
               setTimeline(Timeline.MONTH);
-            }}>1M</SmallOutlineTabButton>
+            }}>{t("1M")}</SmallOutlineTabButton>
             <SmallOutlineTabButton isActive={selectedTab === 3} onClick={() => {
               setSelectedTab(3);
               setTimeline(Timeline.YEAR);
-            }}>1Y</SmallOutlineTabButton>
+            }}>{t("1Y")}</SmallOutlineTabButton>
           </div>
           <div className="flex gap-0.5 p-0.5 border border-primary-border rounded-1">
             <SmallTabIconButton isActive={view === "line"} icon="line" onClick={() => {
@@ -674,7 +692,12 @@ export default function TradingChart() {
         {!loading && isMounted &&
           <div className={clsx("text-16 text-secondary-text pt-1.5 pb-5 flex gap-2 items-center")}>
             <span className={clsx("rounded-2 h-[30px] py-0.5 px-2.5", priceChange >= 0 ? "text-green bg-green/10" : "text-red bg-red/10")}>{priceChange}%</span>
-            <p>{["Past 1 day", "Past 7 days", "Past 30 days", "Past 365 days"][selectedTab]}</p>
+            <p>{[
+              t("past_one_day"),
+              t("past_multiple_days", {days: 7}),
+              t("past_multiple_days", {days: 30}),
+              t("past_multiple_days", {days: 365})
+            ][selectedTab]}</p>
           </div>
         }
       </div>
@@ -688,10 +711,10 @@ export default function TradingChart() {
 
         {view === "line" && !loading &&
           // @ts-ignore
-          <Line options={options(tabsTimeline[selectedTab])} data={getData(theme, data, labels)} type="line"/>}
+          <Line options={options(tabsTimeline[selectedTab], locale)} data={getData(theme, data, labels)} type="line"/>}
         {view === "candlestick" && !loading &&
           // @ts-ignore
-          <Bar options={financialOptions(tabsTimeline[selectedTab])} data={getCandleData(candleData)} type="bar"/>}
+          <Bar options={financialOptions(tabsTimeline[selectedTab], locale, t("opened"), t("closed"))} data={getCandleData(candleData)} type="bar"/>}
       </div>
     </>
   </PageCard>

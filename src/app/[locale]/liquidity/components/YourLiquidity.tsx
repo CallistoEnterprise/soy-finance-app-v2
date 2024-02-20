@@ -239,11 +239,11 @@ export default function YourLiquidity({ setActiveTab }: { setActiveTab: any }) {
           })
         }</div>
         <p className="text-secondary-text text-16">
-          If you do not see the pool that you have joined, you can <button
-          className="text-green hover:text-green-saturated duration-200" onClick={() => setContent("import")}>import
-          it</button>.
-          <br/>Or in case you have staked your LP tokens in the farm, you can unstake them to view them in this
-          section.
+
+          {t("you_can")} <button
+          className="text-green hover:text-green-saturated duration-200" onClick={() => setContent("import")}>{t("import it")}</button>.
+          <br/>
+          {t("in_case_you_staked")}
         </p>
       </div>
     </>}

@@ -9,9 +9,6 @@
       "future": "Futures",
       "bridge": "Bridge",
       "connect": "Connect",
-      "wallet": "Wallet",
-      "recent_transactions": "Recent transactions",
-      "disconnect": "Disconnect",
       "v2": "SOY Finance V2",
       "lottery": "Lottery",
       "migrate": "Migrate",
@@ -48,7 +45,27 @@
       "security_audit_score": "Security audit score",
       "output_estimated": "Output it estimated. You will receive at least {amountOutString} {symbol} or the transaction will revert",
       "cancel": "Cancel",
-      "one_token_price": "1 {symbol} price"
+      "one_token_price": "1 {symbol} price",
+      "trade_history": "Trade history",
+      "swap_action": "Action",
+      "total": "Total",
+      "total_value": "Total value",
+      "amount": "Amount",
+      "account": "Account",
+      "time": "Time",
+      "min": "min",
+      "hours": "hours",
+      "days": "days",
+      "show_more": "Show more",
+      "past_one_day": "Past 1 day",
+      "past_multiple_days": "Past {days} days",
+      "1D": "1D",
+      "1W": "1W",
+      "1M": "1M",
+      "1Y": "1Y",
+      "opened": "Opened",
+      "closed": "Closed",
+      "token_and_token": "{tokenA} and {tokenB}"
   },
   "Liquidity": {
       "connect_wallet_to_view_liquidity": "Connect wallet to view your liquidity",
@@ -86,7 +103,15 @@
       "insufficient_balance": "Insufficient balance",
       "approve": "Approve",
       "your_active_liquidity": "Your active liquidity",
-      "liquidity_analitycs": "Liquidity analytics"
+      "liquidity_analitycs": "Liquidity analytics",
+      "adds": "Adds",
+      "removes": "Removes",
+      "add_action": "Add action",
+      "remove_action": "Remove action",
+      "you_can": "If you do not see the pool that you have joined, you can",
+      "import it": "import it",
+      "in_case_you_staked": "Or in case you have staked your LP tokens in the farm, you can unstake them to view them in this section."
+
   },
   "Farms": {
       "live": "Live",
@@ -96,7 +121,7 @@
       "liquidity": "Liquidity",
       "multiplier": "Multiplier",
       "APR": "APR",
-      "soy_finance_essentials": "Soy Finance essentials",
+      "soy_finance_essentials": "Sloth Finance essentials",
       "all_farms": "All farms",
       "stake_lp_tokens": "Stake lp tokens",
       "stake_lp": "Stake LP",
@@ -118,11 +143,15 @@
       "stake_to_start_earning": "Stake your LP tokens to start earning rewards. Your active farms will appear here"
   },
   "Toast": {
-      "something_went_wrong": "Something went wrong, please, contact support"
+      "something_went_wrong": "Something went wrong, please, contact support",
+      "user_rejected_request": "User rejected the request",
+      "successfully_copied": "Successfully copied!"
   },
   "Form": {
     "name_or_address_placeholder": "Name or address",
-    "cancel": "Cancel"
+    "address_placeholder": "Адреса токена",
+    "cancel": "Cancel",
+    "balance": "Balance"
   },
   "FarmsBanner": {
     "banner_slide_1_title": "Sloth Farming 101",
@@ -161,11 +190,59 @@
     "no_favorite_yet": "No favorite tokens yet",
     "no_custom_yet": "No custom tokens",
     "no_tokens_with_name": "We did not find tokens with such a name",
-    "import_token": "Import token"
+    "import_token": "Import token",
+    "added_by_user": "Added by user",
+    "enter_token_address": "Enter token address",
+    "to_add_custom_token": "To add a custom token, enter its address. Added tokens will be displayed in the Imported tab",
+    "not_found_on_current_chain": "Token not found on current chain",
+    "change_query": "Try change your search query, or switch to another Network",
+    "warning_message": "Anyone can create a ERC223 token on Callisto Network with any name, including creating fake versions of existing tokens and tokens that claim to represent projects that do not have a token.",
+    "unable_to_sell_back": "If you purchase an arbitrary token, you may be unable to sell it back.",
+    "import": "Import",
+    "active": "Active",
+    "not_valid_address": "Not valid token address",
+    "decimals": "decimals",
+    "i_understand": "I understand"
   },
-  "SettingsDialog": {
+  "TransactionSettingsDialog": {
     "settings": "Settings",
     "slippage_tolerance": "Slippage tolerance",
-    "transaction_deadline": "Transaction deadline"
+    "transaction_deadline": "Transaction deadline",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+ "SettingsAndWallet": {
+    "dark_mode": "Dark mode",
+    "sounds": "Sounds",
+    "language": "Language",
+    "settings": "Settings",
+    "show_table": "Show table",
+    "show_charts": "Show chart",
+    "wallet": "Wallet",
+    "recent_transactions": "Recent transactions",
+    "disconnect": "Disconnect",
+    "your_address": "Your address",
+    "your_wallet": "Your wallet",
+    "balance": "balance",
+    "view_on_explorer": "View on {explorerName}",
+    "transactions": "Transactions",
+    "total_transactions": "Total transactions",
+    "clear_all": "Clear all"
+  },
+  "Footer": {
+    "terms": "Terms",
+    "privacy_policy": "Privacy Policy",
+    "be_lazy": "Be Lazy, DeFi is EazZzy",
+    "support": "Support",
+    "safe_trading": "Safe trading",
+    "engage": "Engage",
+    "telegram": "Telegram",
+    "tokenomics": "Tokenomics",
+    "documentation": "Documentation",
+    "token_audits": "Token audits",
+    "token_standard": "ERC 223 token standard",
+    "slothTV": "SlothTV",
+    "github": "Github",
+    "team": "Team"
   }
 }

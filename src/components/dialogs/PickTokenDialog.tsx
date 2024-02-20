@@ -113,6 +113,8 @@ function PickTokenItem({ token, isFavorite, handlePick, isImported = false }: {
   handlePick: any,
   isImported?: boolean
 }) {
+  const t = useTranslations("PickTokenDialog");
+
   const { chainId, isConnected } = useAccount();
   const { address } = useAccount();
   const { data: blockNumber } = useBlockNumber({ watch: true })
@@ -162,7 +164,7 @@ function PickTokenItem({ token, isFavorite, handlePick, isImported = false }: {
           <img height={40} width={40} src={token.logoURI} alt={token.name}/>
           <div className="flex flex-col justify-start items-start">
             <span className="text-16">{token.symbol}</span>
-            <span className="text-12 text-secondary-text">{isImported && "Added by user •" + " "}{token.name}</span>
+            <span className="text-12 text-secondary-text">{isImported && `${t("added_by_user")} •` + " "}{token.name}</span>
           </div>
 
         </div>
@@ -187,6 +189,7 @@ function PickTokenItem({ token, isFavorite, handlePick, isImported = false }: {
 
 export default function PickTokenDialog({ pickToken, isOpen, setIsOpen }: Props) {
   const t = useTranslations("PickTokenDialog");
+  const formT = useTranslations("Form");
 
   const { chainId } = useAccount();
   const [searchRequest, setSearchRequest] = useState("");
@@ -297,7 +300,7 @@ export default function PickTokenDialog({ pickToken, isOpen, setIsOpen }: Props)
         <div className="px-10">
           <div className="pt-10 pb-2.5">
             <SearchInput onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchRequest(e.target.value)}
-                         placeholder="Name or address" large/>
+                         placeholder={formT("name_or_address_placeholder")} large/>
           </div>
           {Boolean(baseTokens[chainId || 820]) && <div className="flex justify-between gap-2.5 mb-2.5">
             {baseTokens[chainId || 820].map((token) => {
