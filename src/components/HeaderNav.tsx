@@ -20,12 +20,12 @@ const menuItems: {
     url: "#",
     menu: [
       {
-        title: "Swap",
+        title: "swap",
         icon: "swap",
         href: "/swap"
       },
       {
-        title: "Liquidity",
+        title: "liquidity",
         icon: "liquidity",
         href: "/liquidity"
       }
@@ -36,16 +36,16 @@ const menuItems: {
     url: "#",
     menu: [
       {
-        title: "Farms",
+        title: "farms",
         icon: "farm",
         href: "/farms"
       },
       {
-        title: "Boost token",
+        title: "boost_token",
         icon: "boost"
       },
       {
-        title: "Burn & Boost",
+        title: "burn_and_boost",
         icon: "burn"
       }
     ]
@@ -59,17 +59,17 @@ const menuItems: {
     url: "#",
     menu: [
       {
-        title: "Lottery",
+        title: "lottery",
         icon: "lottery",
         href: "https://app2.soy.finance/lottery"
       },
       {
-        title: "Staking",
+        title: "staking",
         icon: "staked",
         href: "https://app2.soy.finance/pools"
       },
       {
-        title: "Info",
+        title: "info",
         icon: "info",
         href: "https://app2.soy.finance/info"
       }
@@ -81,6 +81,8 @@ const menuItems: {
   }
 ];
 function NavItemWithMenu({title, menu, titleId}: {title: string, titleId: string, menu: Array<{ title: string, icon: IconName, href?: string}>}) {
+  const t = useTranslations("Navigation");
+
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -97,7 +99,7 @@ function NavItemWithMenu({title, menu, titleId}: {title: string, titleId: string
                 setOpen(false);
               }} href={it.href} target="_blank" className="h-10 flex items-center px-4 gap-2 whitespace-nowrap text-primary-text hover:bg-secondary-bg hover:cursor-pointer duration-200" key={it.title}>
                 <Svg iconName={it.icon} />
-                {it.title}
+                {t(it.title as any)}
               </a>
             }
 
@@ -110,7 +112,7 @@ function NavItemWithMenu({title, menu, titleId}: {title: string, titleId: string
               // showMessage("Coming soon...", "info");
             }} className="h-10 flex items-center px-4 gap-2 whitespace-nowrap text-primary-text hover:bg-secondary-bg hover:cursor-pointer duration-200" key={it.title}>
               <Svg iconName={it.icon} />
-              {it.title}
+              {t(it.title as any)}
             </li>
           })}
         </ul>

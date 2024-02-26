@@ -47,7 +47,7 @@ function getTime(timeline: Timeline) {
       }
   }
 }
-export default function useTokenGraphData({address, timeline}: {address: `0x${string}` | string, timeline: Timeline}) {
+export default function useTokenGraphData({address, timeline, locale}: {locale: string, address: `0x${string}` | string, timeline: Timeline}) {
   const {
     addLoadingTokenGraph,
     tokensGraphData,

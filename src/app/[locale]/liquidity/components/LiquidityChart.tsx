@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo} from "react";
 import {Line} from "react-chartjs-2";
 import {
   BarElement,
@@ -15,6 +15,9 @@ import Preloader from "../../../../components/atoms/Preloader";
 import PageCard from "@/components/PageCard";
 import { useTheme } from "next-themes";
 import { useLiquidityGraphData } from "@/app/[locale]/liquidity/hooks/useLiquidityGraphData";
+import {useLocale} from "next-intl";
+import { getFNSLocale } from "@/other/getFNSLocale";
+import { useTranslations } from "use-intl";
 
 const tooltipLine = {
   id: 'tooltipLine',
@@ -61,7 +64,7 @@ ChartJS.register(
 
 const color = "#6DA316";
 
-export const getData = (mode: string, data: number[], labels: string[]): ChartData => ({
+export const getData = (mode: string, data: any[], labels: Date[]): ChartData => ({
   labels,
   datasets: [
     {
@@ -131,7 +134,7 @@ const getOrCreateTooltip = (chart: ChartJS) => {
 
   return tooltipEl;
 };
-const externalTooltipHandler = (context: { tooltip: any; chart?: any; }) => {
+const externalTooltipHandler = (context: { tooltip: any; chart?: any; }, locale: string) => {
   // Tooltip Element
   const { chart, tooltip } = context;
   const tooltipEl = getOrCreateTooltip(chart);
@@ -151,10 +154,10 @@ const externalTooltipHandler = (context: { tooltip: any; chart?: any; }) => {
   }
 
   const dayBlock = document.createElement("div");
-  dayBlock.innerText = new Date(x).toLocaleString('en-US', {year: "numeric", day: "numeric", month: "short"});
+  dayBlock.innerText = new Date(x).toLocaleString(locale || 'en-US', {year: "numeric", day: "numeric", month: "short"});
 
   const timeBlock = document.createElement("div");
-  timeBlock.innerText = new Date(x).toLocaleString('en-US', {minute: "2-digit", second: "2-digit", hour: "2-digit"});
+  timeBlock.innerText = new Date(x).toLocaleString(locale || 'en-US', {minute: "2-digit", second: "2-digit", hour: "2-digit"});
 
   const dateRow = document.createElement("div");
   dateRow.style.display = "flex";
@@ -237,7 +240,7 @@ const externalTooltipHandler = (context: { tooltip: any; chart?: any; }) => {
   tooltipEl.style.padding = tooltip.options.padding + "px " + tooltip.options.padding + "px";
 };
 
-const financialOptions = (): ChartOptions =>  ({
+const financialOptions = (locale: string): ChartOptions =>  ({
   responsive: true,
   animation: false,
   interaction: {
@@ -255,12 +258,17 @@ const financialOptions = (): ChartOptions =>  ({
       time: {
         unit: "day"
       },
+      adapters: {
+        date: {
+          locale: getFNSLocale(locale)
+        }
+      },
       ticks: {
         maxTicksLimit: 9,
       },
       grid: {
         display: false,
-      },
+      }
     },
     y: {
       beginAtZero: false,
@@ -286,7 +294,7 @@ const financialOptions = (): ChartOptions =>  ({
     tooltip: {
       // Disable the on-canvas tooltip
       enabled: false,
-      external: externalTooltipHandler,
+      external: (ctx) => externalTooltipHandler(ctx, locale),
       position: "nearest",
       mode: "index",
       intersect: false,
@@ -314,16 +322,23 @@ const financialOptions = (): ChartOptions =>  ({
 
 export default function LiquidityChart() {
   const {theme} = useTheme();
+  const locale = useLocale();
 
-  const {labels, data, loading} = useLiquidityGraphData();
+  const {labels, data, loading, lastDay} = useLiquidityGraphData(locale || "en-US");
+
+  const chartData = useMemo(() => {
+    return getData(theme || "light", data, labels)
+  }, [data, labels, theme]);
+
+  const t = useTranslations("Liquidity")
 
   return <PageCard>
-    <h2 className="text-24 font-bold">Liquidity analytics</h2>
+    <h2 className="text-24 font-bold">{t("liquidity_analitycs")}</h2>
     <div className="min-h-[56px]">
       {!loading ?
         <div className="pt-1 pb-5">
           <p className="text-20 text-secondary-text">
-            {labels[labels.length - 1].toLocaleString('en-US', {year: "numeric", day: "numeric", month: "short"})} — {(+data[data.length - 1] / 1000).toFixed(2)}K
+            {lastDay} — {(+data[data.length - 1] / 1000).toFixed(2)}K
           </p>
         </div> : null}
     </div>
@@ -336,7 +351,7 @@ export default function LiquidityChart() {
 
       {!loading &&
         //@ts-ignore
-        <Line options={financialOptions()} type="line" data={getData(theme, data, labels)} />}
+        <Line options={financialOptions(locale || "en-US")} type="line" data={chartData} />}
     </div>
   </PageCard>;
 }

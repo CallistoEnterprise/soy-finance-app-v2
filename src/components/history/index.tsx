@@ -4,6 +4,7 @@ import Skeleton from "@/components/atoms/Skeleton";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import HistoryItem from "@/components/HistoryItem";
 import Svg from "@/components/atoms/Svg";
+import { useTranslations } from "use-intl";
 
 
 export function useTradeHistory() {
@@ -162,16 +163,17 @@ export function TradeHistoryRows({transactions, visibleItems, showMore, loading}
   showMore: () => void,
   loading: boolean
 }) {
+  const t = useTranslations("Swap");
 
   if(loading) {
     return <>
       <div className="hidden xl:grid grid-cols-history p-5 bg-secondary-bg rounded-2.5 mt-5 text-primary-text">
-        <div>Swap action</div>
-        <div>Total</div>
-        <div>Amount</div>
-        <div>Amount</div>
-        <div>Account</div>
-        <div>Time</div>
+        <div>{t("swap_action")}</div>
+        <div>{t("total")}</div>
+        <div>{t("amount")}</div>
+        <div>{t("amount")}</div>
+        <div>{t("account")}</div>
+        <div>{t("time")}</div>
       </div>
       <div className="flex flex-col text-16 gap-2 sm:gap-2.5 xl:gap-0">
         {[...Array(10)].map((item, index) => {
@@ -186,12 +188,12 @@ export function TradeHistoryRows({transactions, visibleItems, showMore, loading}
 
   return <>
     <div className="hidden xl:grid grid-cols-history p-5 bg-secondary-bg rounded-2.5 mt-5 text-primary-text">
-      <div>Swap action</div>
-      <div>Total</div>
-      <div>Amount</div>
-      <div>Amount</div>
-      <div>Account</div>
-      <div>Time</div>
+      <div>{t("swap_action")}</div>
+      <div>{t("total")}</div>
+      <div>{t("amount")}</div>
+      <div>{t("amount")}</div>
+      <div>{t("account")}</div>
+      <div>{t("time")}</div>
     </div>
     <div className="flex flex-col text-16 gap-2 sm:gap-2.5 xl:gap-0">
       {transactions && transactions.slice(0, visibleItems).map((item, index) => {
@@ -200,7 +202,7 @@ export function TradeHistoryRows({transactions, visibleItems, showMore, loading}
     </div>
     {visibleItems < transactions?.length && (
       <div className="flex justify-center mt-5">
-        <PrimaryButton onClick={showMore} variant="outlined">Show more</PrimaryButton>
+        <PrimaryButton onClick={showMore} variant="outlined">{t("show_more")}</PrimaryButton>
       </div>
     )}
   </>;

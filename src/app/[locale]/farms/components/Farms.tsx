@@ -20,6 +20,7 @@ import ExpandButton from "@/components/buttons/ExpandButton";
 import EmptyStateIcon from "@/components/atoms/EmptyStateIcon";
 import { useConnectWalletDialogStateStore } from "@/components/dialogs/stores/useConnectWalletStore";
 import { useFarmsUserDataStore } from "@/app/[locale]/farms/stores";
+import {useTranslations} from "use-intl";
 
 type LabelType = "supreme" | "select" | "standard" | "new";
 
@@ -51,6 +52,8 @@ function Label({type}: { type: LabelType }) {
 }
 
 function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number, staked: any, fPrice: any, reward: any }) {
+  const t = useTranslations("Farms");
+
   const {address: account, isConnected: isActive} = useAccount();
   const { chainId } = useAccount();
   const [isOpen, setIsOpen] = useState(false);
@@ -156,11 +159,11 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
       </div>
       <div className="hidden lg:block" />
       <div className={clsx("hidden lg:flex flex-col xl:flex-row justify-start pl-[10%] items-center gap-1", !Boolean(reward) && "text-grey-light")}>
-        <p>Earned: </p>
+        <p>{t("earned")}: </p>
         <p>{reward ? Number(formatUnits(reward, 18)).toFixed(4) : 0}</p>
       </div>
       <div className="hidden lg:flex flex-col xl:flex-row items-center gap-1">
-        <p>APR: </p>
+        <p>{t("APR")}: </p>
         <div className="flex items-center gap-1">
           <p>{totalApr.toFixed(2).toString()}%</p>
           {+farm?.apr ? <span>
@@ -176,9 +179,9 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
           </span> : null}
         </div>
       </div>
-      <div className="hidden lg:flex flex-col xl:flex-row justify-start pl-[5%] items-center gap-1"><p>Liquidity:</p>
+      <div className="hidden lg:flex flex-col xl:flex-row justify-start pl-[5%] items-center gap-1"><p>{t("liquidity")}:</p>
         <p>{`$${farm.liquidity.toLocaleString('en-US', {maximumFractionDigits: 2})}`}</p></div>
-      <div className="hidden lg:flex flex-col xl:flex-row items-center gap-1"><p>Multiplier:</p> <p>{farm.multiplier?.toString()}X</p></div>
+      <div className="hidden lg:flex flex-col xl:flex-row items-center gap-1"><p>{t("multiplier")}:</p> <p>{farm.multiplier?.toString()}X</p></div>
       <div className="flex items-center gap-2.5">
         <div className="lg:hidden" />
         <ExpandButton isOpened={isOpen} />
@@ -187,7 +190,7 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
     <div className="lg:hidden px-5 pb-4">
       <div className="border-b border-primary-border" />
       <div className="grid sm:hidden grid-cols-[1fr 1fr 1fr 100px] mt-4 gap-2.5">
-        <div className="flex justify-between items-center"><p>Earned: </p><p>0</p></div>
+        <div className="flex justify-between items-center"><p>{t("earned")}: </p><p>0</p></div>
         <div className="flex justify-between items-center">
           <p>APR: </p>
           <div className="flex gap-1 items-center">
@@ -204,15 +207,15 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
           </span>}
           </div>
         </div>
-        <div className="flex justify-between items-center"><p>Liquidity:</p>
+        <div className="flex justify-between items-center"><p>{t("liquidity")}:</p>
           <p>{`$${farm.liquidity.toLocaleString('en-US', {maximumFractionDigits: 2})}`}</p></div>
-        <div className="flex justify-between items-center"><p>Multiplier:</p>
+        <div className="flex justify-between items-center"><p>{t("multiplier")}:</p>
           <p>{farm.multiplier?.toString()}X</p></div>
       </div>
       <div className="hidden sm:grid grid-cols-[1fr_1fr_1fr_100px] mt-4 gap-2.5">
-        <div className=""><p>Earned: </p><p>0</p></div>
+        <div className=""><p>{t("earned")}: </p><p>0</p></div>
         <div className="">
-          <p>APR: </p>
+          <p>{t("APR")}: </p>
           <div className="flex gap-1 items-center">
             <p>{totalApr.toFixed(2).toString()}%</p>
             {+farm?.apr && <span>
@@ -227,9 +230,9 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
           </span>}
           </div>
         </div>
-        <div className=""><p>Liquidity:</p>
+        <div className=""><p>{t("liquidity")}:</p>
           <p>{`$${farm.liquidity.toLocaleString('en-US', {maximumFractionDigits: 2})}`}</p></div>
-        <div className=""><p>Multiplier:</p>
+        <div className=""><p>{t("multiplier")}:</p>
           <p>{farm.multiplier?.toString()}X</p></div>
       </div>
     </div>
@@ -238,25 +241,25 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
     <Collapse open={isOpen}>
       <div className="xl:px-5 xl:pb-5 grid xl:grid-rows-1 grid-rows-[1fr auto auto] md:grid-cols-2 md:gap-2.5 xl:grid-cols-3 gap-0 -mx-4 px-4 pb-4">
         <div className="bg-secondary-bg hidden xl:block rounded-2 min-h-[110px] py-3.5 px-5">
-          <h5 className="text-secondary-text">Links:</h5>
+          <h5 className="text-secondary-text">{t("links")}:</h5>
           <div style={{height: 30}}/>
           <div className="flex justify-between">
             <ExternalLink href={`/liquidity`}
-                          text="Get SOY LP" />
+                          text={t("get_soy_lp")} />
             <ExternalLink href={getExpLink(farm.lpAddress, "address", chainId as any || undefined)}
-                          text="View contract"/>
+                          text={t("view_contract")}/>
           </div>
         </div>
         <div className="bg-secondary-bg xl:rounded-2 min-h-[110px] py-3.5 px-5 border-b border-primary-border xl:border-b-0 flex flex-col justify-between">
           <div className="flex justify-between mb-4">
-            <h5 className="text-secondary-text">Earned: </h5>
+            <h5 className="text-secondary-text">{t("earned")}: </h5>
             <div>
               <p>{reward ? Number(formatUnits(reward, 18)).toFixed(4) : 0}</p>
             </div>
           </div>
           <div className="flex justify-between">
             <PrimaryButton disabled={!reward} onClick={handleHarvest} fullWidth>
-              Harvest
+              {t("harvest")}
             </PrimaryButton>
           </div>
         </div>
@@ -271,11 +274,11 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
             </div>}
           <div style={{height: 16}}/>
           <div className="flex justify-between w-full">
-            {!isActive && <PrimaryButton fullWidth onClick={() => openWalletConnect(true)}>Connect wallet</PrimaryButton>}
+            {!isActive && <PrimaryButton fullWidth onClick={() => openWalletConnect(true)}>{t("connect_wallet")}</PrimaryButton>}
             {isActive && !staked && <PrimaryButton disabled={!Boolean(farm.multiplier) || !Boolean(farmsUserData[farm.pid]?.lpBalance)} onClick={() => {
               setLpTokenToStake(farm);
               setIsStakeLPTokensDialogOpened(true);
-            }} fullWidth>Stake LP</PrimaryButton>}
+            }} fullWidth>{t("stake_lp")}</PrimaryButton>}
             {isActive && staked && <div className="grid grid-cols-2 gap-2.5 w-full">
               <PrimaryButton onClick={() => {
                 setLpTokenToUnstake(farm);
@@ -290,9 +293,9 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
         </div>
         <div className="xl:hidden flex justify-between pt-4 px-4 md:col-span-2">
           <ExternalLink href={`/liquidity`}
-                        text="Get SOY LP"/>
+                        text={t("get_soy_lp")} />
           <ExternalLink href={getExpLink(farm.lpAddress, "address", chainId as any)}
-                        text="View contract"/>
+                        text={t("view_contract")} />
         </div>
       </div>
     </Collapse>
@@ -307,6 +310,8 @@ function Farm({farm, index, staked, fPrice, reward}: { farm: any, index: number,
 }
 
 export default function Farms({farms, userData, onlyStaked, fPrice, searchRequest}: any) {
+  const t = useTranslations("Farms");
+
   const {isConnected: isActive} = useAccount();
 
   if (!farms) {
@@ -318,32 +323,32 @@ export default function Farms({farms, userData, onlyStaked, fPrice, searchReques
   if (onlyStaked && !isActive) {
     return <div className="flex flex-col gap-1 p-10 items-center justify-center">
       <EmptyStateIcon iconName="wallet"/>
-      <p className="text-24 mb-1.5">Please, connect your wallet to see staked farms</p>
-      <p className="text-secondary-text text-16">You will see staked farms after your wallet will be connected</p>
+      <p className="text-24 mb-1.5">{t("connect_wallet_to_see_farms")}</p>
+      <p className="text-secondary-text text-16">{t("see_farms_after_wallet_connected")}</p>
     </div>;
   }
 
   if(searchRequest && !farms.length) {
     return <div className="flex flex-col gap-1 p-10 items-center justify-center">
       <EmptyStateIcon iconName="search"/>
-      <p className="text-24 mb-1.5">No farms found</p>
-      <p className="text-secondary-text text-16">We did not found farms with this request</p>
+      <p className="text-24 mb-1.5">{t("no_farms_found")}</p>
+      <p className="text-secondary-text text-16">{t("no_farms_with_request")}</p>
     </div>
   }
 
   if (onlyStaked && !farms.length) {
     return <div className="flex flex-col gap-1 p-10 items-center justify-center">
       <EmptyStateIcon iconName="staked"/>
-      <p className="text-24 mb-1.5">No Active Farms Yet</p>
-      <p className="text-secondary-text text-16">Stake your LP tokens to start earning rewards. Your active farms will appear here.</p>
+      <p className="text-24 mb-1.5">{t("no_active_farms_yet")}</p>
+      <p className="text-secondary-text text-16">{t("stake_to_start_earning")}</p>
     </div>
   }
 
   if (!farms.length) {
     return <div className="flex flex-col gap-1 p-10 items-center justify-center">
       <EmptyStateIcon iconName="staked"/>
-      <p className="text-24 mb-1.5">No Farms Found</p>
-      <p className="text-secondary-text text-16">We did not fount farms with this request</p>
+      <p className="text-24 mb-1.5">{t("no_farms_found")}</p>
+      <p className="text-secondary-text text-16">{t("no_farms_with_request")}</p>
     </div>
   }
 

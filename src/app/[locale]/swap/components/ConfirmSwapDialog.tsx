@@ -6,7 +6,6 @@ import {
   useTradeStore,
   useTransactionSettingsStore
 } from "@/app/[locale]/swap/stores";
-import Dialog from "@/components/atoms/Dialog";
 import DialogHeader from "@/components/DialogHeader";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import {
@@ -18,6 +17,7 @@ import { Route, TradeType } from "@callisto-enterprise/soy-sdk";
 import Svg from "@/components/atoms/Svg";
 import { useConfirmSwapDialogStore } from "@/app/[locale]/swap/stores/confirm";
 import DrawerDialog from "@/components/atoms/DrawerDialog";
+import {useTranslations} from "use-intl";
 
 function Path({ route }: { route: Route | undefined }) {
   return <div>
@@ -33,20 +33,8 @@ function Path({ route }: { route: Route | undefined }) {
       : <span>—</span>}
   </div>;
 }
-
-export function formatBalanceToEight(balance: string) {
-  if(!balance) {
-    return "0.0";
-  }
-
-  return Number(balance).toFixed(8)
-    .replace(
-      /\.00000000/,
-      ".0"
-    );
-}
-
 export default function ConfirmSwapDialog() {
+  const t = useTranslations("Swap");
   const { handleSwap } = useSwap();
   const {tokenTo, tokenFrom} = useSwapTokensStore();
   const { amountInString, amountOutString} = useSwapAmountsStore();
@@ -54,7 +42,6 @@ export default function ConfirmSwapDialog() {
   const { trade } = useTradeStore();
 
   const {priceImpactWithoutFee} = useMemo(() => computeTradePriceBreakdown(trade), [trade])
-  // const route = useStore($swapRoute);
 
   const {isSwapConfirmDialogOpened, setSwapConfirmDialogOpened} = useConfirmSwapDialogStore();
 
@@ -105,22 +92,22 @@ export default function ConfirmSwapDialog() {
         </div>
       </div>
 
-      <p className="my-5 text-secondary-text font-normal text-14 text-center">Output it estimated. You will receive at least {amountOutString} {tokenTo?.symbol} or the transaction will revert</p>
+      <p className="my-5 text-secondary-text font-normal text-14 text-center">{t("output_estimated", {amountOutString: amountOutString, symbol: tokenTo?.symbol})}</p>
 
       <div className="flex flex-col gap-2.5 rounded-2 p-5 border border-primary-border mt-5">
         <div className="text-14 flex justify-between items-center text-secondary-text">
-          <span>1 {tokenTo?.symbol} price</span>
+          <span>{t("one_token_price", {symbol: tokenTo?.symbol})}</span>
           <span>{priceOut} {tokenFrom?.symbol}</span>
         </div>
 
         <div className="text-14 flex justify-between items-center text-secondary-text">
-          <span>1 {tokenFrom?.symbol} price</span>
+          <span>{t("one_token_price", {symbol: tokenFrom?.symbol})}</span>
           <span>{priceIn} {tokenTo?.symbol}</span>
         </div>
 
         <div className="text-14 flex justify-between items-center text-secondary-text">
         <span>
-          {trade?.tradeType === TradeType.EXACT_INPUT ? 'Minimum received' : 'Maximum sold'}
+          {trade?.tradeType === TradeType.EXACT_INPUT ? t("minimum_received") : t("maximum_sold")}
         </span>
           <span>
           {!trade && "—"}
@@ -132,18 +119,18 @@ export default function ConfirmSwapDialog() {
         </div>
 
         <div className="text-14 flex justify-between items-center text-secondary-text">
-          <span>Price impact</span>
+          <span>{t("price_impact")}</span>
           {priceImpactWithoutFee ? (priceImpactWithoutFee.lessThan(ONE_BIPS) ? '< 0.01%' : `${priceImpactWithoutFee.toFixed(2)}%`) : '—'}
         </div>
 
         <div className="text-14 flex justify-between items-center text-secondary-text">
-          <span>Route</span>
+          <span>{t("route")}</span>
           <Path route={trade?.route} />
         </div>
       </div>
       <div className="flex items-center gap-2.5 mt-5">
-        <PrimaryButton fullWidth variant="outlined" onClick={() => setSwapConfirmDialogOpened(false)}>Cancel</PrimaryButton>
-        <PrimaryButton fullWidth onClick={handleSwap}>Swap</PrimaryButton>
+        <PrimaryButton fullWidth variant="outlined" onClick={() => setSwapConfirmDialogOpened(false)}>{t("cancel")}</PrimaryButton>
+        <PrimaryButton fullWidth onClick={handleSwap}>{t("swap")}</PrimaryButton>
       </div>
     </div>
 

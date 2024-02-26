@@ -9,6 +9,7 @@ import { useEffect, useMemo } from "react";
 import useUSDPrices from "@/hooks/useUSDPrices";
 import clsx from "clsx";
 import { formatFloat } from "@/other/formatFloat";
+import {useTranslations} from "use-intl";
 
 function PercentageButtons({ value, balance, setAmount, decimals, isNativeToken = false }: {
   value: string,
@@ -48,6 +49,8 @@ function InputWithTokenPick({ token, onPick, value, setAmount, pair, readonly = 
   readonly?: boolean,
   readonlyToken?: boolean
 }) {
+  const t = useTranslations("PickTokenDialog");
+
   return <div className="relative w-full">
     <NumericFormat
       inputMode="decimal"
@@ -107,7 +110,7 @@ function InputWithTokenPick({ token, onPick, value, setAmount, pair, readonly = 
             <span className="w-6 h-6 mr-1">
               <Svg iconName="currency"/>
             </span>
-              <span>Select token</span>
+              <span>{t("select_token")}</span>
               {!readonly && !readonlyToken && <span className="w-6 h-6 text-primary-text">
             <Svg iconName="arrow-bottom"/>
           </span>}

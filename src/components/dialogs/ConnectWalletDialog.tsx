@@ -16,6 +16,7 @@ import addToast from "@/other/toast";
 import { useConnect } from "wagmi";
 import { config } from "@/config/wagmi/config";
 import TrustWalletCard from "@/components/wallet-cards/TrustWalletCard";
+import { useTranslations } from "use-intl";
 
 interface Props {
   isOpen: boolean,
@@ -33,6 +34,8 @@ function StepLabel({step, label}: { step: string, label: string }) {
 
 export default function ConnectWalletDialog() {
   const { walletName, chainToConnect, setChainToConnect} = useConnectWalletStore();
+  const navT = useTranslations("Navigation");
+  const toastT = useTranslations("Toast");
 
   const { connectors, connectAsync } = useConnect({
     config
@@ -48,7 +51,7 @@ export default function ConnectWalletDialog() {
         chainId: chainToConnect
       }).then(() => {
         setIsOpened(false);
-        addToast("Successfully connected!")
+        addToast(toastT("successfully_connected"));
       }).catch((e) => {
         if(e.code && e.code === 4001) {
           addToast("User rejected the request", "error");
@@ -64,7 +67,7 @@ export default function ConnectWalletDialog() {
         chainId: chainToConnect
       }).then(() => {
         setIsOpened(false);
-        addToast("Successfully connected!")
+        addToast(toastT("successfully_connected"))
       }).catch((e) => {
         if(e.code && e.code === 4001) {
           addToast("User rejected the request", "error");
@@ -80,7 +83,7 @@ export default function ConnectWalletDialog() {
         chainId: chainToConnect
       }).then(() => {
         setIsOpened(false);
-        addToast("Successfully connected!")
+        addToast(toastT("successfully_connected"))
       }).catch((e) => {
         console.log(e);
         if(e.code && e.code === 4001) {
@@ -90,20 +93,20 @@ export default function ConnectWalletDialog() {
         }
       });
     }
-  }, [chainToConnect, connectAsync, connectors, setIsOpened, walletName]);
+  }, [chainToConnect, connectAsync, connectors, setIsOpened, toastT, walletName]);
 
   return <DrawerDialog isOpen={isOpened} setIsOpen={setIsOpened}>
     <div className="w-full xl:min-w-[500px]">
-      <DialogHeader handleClose={() => setIsOpened(false)} title="Connect wallet" />
+      <DialogHeader handleClose={() => setIsOpened(false)} title={navT("connect_wallet")} />
       <div className="md:p-10 p-4">
-        <StepLabel step="1" label="Choose wallet" />
+        <StepLabel step="1" label={navT("choose_wallet")} />
         <div className="grid grid-cols-3 gap-1 md:gap-3 mt-3 mb-5">
           <MetamaskCard isLoading={false} />
           {/*<CoinbaseCard isLoading={false} />*/}
           <WalletConnectCard />
           <TrustWalletCard isLoading={false}  />
         </div>
-        <StepLabel step="2" label="Choose network" />
+        <StepLabel step="2" label={navT("choose_network")} />
         <div className="grid grid-cols-3 gap-1 md:gap-3 mt-3 mb-5">
           {(walletName === "metamask" || walletName === "wc" || walletName === "trustWallet") && <>{networks.map(({name, chainId, logo}) => {
             return <PickButton key={chainId} isActive={chainId === chainToConnect} onClick={() => {
@@ -113,7 +116,7 @@ export default function ConnectWalletDialog() {
         </div>
         <PrimaryButton fullWidth onClick={() => {
           handleConnect();
-        }}>Connect wallet</PrimaryButton>
+        }}>{navT("connect_wallet")}</PrimaryButton>
       </div>
     </div>
   </DrawerDialog>

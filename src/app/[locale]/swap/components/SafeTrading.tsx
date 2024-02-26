@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import { WrappedToken } from "@/config/types/WrappedToken";
+import {useTranslations} from "use-intl";
 function Progress({percents, color}: {percents: number, color: "green" | "purple" | "pink"}) {
   return <>
     <div className="relative w-full h-2.5 rounded-5 overflow-hidden bg-secondary-bg">
@@ -34,6 +35,7 @@ function SemiCircleProgress({percentage, logoURI}: {percentage: number, logoURI:
   const YEnd = 160 - Math.abs(150 * Math.sin(angle)) - 5;
 
   const {theme} = useTheme();
+  const t = useTranslations("Swap");
 
   return <div className="relative overflow-hidden flex justify-center">
     <svg width="320" height="160" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
@@ -48,24 +50,26 @@ function SemiCircleProgress({percentage, logoURI}: {percentage: number, logoURI:
       </div>
       <Image className="mb-2.5" src={logoURI} alt={""} width={40} height={40} />
       <span className="text-20 font-bold text-green">{percentage / 10} / 10</span>
-      <span className="font-secondary font-16 ">Overall score</span>
+      <span className="font-secondary font-16 ">{t("overall_score")}</span>
     </div>
   </div>
 
 }
 
 export default function SafeTrading({ token, meta }: {token: WrappedToken, meta: {score: number, link: string}})  {
+  const t = useTranslations("Swap");
+
   return <PageCard>
-    <h2 className="text-24 font-bold">Safe trading</h2>
+    <h2 className="text-24 font-bold">{t("safe_trading")}</h2>
     <div className="mb-4" />
     <SemiCircleProgress logoURI={token.logoURI} percentage={meta.score * 10} />
     <div className="mb-4" />
-    <p>Security audit score</p>
+    <p>{t("security_audit_score")}</p>
     <div className="mb-2.5" />
     <Progress percents={meta.score * 10} color="green" />
     <div className="flex justify-center mt-5">
       <a target="_blank" href={meta.link}>
-        <PrimaryButton variant="outlined">Learn more</PrimaryButton>
+        <PrimaryButton variant="outlined">{t("learn_more")}</PrimaryButton>
       </a>
     </div>
   </PageCard>;

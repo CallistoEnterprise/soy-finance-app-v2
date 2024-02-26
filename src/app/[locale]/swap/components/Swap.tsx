@@ -36,10 +36,14 @@ import { ROUTER_ADDRESS } from "@/config/addresses/router";
 import addToast from "@/other/toast";
 import { safeTradingMap } from "@/config/safe-trading";
 import { useConnectWalletDialogStateStore } from "@/components/dialogs/stores/useConnectWalletStore";
+import {useTranslations} from "use-intl";
 
 
 
 function SwapActionButton() {
+  const t = useTranslations("Swap");
+  const toastT = useTranslations("Toast");
+
   const { setSwapConfirmDialogOpened } = useConfirmSwapDialogStore();
   const {isConnected, address} = useAccount();
   const { amountIn, amountOut } = useSwapAmountsStore();
@@ -78,20 +82,20 @@ function SwapActionButton() {
 
   if(!isConnected) {
     return <PrimaryButton onClick={() => setWalletConnectOpened(true)} fullWidth>
-      Connect wallet
+      {t("connect_wallet")}
     </PrimaryButton>
   }
 
   if(!amountIn) {
-    return <PrimaryButton fullWidth disabled>Enter amount</PrimaryButton>
+    return <PrimaryButton fullWidth disabled>{t("enter_amount")}</PrimaryButton>
   }
 
   if(!tokenTo || !tokenFrom) {
-    return <PrimaryButton fullWidth disabled>Select tokens to swap</PrimaryButton>
+    return <PrimaryButton fullWidth disabled>{t("select_tokens_to_swap")}</PrimaryButton>
   }
 
   if(!isEnoughBalance) {
-    return <PrimaryButton fullWidth disabled>Insufficient amount</PrimaryButton>
+    return <PrimaryButton fullWidth disabled>{t("insufficient_amount")}</PrimaryButton>
   }
 
   if(!isAllowed) {
@@ -99,16 +103,17 @@ function SwapActionButton() {
       if(writeTokenApprove){
         writeTokenApprove();
       } else {
-        addToast("Something went wrong, please, contact support", "error");
+        addToast(toastT("something_went_wrong"), "error");
       }
     }} fullWidth>Approve {tokenFrom.symbol}</PrimaryButton>
   }
 
   return <PrimaryButton fullWidth onClick={() => {
     setSwapConfirmDialogOpened(true);
-  }}>Swap</PrimaryButton>
+  }}>{t("swap")}</PrimaryButton>
 }
 export default function Swap() {
+  const t = useTranslations('Swap');
   const [isSettingsOpened, setSettingsOpened] = useState(false);
 
   const { tokenTo, tokenFrom, setTokenFrom, setTokenTo } = useSwapTokensStore();
@@ -140,8 +145,8 @@ export default function Swap() {
 
     const formattedPrice = showInverted ? trade?.executionPrice?.toSignificant(6) : trade?.executionPrice?.invert()?.toSignificant(6);
     const tokensLabel = showInverted
-      ? `${trade?.executionPrice?.quoteCurrency?.symbol} per ${trade?.executionPrice?.baseCurrency?.symbol}`
-      : `${trade?.executionPrice?.baseCurrency?.symbol} per ${trade?.executionPrice?.quoteCurrency?.symbol}`;
+      ? t("tokenX_per_tokenY", {tokenX: trade?.executionPrice?.quoteCurrency?.symbol, tokenY: trade?.executionPrice?.baseCurrency?.symbol})
+      : t("tokenX_per_tokenY", {tokenX: trade?.executionPrice?.baseCurrency?.symbol, tokenY: trade?.executionPrice?.quoteCurrency?.symbol})
 
     const priceLabel = `${formattedPrice || "-"} ${tokensLabel}`;
 
@@ -149,7 +154,7 @@ export default function Swap() {
       showPrice: show,
       label: priceLabel
     }
-  }, [trade, showInverted]);
+  }, [trade?.executionPrice, showInverted, t]);
 
   const safeTradingSymbol = useMemo(() => {
     if(!tokenTo || !tokenTo.symbol) {
@@ -169,7 +174,7 @@ export default function Swap() {
 
   return <PageCard>
     <div className="flex justify-between items-center">
-      <h2 className="text-24 font-bold">Swap</h2>
+      <h2 className="text-24 font-bold">{t("swap")}</h2>
 
       <div className="hidden lg:block">
         <ActionIconButton onClick={() => setSettingsOpened(true)} icon="filter"/>
@@ -191,7 +196,7 @@ export default function Swap() {
       setAmount={(value) => {
         handleAmountInChange(value);
       }}
-      label="From"
+      label={t("from")}
       token={tokenFrom}
       onPick={() => {
         setPickOpened(true)
@@ -208,7 +213,7 @@ export default function Swap() {
       setAmount={(value) => {
         handleAmountOutChange(value);
       }}
-      label="To"
+      label={t("to")}
       token={tokenTo}
       onPick={() => {
         setPickOpened(true)
@@ -235,7 +240,7 @@ export default function Swap() {
     />
 
     <div className="my-5 flex flex-col gap-2.5">
-      <InfoRow label="Price" value={<span className="flex items-center gap-1">
+      <InfoRow label={t("price")} value={<span className="flex items-center gap-1">
         {showPrice && <>
           {label}
           <InlineIconButton onClick={() => setShowInverted(!showInverted)} icon="swap" className="rotate-90"/>
@@ -243,7 +248,7 @@ export default function Swap() {
       </span>}/>
       <InfoRow label={
         <span className="flex items-center gap-1">
-          Slippage tolerance
+          {t("slippage_tolerance")}
           <InlineIconButton icon="edit" onClick={() => setSettingsOpened(true)}/>
         </span>
 
@@ -253,12 +258,12 @@ export default function Swap() {
     <SwapActionButton />
 
     <div className="flex flex-col gap-2.5 px-5 py-4 rounded-2 border border-primary-border mt-5">
-      <InfoRow label='Minimum received' value={trade ? computeSlippageAdjustedAmounts(trade, slippage) : '—'}/>
-      <InfoRow label="Price impact"
+      <InfoRow label={t("minimum_received")} value={trade ? computeSlippageAdjustedAmounts(trade, slippage) : '—'}/>
+      <InfoRow label={t("price_impact")}
                value={priceImpactWithoutFee ? (priceImpactWithoutFee.lessThan(ONE_BIPS) ? '< 0.01%' : `${priceImpactWithoutFee.toFixed(2)}%`) : '—'}/>
-      <InfoRow label="Liquidity provider fee"
+      <InfoRow label={t("liquidity_provider_fee")}
                value={realizedLPFee ? `${realizedLPFee?.toSignificant(6)} ${trade?.inputAmount.currency.symbol}` : '—'}/>
-      <InfoRow label="Route" value={<RoutePath route={trade?.route}/>}/>
+      <InfoRow label={t("route")} value={<RoutePath route={trade?.route}/>}/>
     </div>
     <ConfirmSwapDialog/>
     <Drawer isOpen={mobileChartOpened && isMobile} setIsOpen={setMobileChartOpened} placement="bottom">

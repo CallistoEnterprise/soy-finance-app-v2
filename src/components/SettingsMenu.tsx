@@ -10,6 +10,7 @@ import { useLocale } from "next-intl";
 import clsx from "clsx";
 import { usePathname, useRouter, locales } from "@/navigation";
 import addToast from "@/other/toast";
+import { useTranslations } from "use-intl";
 
 type SettingsContent = "settings" | "language";
 
@@ -49,6 +50,8 @@ const localesMap: {
   }
 }
 export default function SettingsMenu() {
+  const t = useTranslations("SettingsAndWallet");
+
   const [isSettingsOpened, setSettingsOpened] = useState(false);
   const { theme, setTheme } = useTheme();
   const [content, setContent] = useState<SettingsContent>("settings");
@@ -64,8 +67,8 @@ export default function SettingsMenu() {
   } placement="bottom-end">
     <div className="rounded-2 border border-primary-border w-[400px] bg-primary-bg">
       {content === "settings"
-        ? <DialogHeader variant="dropdown" title="Settings" handleClose={() => setSettingsOpened(false)}/>
-        : <DialogHeader variant="dropdown" onBack={() => setContent("settings")} title="Language"
+        ? <DialogHeader variant="dropdown" title={t("settings")} handleClose={() => setSettingsOpened(false)}/>
+        : <DialogHeader variant="dropdown" onBack={() => setContent("settings")} title={t("language")}
                         handleClose={() => setSettingsOpened(false)}/>
       }
       {content === "settings"
@@ -75,7 +78,7 @@ export default function SettingsMenu() {
               className="flex items-center justify-between h-[60px] bg-secondary-bg rounded-2 py-3 pr-3 pl-5 duration-200">
               <div className="flex gap-2">
                 <div className=""><Svg iconName="night"/></div>
-                Dark mode
+                {t("dark_mode")}
               </div>
               <div>
                 <Switch checked={theme === "dark"} setChecked={() => {
@@ -91,7 +94,7 @@ export default function SettingsMenu() {
             >
               <div className="flex gap-2">
                 <div className=""><Svg iconName="web3"/></div>
-                Language
+                {t("language")}
               </div>
               <div className={""}><Svg iconName="arrow-right"/></div>
             </li>
@@ -99,7 +102,7 @@ export default function SettingsMenu() {
               className="flex items-center justify-between h-[60px] bg-secondary-bg rounded-2 py-3 pr-3 pl-5">
               <div className="flex gap-2">
                 <div className=""><Svg iconName="line"/></div>
-                Show chart
+                {t("show_charts")}
               </div>
               <div>
                 <Switch checked={false} setChecked={() => {
@@ -111,7 +114,7 @@ export default function SettingsMenu() {
               className="flex items-center justify-between h-[60px] bg-secondary-bg rounded-2 py-3 pr-3 pl-5">
               <div className="flex gap-2">
                 <div className=""><Svg iconName="table"/></div>
-                Show table
+                {t("show_table")}
               </div>
               <div>
                 <Switch checked={false} setChecked={() => {
@@ -123,7 +126,7 @@ export default function SettingsMenu() {
               className="flex items-center justify-between h-[60px] bg-secondary-bg rounded-2 py-3 pr-3 pl-5">
               <div className="flex gap-2">
                 <div className=""><Svg iconName="sound"/></div>
-                Sounds
+                {t("sounds")}
               </div>
               <div>
                 <Switch checked={false} setChecked={() => {

@@ -19,6 +19,7 @@ import { useRecentTransactionsStore } from "@/stores/useRecentTransactions";
 import EmptyStateIcon from "@/components/atoms/EmptyStateIcon";
 import { useConnectWalletDialogStateStore } from "@/components/dialogs/stores/useConnectWalletStore";
 import { slothVestingContract } from "@/config/addresses/migration";
+import { useTranslations } from "use-intl";
 
 
 const sixtyDaysInMillis = 5184000000;
@@ -27,6 +28,7 @@ export default function MigratePage() {
   useUSDPrices();
   const [activeTab, setActiveTab] = useState(0);
   const {address, isConnected, chainId} = useAccount();
+  const navT = useTranslations("Navigation");
 
   const {data: walletClient} = useWalletClient();
   const publicClient = usePublicClient();
@@ -135,7 +137,7 @@ export default function MigratePage() {
           <div className="min-h-[400px] flex flex-col justify-center items-center gap-5">
             <EmptyStateIcon iconName="wallet" />
             <h2 className="bold text-16 lg:text-20">Connect your wallet to proceed</h2>
-            <PrimaryButton onClick={() => setConnectWalletOpened(true)}>Connect wallet</PrimaryButton>
+            <PrimaryButton onClick={() => setConnectWalletOpened(true)}>{navT("connect_wallet")}</PrimaryButton>
           </div>
         </PageCard>
       </div>

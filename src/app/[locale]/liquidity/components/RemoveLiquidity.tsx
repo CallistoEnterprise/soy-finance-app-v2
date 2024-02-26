@@ -13,29 +13,21 @@ import ActionIconButton from "@/components/buttons/ActionIconButton";
 import TransactionSettingsDialog from "@/components/dialogs/TransactionSettingsDialog";
 import Svg from "@/components/atoms/Svg";
 import { useAccount, useBalance, useBlockNumber } from "wagmi";
-import { isNativeToken } from "@/other/isNativeToken";
+import {useTranslations} from "use-intl";
 
 function RemoveLiquidityAction() {
-  const { amountAString, amountLPString, amountBString, amountLP } = useRemoveLiquidityAmountsStore();
-  const { tokenA, tokenB, tokenLP } = useRemoveLiquidityTokensStore();
-  const {address} = useAccount();
+  const t = useTranslations("Liquidity");
+
+  const { amountLPString, amountLP } = useRemoveLiquidityAmountsStore();
+  const { tokenLP } = useRemoveLiquidityTokensStore();
+  const { address} = useAccount();
   const { data: blockNumber } = useBlockNumber({ watch: true })
 
 
   const {
-    handleAmountAChange,
-    handleAmountBChange,
-    handleLiquidityAmountLPChange,
-    handleTokenAChange,
-    handleTokenBChange,
     readyToRemove,
     onAttemptToApprove,
-    removeLiquidity,
-    token0Deposited,
-    token1Deposited,
-    pair,
-    priceA,
-    priceB
+    removeLiquidity
   } = useRemoveLiquidity();
 
   const { data, refetch } = useBalance({
@@ -48,21 +40,23 @@ function RemoveLiquidityAction() {
   }, [blockNumber, refetch]);
 
   if(!amountLPString) {
-    return <PrimaryButton disabled fullWidth>Enter amount</PrimaryButton>
+    return <PrimaryButton disabled fullWidth>{t("enter_amount")}</PrimaryButton>
   }
 
   if(amountLP && data && amountLP > data.value) {
-    return <PrimaryButton disabled fullWidth>Insufficient balance</PrimaryButton>
+    return <PrimaryButton disabled fullWidth>{t("insufficient_balance")}</PrimaryButton>
   }
 
   return <>
     {readyToRemove
-      ? <PrimaryButton onClick={removeLiquidity} fullWidth>Remove liquidity</PrimaryButton>
-      : <PrimaryButton onClick={onAttemptToApprove} fullWidth>Approve</PrimaryButton>
+      ? <PrimaryButton onClick={removeLiquidity} fullWidth>{t("remove_liquidity")}</PrimaryButton>
+      : <PrimaryButton onClick={onAttemptToApprove} fullWidth>{t("approve")}</PrimaryButton>
     }
   </>
 }
 export default function RemoveLiquidity({setContent}: {setContent: any}) {
+  const t = useTranslations("Liquidity");
+
   const { tokenA, tokenB, tokenLP } = useRemoveLiquidityTokensStore();
   const { amountAString, amountLPString, amountBString } = useRemoveLiquidityAmountsStore();
 
@@ -90,7 +84,7 @@ export default function RemoveLiquidity({setContent}: {setContent: any}) {
         }}>
           <Svg iconName="back" />
         </button>
-        <PageCardHeading title="Remove liquidity"/>
+        <PageCardHeading title={t("remove_liquidity")}/>
       </div>
       <ActionIconButton onClick={() => setSettingsOpened(true)} icon="filter"/>
     </div>
@@ -98,14 +92,14 @@ export default function RemoveLiquidity({setContent}: {setContent: any}) {
     <TransactionSettingsDialog isOpen={isSettingsOpened} setIsOpen={setSettingsOpened}/>
 
     <div className="flex flex-col gap-2.5 xl:gap-5">
-      <TokenSelector label="Input" token={tokenLP} pair={tokenA && tokenB ? [tokenA, tokenB] : [undefined, undefined]} onPick={() => undefined} amount={amountLPString}
+      <TokenSelector label={t("input")} token={tokenLP} pair={tokenA && tokenB ? [tokenA, tokenB] : [undefined, undefined]} onPick={() => undefined} amount={amountLPString}
                      setAmount={(value) => {
                        handleLiquidityAmountLPChange(value);
                      }}/>
       <div className="flex justify-center">
         <RoundedIconButton icon="low" disabled/>
       </div>
-      <TokenSelector label="Output" token={tokenA} onPick={() => {
+      <TokenSelector label={t("output")} token={tokenA} onPick={() => {
         setPickOpened(true);
         setPickDialogContext("remove-liquidity-tokenA")
       }} amount={amountAString} setAmount={(value) => {
@@ -114,18 +108,16 @@ export default function RemoveLiquidity({setContent}: {setContent: any}) {
       <div className="flex justify-center">
         <RoundedIconButton icon="add-token" disabled/>
       </div>
-      <TokenSelector label="Output" token={tokenB} onPick={() => {
+      <TokenSelector label={t("output")} token={tokenB} onPick={() => {
         setPickOpened(true);
         setPickDialogContext("remove-liquidity-tokenB")
       }} amount={amountBString} setAmount={(value) => {
         handleAmountBChange(value);
       }} balance={token1Deposited}/>
 
-
-
       <div className="rounded-2 overflow-hidden border border-primary-border">
         <div className="bg-secondary-bg h-10 flex items-center pl-5">
-          <p>Prices</p>
+          <p>{t("prices")}</p>
         </div>
         <div className="p-5 flex flex-col gap-2.5">
 
@@ -148,7 +140,6 @@ export default function RemoveLiquidity({setContent}: {setContent: any}) {
               <p className="text-secondary-text">—</p>
             </div>
           </>}
-
         </div>
       </div>
 

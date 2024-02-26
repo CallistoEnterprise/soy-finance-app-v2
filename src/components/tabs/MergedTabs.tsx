@@ -20,7 +20,7 @@ interface TitleProps {
 function MergedTitle({ title, setSelectedTab, index, selectedTab }: TitleProps) {
   return <li className="flex-1">
     <button className={clsx(
-      "rounded-t-2 bg-transparent h-10 w-full rounded-2 min-w-[120px] px-6 " +
+      "rounded-t-2 bg-transparent h-10 w-full rounded-2 min-w-[120px] px-1 " +
       "text-16 relative after:absolute after:left-0 after:w-full after:h-[2px] " +
       "after:top-full after:bg-secondary-hover after:duration-200 hover:after:bg-green",
       index === selectedTab ? "text-green" : "text-primary-text"
