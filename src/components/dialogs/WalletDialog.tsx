@@ -19,6 +19,7 @@ import { tokensInEtc } from "@/config/token-lists/tokenlistInETC";
 import { tokensInBtt } from "@/config/token-lists/tokenlistInBTT";
 import { nativeTokens } from "@/config/token-lists/nativeTokens";
 import { formatFloat } from "@/other/formatFloat";
+import { useTranslations } from "use-intl";
 
 function InfoRow({ label, value }: { label: any, value: any }) {
   return <div className="text-14 leading-[18px] flex justify-between items-center text-secondary-text">
@@ -28,6 +29,8 @@ function InfoRow({ label, value }: { label: any, value: any }) {
 }
 
 export default function WalletDialog() {
+  const t = useTranslations("SettingsAndWallet");
+
   const { address, chainId } = useAccount();
   const { disconnect } = useDisconnect();
 
@@ -82,37 +85,37 @@ export default function WalletDialog() {
 
   return <DrawerDialog isOpen={isOpen} setIsOpen={setIsOpen}>
     <div className="w-full sm:w-[480px]">
-      <DialogHeader title="Your wallet" handleClose={() => setIsOpen(false)}/>
+      <DialogHeader title={t("your_wallet")} handleClose={() => setIsOpen(false)}/>
 
       <div className="p-4 pb-10 md:p-10">
         <div className="flex gap-2.5 mb-5">
           <button className={clsx(
             "border w-full rounded-2 text-16 h-10 border-green duration-200",
             activeTab === 0 ? "bg-green text-white" : "bg-transparent text-primary-text"
-          )} onClick={() => setActiveTab(0)}>Wallet</button>
+          )} onClick={() => setActiveTab(0)}>{t("wallet")}</button>
           <button className={clsx(
             "border w-full rounded-2 text-16 h-10 border-green duration-200",
             activeTab === 1 ? "bg-green text-white" : "bg-transparent text-primary-text"
-          )} onClick={() => setActiveTab(1)}>Transactions</button>
+          )} onClick={() => setActiveTab(1)}>{t("transactions")}</button>
         </div>
         {activeTab === 0 && <div className="h-[290px] xl:h-276">
-          <h3 className="font-medium text-primary-text text-16">Your address</h3>
+          <h3 className="font-medium text-primary-text text-16">{t("your_address")}</h3>
           <div style={{ marginTop: 8, marginBottom: 10 }}>
             <CopyArea text={address as string}/>
           </div>
           <div className="border border-primary-border rounded-2 p-4 flex justify-center flex-col gap-2.5">
-            <InfoRow label={`${coin.symbol} balance`} value={coinBalance.data ? formatFloat(formatUnits(coinBalance.data.value, 18)) : "Loading..."}/>
-            <InfoRow label="SOY balance" value={soyBalance.data ? formatFloat(formatUnits(soyBalance.data.value, 18)) : "Loading..."}/>
+            <InfoRow label={t("balance", {symbol: coin.symbol})} value={coinBalance.data ? formatFloat(formatUnits(coinBalance.data.value, 18)) : "Loading..."}/>
+            <InfoRow label={t("balance", {symbol: "SOY"})} value={soyBalance.data ? formatFloat(formatUnits(soyBalance.data.value, 18)) : "Loading..."}/>
           </div>
           <div className="my-5">
             <ExternalLink href={`https://explorer.callisto.network/address/${address}/transactions`}
-                          text="View on CallistoScan"/>
+                          text={t("view_on_explorer", {explorerName: "CallistoScan"})}/>
           </div>
           <PrimaryButton onClick={() => {
             disconnect();
             setIsOpen(false);
           }} fullWidth variant="outlined">
-            Disconnect
+            {t("disconnect")}
             <span><Svg iconName="logout"/></span>
           </PrimaryButton>
         </div>}
@@ -131,15 +134,15 @@ export default function WalletDialog() {
               <div>
                 {/*<Image src="/images/no-recent.svg" alt="" width={80} height={80}/>*/}
               </div>
-              All transaction will be displayed here.
+              {t("displayed_here")}
             </div>}
           <div className="absolute -bottom-[40px] left-0 right-0 sm:-left-[1px] sm:-right-[1px] h-[50px] flex justify-between items-center bg-primary-bg -ml-4 md:-ml-10 -mr-4 md:-mr-10 sm:rounded-b-5 px-4 md:px-10 z-50 sm:border-x border-t border-primary-border">
-              Total transactions: {transactions?.length || 0}
+              {t("total_transactions")}: {transactions?.length || 0}
 
               <button onClick={clearTransactions} disabled={!transactions?.length}
                       className="text-red flex gap-1 items-center disabled:opacity-50 disabled:pointer-events-none">
                 <Svg iconName="delete" />
-                Clear all
+                {t("clear_all")}
               </button>
           </div>
         </div>}

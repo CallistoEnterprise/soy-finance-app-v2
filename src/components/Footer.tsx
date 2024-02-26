@@ -160,7 +160,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="p-4 mb-5 sm:mb-0 sm:px-10 sm:py-5 flex justify-between items-center text-12 sm:text-16">
-        <span className="text-secondary-text text-12 sm:text-16">©{new Date(Date.now()).getFullYear()} All rights reserved</span>
+        <span className="text-secondary-text text-12 sm:text-16">©{new Date(Date.now()).getFullYear()} {t("rights_reserved")}</span>
         <div className="flex items-center gap-3 sm:gap-5">
           <a href="#">{t("terms")}</a>
           <a href="#">{t("privacy_policy")}</a>

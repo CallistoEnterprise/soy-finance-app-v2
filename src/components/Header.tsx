@@ -11,8 +11,11 @@ import ThemedLogo from "@/components/ThemedLogo";
 import MobileMenu from "@/components/MobileMenu";
 import { useConnectWalletDialogStateStore } from "@/components/dialogs/stores/useConnectWalletStore";
 import { useRecentTransactionTracking } from "@/hooks/useRecentTransactionsTracking";
+import { useTranslations } from "use-intl";
 
 export default function Header() {
+  const navT = useTranslations("Navigation");
+
   const { isConnected, address } = useAccount();
   const {setIsOpened} = useConnectWalletDialogStateStore();
   const {
@@ -42,7 +45,7 @@ export default function Header() {
                 <ChangeNetworkMenu/>
                 <WalletMenu pending={pending}/>
               </>
-              : <PrimaryButton onClick={() => setIsOpened(true)}>Connect wallet</PrimaryButton>}
+              : <PrimaryButton onClick={() => setIsOpened(true)}>{navT("connect_wallet")}</PrimaryButton>}
           </div>
           <MobileMenu />
 
@@ -54,7 +57,7 @@ export default function Header() {
               <ChangeNetworkMenu/>
               <WalletMenu pending={pending}/>
             </div>
-            : <PrimaryButton fullWidth onClick={() => setIsOpened(true)}>Connect wallet</PrimaryButton>}
+            : <PrimaryButton fullWidth onClick={() => setIsOpened(true)}>{navT("connect_wallet")}</PrimaryButton>}
         </div>
       </div>
     </header>

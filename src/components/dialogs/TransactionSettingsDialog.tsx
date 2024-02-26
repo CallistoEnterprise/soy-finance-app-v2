@@ -71,7 +71,7 @@ export default function TransactionSettingsDialog({isOpen, setIsOpen}: Props) {
           <div className="flex justify-between items-center">
             <span className="text-16">{t("transaction_deadline")}</span>
             <div className="w-[110px]">
-              <InputWithUnits units="min" value={deadlineValue} setValue={setDeadlineValue} />
+              <InputWithUnits units={t("minutes")} value={deadlineValue} setValue={setDeadlineValue} />
             </div>
           </div>
 

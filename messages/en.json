@@ -19,7 +19,9 @@
       "boost_token": "Boost token",
       "burn_and_boost": "Burn & Boost",
       "staking": "Staking",
-      "info": "Info"
+      "info": "Info",
+      "choose_wallet": "Choose wallet",
+      "choose_network": "Choose network"
   },
   "Swap": {
       "swap_not_supported": "Swap is not supported via this chain",
@@ -145,7 +147,8 @@
   "Toast": {
       "something_went_wrong": "Something went wrong, please, contact support",
       "user_rejected_request": "User rejected the request",
-      "successfully_copied": "Successfully copied!"
+      "successfully_copied": "Successfully copied!",
+      "successfully_connected": "Successfully connected!"
   },
   "Form": {
     "name_or_address_placeholder": "Name or address",
@@ -209,7 +212,8 @@
     "slippage_tolerance": "Slippage tolerance",
     "transaction_deadline": "Transaction deadline",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "minutes": "min"
   },
  "SettingsAndWallet": {
     "dark_mode": "Dark mode",
@@ -223,11 +227,12 @@
     "disconnect": "Disconnect",
     "your_address": "Your address",
     "your_wallet": "Your wallet",
-    "balance": "balance",
+    "balance": "{symbol} balance",
     "view_on_explorer": "View on {explorerName}",
     "transactions": "Transactions",
     "total_transactions": "Total transactions",
-    "clear_all": "Clear all"
+    "clear_all": "Clear all",
+    "displayed_here": "All transaction will be displayed here."
   },
   "Footer": {
     "terms": "Terms",
@@ -243,6 +248,16 @@
     "token_standard": "ERC 223 token standard",
     "slothTV": "SlothTV",
     "github": "Github",
-    "team": "Team"
+    "team": "Team",
+    "rights_reserved": "All rights reserved"
+  },
+  "RecentTransaction": {
+
+  },
+  "Confirmation": {
+    "waiting_for_confirmation": "Waiting for confirmation",
+    "transaction_submitted": "Transaction submitted",
+    "great": "Great!",
+    "view_on_explorer": "View on explorer"
   }
 }
