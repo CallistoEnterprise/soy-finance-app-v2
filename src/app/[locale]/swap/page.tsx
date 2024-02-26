@@ -11,6 +11,7 @@ import { availableChainIds } from "@/config/networks";
 import PageCard from "@/components/PageCard";
 import EmptyStateIcon from "@/components/atoms/EmptyStateIcon";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
+import {useTranslations} from "use-intl";
 
 const safeTradingMap: {
   [key: string]: {
@@ -101,6 +102,8 @@ export default function SwapPage() {
 
   const {switchChain} = useSwitchChain();
 
+  const t = useTranslations('Swap');
+
   return <Container>
     <div className="grid grid-cols-1 lg:grid-cols-content mb-5 sm:my-5 lg:gap-5 ">
       <Column>
@@ -113,8 +116,8 @@ export default function SwapPage() {
           {accountChainId && !availableChainIds.includes(accountChainId) && <PageCard>
             <div className="min-h-[400px] flex flex-col justify-center items-center gap-5">
               <EmptyStateIcon iconName="network" />
-              <h2 className="bold text-16 lg:text-20">Swap is not supported via this chain</h2>
-              <PrimaryButton onClick={() => switchChain({ chainId: 820 })}>Switch to Callisto</PrimaryButton>
+              <h2 className="bold text-16 lg:text-20 text-center">{t("swap_not_supported")}</h2>
+              <PrimaryButton onClick={() => switchChain({ chainId: 820 })}>{t("switch_to_callisto")}</PrimaryButton>
             </div>
           </PageCard>}
           {!accountChainId && <Swap />}

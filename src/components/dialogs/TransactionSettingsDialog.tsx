@@ -6,6 +6,7 @@ import { useTransactionSettingsStore } from "@/app/[locale]/swap/stores";
 import { useCallback, useState } from "react";
 import DrawerDialog from "@/components/atoms/DrawerDialog";
 import addToast from "@/other/toast";
+import {useTranslations} from "use-intl";
 
 interface Props {
   isOpen: boolean,
@@ -22,6 +23,8 @@ function InputWithUnits({units, value, setValue}: {units: string, value: number,
 }
 
 export default function TransactionSettingsDialog({isOpen, setIsOpen}: Props) {
+  const t = useTranslations("TransactionSettingsDialog");
+
   const {deadline, slippage, setSlippage, setDeadline} = useTransactionSettingsStore();
 
   const [slippageValue, setSlippageValue] = useState(slippage);
@@ -46,11 +49,11 @@ export default function TransactionSettingsDialog({isOpen, setIsOpen}: Props) {
 
   return <DrawerDialog isOpen={isOpen} setIsOpen={setIsOpen}>
     <div className="w-full sm:w-[550px] rounded-5 gap-2.5">
-      <DialogHeader title="Settings" handleClose={() => setIsOpen(false)} />
+      <DialogHeader title={t("settings")} handleClose={() => setIsOpen(false)} />
       <div>
         <div className="p-4 md:p-10 flex flex-col gap-5">
           <div>
-            <span className="text-16">Slippage tolerance</span>
+            <span className="text-16">{t("slippage_tolerance")}</span>
             <div className="grid grid-cols-[1fr_1fr_1fr_110px] xl:grid-cols-4 gap-2.5 mt-2">
               {[0.1, 0.5, 1].map((value) => {
                 return <button key={value} className={clsx(
@@ -66,15 +69,15 @@ export default function TransactionSettingsDialog({isOpen, setIsOpen}: Props) {
           </div>
 
           <div className="flex justify-between items-center">
-            <span className="text-16">Transaction deadline</span>
+            <span className="text-16">{t("transaction_deadline")}</span>
             <div className="w-[110px]">
-              <InputWithUnits units="min" value={deadlineValue} setValue={setDeadlineValue} />
+              <InputWithUnits units={t("minutes")} value={deadlineValue} setValue={setDeadlineValue} />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2.5">
-            <PrimaryButton onClick={handleClose} variant="outlined" fullWidth>Cancel</PrimaryButton>
-            <PrimaryButton onClick={handleSave} disabled={!slippageValue || !deadlineValue} fullWidth>Save</PrimaryButton>
+            <PrimaryButton onClick={handleClose} variant="outlined" fullWidth>{t("cancel")}</PrimaryButton>
+            <PrimaryButton onClick={handleSave} disabled={!slippageValue || !deadlineValue} fullWidth>{t("save")}</PrimaryButton>
           </div>
         </div>
       </div>

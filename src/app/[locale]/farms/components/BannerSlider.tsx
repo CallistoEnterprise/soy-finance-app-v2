@@ -2,6 +2,7 @@ import React, { PropsWithChildren, useState } from "react";
 import clsx from "clsx";
 import Image from "next/image";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
+import {useTranslations} from "use-intl";
 
 interface ItemProps {
   index: number,
@@ -23,6 +24,8 @@ function BannerSliderItem({ children, index, active }: PropsWithChildren<ItemPro
 }
 
 export default function BannerSlider() {
+  const t = useTranslations("FarmsBanner");
+
   const [activeIndex, setActiveIndex] = useState(0);
   // const [paused, setPaused] = useState(false);
 
@@ -68,12 +71,12 @@ export default function BannerSlider() {
       >
         <BannerSliderItem active={activeIndex === 0} index={0}>
           <div className="flex flex-col items-start max-w-[535px]">
-            <p className="text-[#122110] text-28 font-semibold">Sloth Farming 101</p>
+            <p className="text-[#122110] text-28 font-semibold">{t("banner_slide_1_title")}</p>
             <div style={{height: 10}} />
-            <p className="text-[#122110]  whitespace-normal">New to the Slothiverse? Get started with Farming in just a few easy steps!</p>
+            <p className="text-[#122110]  whitespace-normal">{t("banner_slide_1_subtitle")}</p>
             <div style={{height: 16}} />
             <a href="https://docs.soy.finance/soy-products/trading/make-your-first-trade" target="_blank">
-              <PrimaryButton>Master Farming</PrimaryButton>
+              <PrimaryButton>{t("banner_slide_1_button")}</PrimaryButton>
             </a>
           </div>
           <div className="absolute right-0 bottom-0 h-[224px] w-[434px]">
@@ -82,12 +85,12 @@ export default function BannerSlider() {
         </BannerSliderItem>
         <BannerSliderItem active={activeIndex === 1} index={1}>
           <div className="flex flex-col items-start max-w-[535px]">
-            <p className="text-[#122110] text-28 font-semibold" >Secure your Slothvestments</p>
+            <p className="text-[#122110] text-28 font-semibold" >{t("banner_slide_2_title")}</p>
             <div style={{height: 10}} />
-            <p className="text-[#122110]  whitespace-normal">Fear not, Sloth friends! Our Distributed Insurance has your back, keeping your funds safe and sound.</p>
+            <p className="text-[#122110]  whitespace-normal">{t("banner_slide_2_subtitle")}</p>
             <div style={{height: 16}} />
             <a href="https://docs.soy.finance/soy-products/safety-on-yields" target="_blank">
-              <PrimaryButton>Invest in Your Safety</PrimaryButton>
+              <PrimaryButton>{t("banner_slide_2_button")}</PrimaryButton>
             </a>
           </div>
           <div className="absolute right-0 bottom-0 h-[224px] w-[434px]">
@@ -96,12 +99,12 @@ export default function BannerSlider() {
         </BannerSliderItem>
         <BannerSliderItem active={activeIndex === 2} index={2}>
           <div className="flex flex-col items-start max-w-[535px]">
-            <p className="text-[#122110] text-28 font-semibold">Callisto Network - Sloths&apos; Safe Haven</p>
+            <p className="text-[#122110] text-28 font-semibold">{t("banner_slide_3_title")}</p>
             <div style={{height: 10}} />
-            <p className="text-[#122110]  whitespace-normal">Dive into the ultra-fast, ultra-cheap Callisto Network! The ideal environment for DeFi Sloths.</p>
+            <p className="text-[#122110]  whitespace-normal">{t("banner_slide_3_subtitle")}</p>
             <div style={{height: 16}} />
             <a href="https://callisto.network/">
-              <PrimaryButton>Explore Callisto Network</PrimaryButton>
+              <PrimaryButton>{t("banner_slide_3_button")}</PrimaryButton>
             </a>
           </div>
           <div className="absolute right-0 bottom-0 h-[224px] w-[434px]">
@@ -110,11 +113,11 @@ export default function BannerSlider() {
         </BannerSliderItem>
         <BannerSliderItem active={activeIndex === 3} index={3}>
           <div className="flex flex-col items-start max-w-[535px]">
-            <p className="text-[#122110] text-28 font-semibold">Juicy Hotspots</p>
+            <p className="text-[#122110] text-28 font-semibold">{t("banner_slide_4_title")}</p>
             <div style={{height: 10}} />
-            <p className="text-[#122110]  whitespace-normal">Looking for juicy returns? Discover our top-performing pools with the Boost NFTs.</p>
+            <p className="text-[#122110]  whitespace-normal">{t("banner_slide_4_subtitle")}</p>
             <div style={{height: 16}} />
-            <PrimaryButton onClick={() => {}}>Boost your Earnings</PrimaryButton>
+            <PrimaryButton onClick={() => {}}>{t("banner_slide_4_button")}</PrimaryButton>
           </div>
           <div className="absolute right-0 bottom-0 h-[224px] w-[434px]">
             <Image width={434} height={224} src="/images/banners/4.svg" alt="" />

@@ -8,11 +8,14 @@ import WalletDialog from "@/components/dialogs/WalletDialog";
 import { useWalletDialogStore } from "@/components/dialogs/stores/useWalletDialogStore";
 import Preloader from "@/components/atoms/Preloader";
 import { RecentTransaction } from "@/stores/useRecentTransactions";
+import { useTranslations } from "use-intl";
 
 interface Props {
   pending: RecentTransaction[] | undefined
 }
 export default function WalletMenu({pending}: Props) {
+  const t = useTranslations("SettingsAndWallet");
+
   const [isWalletMenuOpened, setWalletMenuOpened] = useState(false);
   const { address } = useAccount();
   const { disconnect } = useDisconnect();
@@ -44,7 +47,7 @@ export default function WalletMenu({pending}: Props) {
                 setWalletMenuOpened(false);
                 // setWalletDialogOpenedFn(true);
                 // setDefaultTab(0);
-              }} label={"Wallet"} image={<Svg className="text-secondary-text" iconName="wallet"/>}
+              }} label={t("wallet")} image={<Svg className="text-secondary-text" iconName="wallet"/>}
               />
             </li>
             <li>
@@ -54,7 +57,7 @@ export default function WalletMenu({pending}: Props) {
                 setWalletMenuOpened(false);
                 // setWalletDialogOpenedFn(true);
                 // setDefaultTab(1);
-              }} label="Recent transactions" notify={Boolean(pending?.length)} image={<Svg className="text-secondary-text" iconName="history"/>}
+              }} label={t("recent_transactions")} notify={Boolean(pending?.length)} image={<Svg className="text-secondary-text" iconName="history"/>}
               />
             </li>
             <div className="w-full h-[1px] bg-primary-border"/>
@@ -62,7 +65,7 @@ export default function WalletMenu({pending}: Props) {
               <DropdownItem handleClick={() => {
                 disconnect();
                 setWalletMenuOpened(false);
-              }} label="Disconnect" image={<Svg className="text-secondary-text" iconName="logout"/>}
+              }} label={t("disconnect")} image={<Svg className="text-secondary-text" iconName="logout"/>}
               />
             </li>
           </ul>

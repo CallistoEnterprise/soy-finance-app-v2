@@ -34,6 +34,7 @@ import useUSDPrices from "@/hooks/useUSDPrices";
 import { AvailableChains } from "@/components/dialogs/stores/useConnectWalletStore";
 import { LP_TOKEN_ABI } from "@/config/abis/lpToken";
 import Preloader from "@/components/atoms/Preloader";
+import {useTranslations} from "use-intl";
 
 const farmsPids = {
   // clo-busdt
@@ -544,22 +545,6 @@ const getChangeForPeriod = (
   const percentageChange = getPercentChange(currentPeriodAmount, previousPeriodAmount)
   return [currentPeriodAmount, percentageChange]
 }
-
-const getBlockSubqueries = (timestamps: number[]) =>
-  timestamps.map((timestamp) => {
-    return `t${timestamp}:blocks(first: 1, orderBy: timestamp, orderDirection: desc, where: { timestamp_gt: ${timestamp}, timestamp_lt: ${
-      timestamp + 600
-    } }) {
-      number
-    }`
-  })
-
-const blocksQueryConstructor = (subqueries: string[]) => {
-  return gql`query blocks {
-    ${subqueries}
-  }`
-}
-
 /**
  * @notice Fetches block objects for an array of timestamps.
  * @param {Array} timestamps
@@ -705,6 +690,8 @@ function isNewFarm(pid: number) {
 }
 
 export default function FarmsPage() {
+  const t = useTranslations("Farms");
+  const formT = useTranslations("Form");
   const { isConnected: isActive, address: account } = useAccount();
   const { chainId } = useAccount();
 
@@ -1030,16 +1017,16 @@ export default function FarmsPage() {
 
   return <Container>
     <div className="bg-primary-bg rounded-5 p-5 xl:flex flex-col gap-5 xl:mt-5 border border-primary-border hidden">
-      <PageCardHeading title="Soy Finance essentials"/>
+      <PageCardHeading title={t("soy_finance_essentials")}/>
       <BannerSlider/>
     </div>
     <div className="bg-primary-bg sm:rounded-5 sm:mt-5 mb-5 p-4 xl:p-5 border-y sm:border border-primary-border">
-      <PageCardHeading title="All farms"/>
+      <PageCardHeading title={t("all_farms")}/>
 
       <div className="grid grid-cols-1 xl:flex gap-2.5 xl:gap-0 justify-between items-center my-5">
         <div className="flex gap-5 items-center">
           <div className="hidden xl:flex items-center gap-2.5">
-            <p className="text-14">Staked only</p>
+            <p className="text-14">{t("staked_only")}</p>
             <Switch checked={showOnlyStaked} setChecked={() => setShowOnlyStaked(!showOnlyStaked)}/>
           </div>
           <div className="flex border border-primary-border p-[1px] items-center gap-0.5 rounded-2">
@@ -1047,13 +1034,13 @@ export default function FarmsPage() {
               className={clsx("h-[38px] rounded-1.5 min-w-[100px] px-4", showActive ? "bg-green text-white pointer-events-none" : "text-primary-text hover:bg-green/10")}
               onClick={() => setShowActive(true)}
             >
-              Live
+              {t("live")}
             </button>
             <button
               className={clsx("h-[38px] rounded-1.5 min-w-[100px] px-4", !showActive ? "bg-green text-white pointer-events-none" : "text-primary-text hover:bg-green/10")}
               onClick={() => setShowActive(false)}
             >
-              Finished
+              {t("finished")}
             </button>
           </div>
         </div>
@@ -1062,29 +1049,29 @@ export default function FarmsPage() {
             <Select options={[
               {
                 value: "hot",
-                label: "Hot"
+                label: t("hot")
               },
               {
                 value: "liquidity",
-                label: "Liquidity"
+                label: t("liquidity")
               },
               {
                 value: "multiplier",
-                label: "Multiplier"
+                label: t("multiplier")
               },
               {
                 value: "apr",
-                label: "APR"
+                label: t("APR")
               },
             ]} value={sorting} setValue={setSorting}/>
           </div>
           <div className="w-full grid-in-search">
             <SearchInput value={searchRequest}
                          onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchRequest(e.target.value)}
-                         placeholder="Name or address"/>
+                         placeholder={formT("name_or_address_placeholder")}/>
           </div>
           <div className="grid-in-staked flex items-center gap-2.5 text-14 xl:hidden">
-            <p className="text-14">Staked only</p>
+            <p className="text-14">{t("staked_only")}</p>
             <Switch checked={showOnlyStaked} setChecked={() => setShowOnlyStaked(!showOnlyStaked)}/>
           </div>
         </div>

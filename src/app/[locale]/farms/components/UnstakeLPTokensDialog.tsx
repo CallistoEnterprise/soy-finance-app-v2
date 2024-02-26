@@ -12,8 +12,14 @@ import DrawerDialog from "@/components/atoms/DrawerDialog";
 import { useAwaitingDialogStore } from "@/stores/useAwaitingDialogStore";
 import addToast from "@/other/toast";
 import { WrappedToken } from "@/config/types/WrappedToken";
+import {useTranslations} from "use-intl";
 
 export default function UnstakeLPTokensModal() {
+  const t = useTranslations("Farms");
+  const formT = useTranslations("Form");
+  const toastT = useTranslations("Toast");
+
+
   const { chainId } = useAccount();
   const {address: account} = useAccount();
 
@@ -83,10 +89,10 @@ export default function UnstakeLPTokensModal() {
       }
     } catch (e) {
       console.log(e);
-      addToast("Something went wrong, please contact support", "error");
+      addToast(toastT("something_went_wrong"), "error");
       setClose();
     }
-  }, [account, addTransaction, chainId, farmToUnstake, publicClient, setClose, setIsOpened, setOpened, setSubmitted, value, walletClient]);
+  }, [account, addTransaction, chainId, farmToUnstake, publicClient, setClose, setIsOpened, setOpened, setSubmitted, toastT, value, walletClient]);
 
   const pair: [WrappedToken, WrappedToken] | [undefined, undefined] = useMemo(() => {
     if(chainId && farmToUnstake?.token && farmToUnstake?.quoteToken) {
@@ -130,7 +136,7 @@ export default function UnstakeLPTokensModal() {
 
   return <DrawerDialog isOpen={isOpened} setIsOpen={setIsOpened}>
     <div className="w-full xl:w-[480px]">
-      <DialogHeader handleClose={() => setIsOpened(false)} title="Unstake lp tokens" />
+      <DialogHeader handleClose={() => setIsOpened(false)} title={t("unstake_lp_tokens")} />
       <div className="p-10">
         <TokenSelector
           token={lpToken}
@@ -139,12 +145,12 @@ export default function UnstakeLPTokensModal() {
             setValue(value);
           }}
           onPick={() => undefined}
-          label="Unstake"
+          label={t("unstake")}
           balance={farmsUserData[farmToUnstake?.pid]?.staked[0]}
           pair={pair}
         />
         <div className="flex gap-2.5 mt-5">
-          <PrimaryButton onClick={() => setIsOpened(false)} fullWidth variant="outlined">Cancel</PrimaryButton>
+          <PrimaryButton onClick={() => setIsOpened(false)} fullWidth variant="outlined">{formT("cancel")}</PrimaryButton>
           <PrimaryButton onClick={async () => {
             setStaking(true);
             try {
@@ -153,7 +159,7 @@ export default function UnstakeLPTokensModal() {
             } catch (e) {
               setStaking(false);
             }
-          }} fullWidth>Unstake</PrimaryButton>
+          }} fullWidth>{t("unstake")}</PrimaryButton>
         </div>
       </div>
     </div>
