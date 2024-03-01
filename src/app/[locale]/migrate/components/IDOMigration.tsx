@@ -1,5 +1,5 @@
 import {
-  test1Token,
+  soyToken,
   slofiToken, useIDOMigrateAmountsStore, useIDOMigrateTokensStore,
 } from "@/app/[locale]/migrate/stores";
 import { useAccount, useBalance, useBlockNumber, useReadContract } from "wagmi";
@@ -116,7 +116,7 @@ export default function IDOMigration() {
 
     <TokenSelector label={`From ${tokenFrom?.symbol}`} token={tokenFrom} onPick={() => {
     }} amount={amountInString} setAmount={(value) => {
-      setAmountIn(value, test1Token.decimals);
+      setAmountIn(value, soyToken.decimals);
     }} readonlyToken balance={IDOReserved}/>
     <div className="my-2.5 xl:my-5 flex justify-center">
       <RoundedIconButton disabled icon="low"/>
