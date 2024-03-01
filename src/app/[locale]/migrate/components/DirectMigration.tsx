@@ -1,6 +1,6 @@
 import {
-  test1Token,
-  test2Token,
+  soyToken,
+  cloeToken,
   slofiToken,
   useMigrateAmountsStore,
   useMigrateTokensStore
@@ -37,7 +37,7 @@ function DirectMigrationActionButton({isOpened}: {isOpened: boolean}) {
   }, [blockNumber, refetch]);
 
   const { isAllowed: isAllowed, writeTokenApprove: approve } = useAllowance({
-    token: test2Token,
+    token: cloeToken,
     contractAddress: migrateContractAddress,
     amountToCheck: amountIn
   });
@@ -60,7 +60,7 @@ function DirectMigrationActionButton({isOpened}: {isOpened: boolean}) {
     return <PrimaryButton fullWidth disabled>Insufficient amount</PrimaryButton>
   }
 
-  if (tokenFrom.symbol === test1Token.symbol) {
+  if (tokenFrom.symbol === soyToken.symbol) {
     return <PrimaryButton fullWidth onClick={() => {
       if(!isOpened) {
         addToast("Migration is currently closed", "info");
@@ -70,7 +70,7 @@ function DirectMigrationActionButton({isOpened}: {isOpened: boolean}) {
     }}>Migrate</PrimaryButton>
   }
 
-  if (tokenFrom.symbol === test2Token.symbol) {
+  if (tokenFrom.symbol === cloeToken.symbol) {
     if (isAllowed) {
       return <PrimaryButton fullWidth onClick={handleMigrateCLOE}>Migrate {tokenFrom.symbol}</PrimaryButton>
     }
@@ -106,13 +106,13 @@ export default function DirectMigration() {
     if (data && amountIn && soyRatio && cloeRatio) {
       const [soyRatio, cloeRatio] = data;
 
-      if (tokenFrom.symbol === test1Token.symbol) {
+      if (tokenFrom.symbol === soyToken.symbol) {
         const amountOut = amountIn / soyRatio;
         const parsedAmount = formatUnits(amountOut, 18);
         setAmountOut(parsedAmount, 18);
       }
 
-      if (tokenFrom.symbol === test2Token.symbol) {
+      if (tokenFrom.symbol === cloeToken.symbol) {
         const amountOut = amountIn / cloeRatio;
         const parsedAmount = formatUnits(amountOut, 18);
         setAmountOut(parsedAmount, 18);
@@ -128,15 +128,15 @@ export default function DirectMigration() {
   const [showInverted, setShowInverted] = useState(false);
 
   const ratioLabel = useMemo(() => {
-    if (tokenFrom.symbol === test1Token.symbol && !soyRatio) {
+    if (tokenFrom.symbol === soyToken.symbol && !soyRatio) {
       return "";
     }
 
-    if (tokenFrom.symbol === test2Token.symbol && !cloeRatio) {
+    if (tokenFrom.symbol === cloeToken.symbol && !cloeRatio) {
       return "";
     }
 
-    const ratio = tokenFrom.symbol === test1Token.symbol ? soyRatio : cloeRatio;
+    const ratio = tokenFrom.symbol === soyToken.symbol ? soyRatio : cloeRatio;
 
     const reversedRatio = (1 / Number(ratio)).toLocaleString("en-US", {
       maximumSignificantDigits: 2
@@ -153,34 +153,32 @@ export default function DirectMigration() {
 
     <h3 className="font-bold mb-2.5">Asset to migrate</h3>
     <div className="grid grid-cols-2 gap-2.5 mb-5">
-      <Radio isActive={tokenFrom?.address === test1Token.address} onClick={() => {
-        setTokenFrom(test1Token);
-      }}>
+      <Radio isActive={false} onClick = {()=>{}} disabled>
                 <span className="flex items-center gap-2">
-                  <Image width={24} height={24} src={test1Token.logoURI} alt={test1Token.name!}/>
-                  {test1Token.symbol}
+                  <Image width={24} height={24} src={soyToken.logoURI} alt={soyToken.name!}/>
+                  {soyToken.symbol}
                 </span>
-      </Radio>
-      <Radio isActive={tokenFrom?.address === test2Token.address} onClick={() => {
-        setTokenFrom(test2Token);
+      </Radio>     
+      <Radio isActive={tokenFrom?.address === cloeToken.address} onClick={() => {
+        setTokenFrom(cloeToken);
       }}>
                 <span className="flex items-center gap-2">
-                  <Image width={24} height={24} src={test2Token.logoURI} alt={test2Token.name!}/>
-                  {test2Token.symbol}
+                  <Image width={24} height={24} src={cloeToken.logoURI} alt={cloeToken.name!}/>
+                  {cloeToken.symbol}
                 </span>
       </Radio>
     </div>
 
     <TokenSelector label={`From ${tokenFrom?.symbol}`} token={tokenFrom} onPick={() => {
     }} amount={amountInString} setAmount={(value) => {
-      setAmountIn(value, test1Token.decimals);
+      setAmountIn(value, soyToken.decimals);
     }} readonlyToken/>
     <div className="my-2.5 xl:my-5 flex justify-center">
       <RoundedIconButton disabled icon="low"/>
     </div>
     <TokenSelector readonly label={`To ${tokenTo?.symbol}`} token={slofiToken} onPick={() => null}
                    amount={amountOutString} setAmount={(value) => {
-      setAmountOut(value, test2Token.decimals);
+      setAmountOut(value, cloeToken.decimals);
     }}/>
     <div className="mb-5"/>
     <InfoRow label="Current rate" value={

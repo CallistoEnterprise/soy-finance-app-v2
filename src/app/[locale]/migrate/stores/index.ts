@@ -1,7 +1,7 @@
 import { WrappedToken } from "@/config/types/WrappedToken";
 import { create } from "zustand";
 import { parseUnits } from "viem";
-import { tokensInClo } from "@/config/token-lists/tokenListInCLO";
+import { tokensInClo, wclo } from "@/config/token-lists/tokenListInCLO";
 
 interface MigrateTokensStore {
   tokenFrom: WrappedToken,
@@ -11,9 +11,8 @@ interface MigrateTokensStore {
   switchTokens: () => void
 }
 
-
-export  const test1Token = new WrappedToken(
-  820,
+export  const soyToken = new WrappedToken(
+  tokensInClo.soy.chainId,
   tokensInClo.soy.address,
   tokensInClo.soy.decimals,
   tokensInClo.soy.symbol,
@@ -21,8 +20,8 @@ export  const test1Token = new WrappedToken(
   tokensInClo.soy.logoURI
 )
 
-export const test2Token = new WrappedToken(
-  820,
+export const cloeToken = new WrappedToken(
+  tokensInClo.cloe.chainId,
   tokensInClo.cloe.address,
   tokensInClo.cloe.decimals,
   tokensInClo.cloe.symbol,
@@ -31,16 +30,34 @@ export const test2Token = new WrappedToken(
 )
 
 export const slofiToken = new WrappedToken(
-  820,
-  "0x8c5Bba04B2f5CCCe0f8F951D2DE9616BE190070D",
-  18,
-  "SLOFI",
-  "Sloth Finance Token",
-  "/images/all-tokens/SLOFI.svg"
+  tokensInClo.slofi.chainId,
+  tokensInClo.slofi.address,
+  tokensInClo.slofi.decimals,
+  tokensInClo.slofi.symbol,
+  tokensInClo.slofi.name,
+  tokensInClo.slofi.logoURI
 );
 
+export const ceToken = new WrappedToken(
+  tokensInClo.ce.chainId,
+  tokensInClo.ce.address,
+  tokensInClo.ce.decimals,
+  tokensInClo.ce.symbol,
+  tokensInClo.ce.name,
+  tokensInClo.ce.logoURI
+);
+
+export const clo = new WrappedToken(
+  820,
+  wclo.address,
+  wclo.decimals,
+  wclo.symbol,
+  wclo.name,
+  wclo.logoURI
+)
+
 export const useMigrateTokensStore = create<MigrateTokensStore>((set, get) => ({
-  tokenFrom: test1Token,
+  tokenFrom: cloeToken,
   tokenTo: slofiToken,
 
   setTokenFrom: (token) => set({tokenFrom: token}),
@@ -89,7 +106,7 @@ interface IDOMigrateTokensStore {
 }
 
 export const useIDOMigrateTokensStore = create<IDOMigrateTokensStore>((set, get) => ({
-  tokenFrom: test1Token,
+  tokenFrom: soyToken,
   tokenTo: slofiToken,
 }));
 
@@ -127,13 +144,38 @@ export const useIDOMigrateAmountsStore = create<IDOMigrateAmountsStore>((set, ge
   },
 }));
 
+export const useCLOMigrateTokensStore = create<CLOMigrateAmountsStore>((set, get) => ({
+  migrationRate: 10000,
+  tokenFrom: clo,
+  tokenTo: ceToken,
+
+  setTokenFrom: (token) => {
+    if(token.symbol == tokensInClo.cloe.symbol)
+      set({migrationRate: 200000});  // 1 CLOE = 20 CE
+    else
+      set({migrationRate: 10000});  // 1 CLO = 1 CE
+    set({tokenFrom: token});
+  }
+  //setTokenTo: (token) => set({tokenTo: token}),
+  //switchTokens: () => set({tokenFrom: get().tokenTo, tokenTo: get().tokenFrom})
+}));
+
+interface CLOMigrateAmountsStore {
+  migrationRate: number,
+  tokenFrom: WrappedToken,
+  tokenTo: WrappedToken,
+  setTokenFrom: (token: WrappedToken) => void,
+  //setTokenTo: (token: WrappedToken) => void,
+  //switchTokens: () => void
+}
+
 interface StakingMigrateTokensStore {
   tokenFrom: WrappedToken,
   tokenTo: WrappedToken,
 }
 
 export const useStakingMigrateTokensStore = create<StakingMigrateTokensStore>((set, get) => ({
-  tokenFrom: test1Token,
+  tokenFrom: soyToken,
   tokenTo: slofiToken,
 }));
 

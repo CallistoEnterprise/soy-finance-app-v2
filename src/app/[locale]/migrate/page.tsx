@@ -9,6 +9,7 @@ import Svg from "@/components/atoms/Svg";
 import DirectMigration from "@/app/[locale]/migrate/components/DirectMigration";
 import StakingMigration from "@/app/[locale]/migrate/components/StakingMigration";
 import IDOMigration from "@/app/[locale]/migrate/components/IDOMigration";
+import CLOMigration from "@/app/[locale]/migrate/components/CLOMigration";
 import { useAccount, useBlockNumber, usePublicClient, useReadContract, useSwitchChain, useWalletClient } from "wagmi";
 import { SLOTH_VESTING_ABI } from "@/config/abis/slothVesting";
 import { Abi, Address, formatUnits } from "viem";
@@ -201,27 +202,34 @@ export default function MigratePage() {
       <div className="bg-primary-bg sm:rounded-5 border-y sm:border border-primary-border overflow-hidden">
         <div className="flex">
           <button className={clsx(
-            "flex-1 h-10 w-full text-primary-text text-16 border-primary-border border-r",
+            "flex-1 h-10 w-full text-primary-text text-16 border-primary-border",
             activeTab === 0 ? "bg-primary-bg" : "bg-secondary-bg border-b"
           )}
-                  onClick={() => setActiveTab(0)}>Direct <span className="hidden md:inline">migration</span>
+                  onClick={() => setActiveTab(0)}>CLO <span className="hidden md:inline">migration</span>
           </button>
           <button className={clsx(
             "flex-1 h-10 w-full text-primary-text text-16 border-primary-border border-r",
             activeTab === 1 ? "bg-primary-bg" : "bg-secondary-bg border-b"
           )}
-                  onClick={() => setActiveTab(1)}>Staking <span className="hidden md:inline">migration</span>
+                  onClick={() => setActiveTab(1)}>Direct <span className="hidden md:inline">migration</span>
+          </button>
+          <button className={clsx(
+            "flex-1 h-10 w-full text-primary-text text-16 border-primary-border border-r",
+            activeTab === 2 ? "bg-primary-bg" : "bg-secondary-bg border-b"
+          )}
+                  onClick={() => setActiveTab(2)}>Staking <span className="hidden md:inline">migration</span>
           </button>
           <button className={clsx(
             "flex-1 h-10 w-full text-primary-text text-16 border-primary-border",
-            activeTab === 2 ? "bg-primary-bg" : "bg-secondary-bg border-b"
+            activeTab === 3 ? "bg-primary-bg" : "bg-secondary-bg border-b"
           )}
-                  onClick={() => setActiveTab(2)}>IDO <span className="hidden md:inline">migration</span>
+                  onClick={() => setActiveTab(3)}>IDO <span className="hidden md:inline">migration</span>
           </button>
         </div>
-        {activeTab === 0 && <DirectMigration />}
-        {activeTab === 1 && <StakingMigration />}
-        {activeTab === 2 && <IDOMigration />}
+        {activeTab === 0 && <CLOMigration />}
+        {activeTab === 1 && <DirectMigration />}
+        {activeTab === 2 && <StakingMigration />}
+        {activeTab === 3 && <IDOMigration />}
       </div>
     </div>
   </Container>

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { Abi, Address, formatUnits } from "viem";
-import { test1Token, useIDOMigrateAmountsStore, useIDOMigrateTokensStore } from "@/app/[locale]/migrate/stores";
+import { soyToken, useIDOMigrateAmountsStore, useIDOMigrateTokensStore } from "@/app/[locale]/migrate/stores";
 import { ERC20_ABI } from "@/config/abis/erc20";
 import addToast from "@/other/toast";
 import { useAwaitingDialogStore } from "@/stores/useAwaitingDialogStore";
@@ -34,7 +34,7 @@ export default function useIDOMigration() {
           ]
         } = {
           account: address,
-          address: test1Token.address,
+          address: soyToken.address,
           abi: ERC20_ABI,
           functionName: "transfer",
           args: [

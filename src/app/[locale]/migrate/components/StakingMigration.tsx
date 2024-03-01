@@ -2,8 +2,8 @@ import Image from "next/image";
 import { tokensInClo } from "@/config/token-lists/tokenListInCLO";
 import Svg from "@/components/atoms/Svg";
 import {
-  test1Token,
-  test2Token,
+  soyToken,
+  cloeToken,
   slofiToken,
   useIDOMigrateAmountsStore,
   useIDOMigrateTokensStore, useStakingMigrateAmountsStore, useStakingMigrateTokensStore
@@ -180,7 +180,7 @@ export default function StakingMigration() {
 
     <TokenSelector label={`From ${tokenFrom?.symbol}`} token={tokenFrom} onPick={() => {
     }} amount={amountInString} setAmount={(value) => {
-      setAmountIn(value, test1Token.decimals);
+      setAmountIn(value, soyToken.decimals);
     }} readonlyToken />
     <div className="my-2.5 xl:my-5 flex justify-center">
       <RoundedIconButton disabled icon="low"/>

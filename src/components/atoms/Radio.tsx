@@ -1,13 +1,13 @@
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, ButtonHTMLAttributes } from "react";
 import clsx from "clsx";
 
-interface Props {
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement>{
   isActive: boolean,
   onClick: () => void
 }
 
-export default function Radio({ isActive, children, onClick }: PropsWithChildren<Props>) {
-  return <button
+export default function Radio({ isActive, children, onClick, ...props }: PropsWithChildren<Props>) {
+  return <button {...props} 
     className={clsx("duration-200 border h-10 flex justify-between px-5 items-center rounded-2 group hover:border-green",
       isActive ? "border-green" : "border-active-border"
     )} onClick={onClick}>

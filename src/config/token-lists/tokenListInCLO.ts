@@ -34,6 +34,8 @@ export const tokensInClo: {
   zoo: TokenInfo
   bcoin: TokenInfo
   vvt: TokenInfo
+  slofi: TokenInfo
+  ce: TokenInfo
 } = {
   cloe: {
     "name": "Callisto Enterprise",
@@ -218,6 +220,22 @@ export const tokensInClo: {
     "chainId": 820,
     "decimals": 18,
     "logoURI": "/images/all-tokens/VVT.svg"
+  },
+  slofi: {
+    "name": "Sloth Finance Token",
+    "symbol": "SLOFI",
+    "address": "0x8c5Bba04B2f5CCCe0f8F951D2DE9616BE190070D",
+    "chainId": 820,
+    "decimals": 18,
+    "logoURI": "/images/all-tokens/SLOFI.svg"
+  },
+  ce: {
+    "name": "Callisto Evolution",
+    "symbol": "CE",
+    "address": "0x3986E815F87feA74910F7aDeAcD1cE7f172E1df0",
+    "chainId": 820,
+    "decimals": 18,
+    "logoURI": "/images/all-tokens/CE.png"
   }
 }
 
