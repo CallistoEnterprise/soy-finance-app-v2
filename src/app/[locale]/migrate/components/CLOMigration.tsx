@@ -98,7 +98,7 @@ export default function IDOMigration() {
     <br/>
     Cliff: The time before your tokens become accessible.<br/>
     Vesting: The time over which your tokens are released.<br/>
-    Start your migration to join Callisto's evolution!
+    Start your migration to join Callisto&#39;s evolution!
     </p>
 
     <h3 className="font-bold mb-2.5">Asset to migrate</h3>
