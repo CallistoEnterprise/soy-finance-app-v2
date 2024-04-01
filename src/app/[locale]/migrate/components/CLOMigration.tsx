@@ -91,13 +91,14 @@ export default function IDOMigration() {
     <p className="text-secondary-text mb-5">
     Migrate CLO and CLOE tokens to Callisto Evolution token (CE), and be ready for Fushuma! Your migration date determines when you can access your tokens:<br/>
     <br/>
-    - Before Apr 2, 2024: 1-month cliff, 6-month vesting.<br/>
-    - Apr 2 - Apr 30, 2024: 3-month cliff, 12-month vesting.<br/>
-    - May 1 - Jun 30, 2024: 6-month cliff, 15-month vesting.<br/>
-    - Jul 1 - Sep 1, 2024: 6-month cliff, 18-month vesting.<br/>
+    <b>- Before Apr 2, 2024:</b> 1-month cliff, 6-month vesting.<br/>
+    <b>- Apr 2 - Apr 30, 2024:</b> 3-month cliff, 12-month vesting.<br/>
+    <b>- May 1 - Jun 30, 2024:</b> 6-month cliff, 15-month vesting.<br/>
+    <b>- Jul 1 - Sep 1, 2024:</b> 6-month cliff, 18-month vesting.<br/>
     <br/>
-    Cliff: The time before your tokens become accessible.<br/>
-    Vesting: The time over which your tokens are released.<br/>
+    <b>Cliff:</b> The time before your tokens become accessible.<br/>
+    <b>Vesting:</b> The time over which your tokens are released.<br/>
+    <br/>
     Start your migration to join Callisto&#39;s evolution!
     </p>
 
