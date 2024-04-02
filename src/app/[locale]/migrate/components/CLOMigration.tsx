@@ -140,6 +140,6 @@ export default function IDOMigration() {
     <div className="mb-5"/>
     <CLOActionButton/>
     <br/>
-    <RegisterTokenButton token = {tokensInClo.ce}/>
+    <RegisterTokenButton token = {tokensInClo.ce2}/>
   </div>
 }

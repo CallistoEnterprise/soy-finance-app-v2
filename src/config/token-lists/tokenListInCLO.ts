@@ -36,6 +36,9 @@ export const tokensInClo: {
   vvt: TokenInfo
   slofi: TokenInfo
   ce: TokenInfo
+  ce2: TokenInfo
+  ce3: TokenInfo
+  ce4: TokenInfo
 } = {
   cloe: {
     "name": "Callisto Enterprise",
@@ -233,6 +236,30 @@ export const tokensInClo: {
     "name": "Callisto Evolution",
     "symbol": "CE",
     "address": "0x3986E815F87feA74910F7aDeAcD1cE7f172E1df0",
+    "chainId": 820,
+    "decimals": 18,
+    "logoURI": "/images/all-tokens/CE.png"
+  },
+  ce2: {
+    "name": "Callisto Evolution Phase 2",
+    "symbol": "CE2",
+    "address": "0xB376e0eE3f4430ddE2cd6705eeCB48b2d5eb5C3C",
+    "chainId": 820,
+    "decimals": 18,
+    "logoURI": "/images/all-tokens/CE.png"
+  },
+  ce3: {
+    "name": "Callisto Evolution Phase 3",
+    "symbol": "CE3",
+    "address": "0x54BdF1fB03f1ff159FE175EAe6cDCE25a2192F2E",
+    "chainId": 820,
+    "decimals": 18,
+    "logoURI": "/images/all-tokens/CE.png"
+  },
+  ce4: {
+    "name": "Callisto Evolution Phase 4",
+    "symbol": "CE4",
+    "address": "0x4928688C4c83bC9a0D3c4a20A4BC13c54Af55C94",
     "chainId": 820,
     "decimals": 18,
     "logoURI": "/images/all-tokens/CE.png"
