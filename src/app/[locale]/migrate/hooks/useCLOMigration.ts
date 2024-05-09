@@ -34,7 +34,7 @@ export default function useCLOMigration() {
 
         const hash = await sendTransaction(config,{
           account: address,
-          to: migrationCEAddress,
+          to: ceToken.address,
           value: amountIn,
         });
         if (hash) {

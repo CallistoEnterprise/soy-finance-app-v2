@@ -14,7 +14,8 @@
       "disconnect": "Disconnect",
       "v2": "SOY Finance V2",
       "lottery": "Lottery",
-      "migrate": "Migrate"
+      "migrate": "Migrate",
+      "launchpads": "Launchpads"
   },
   "Swap": {
       "swap_not_supported": "Swap is not supported via this chain",
