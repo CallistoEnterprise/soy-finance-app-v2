@@ -60,7 +60,7 @@ export default function LaunchpadPage() {
     } else if (launchpads) {
       setLoading(false);
     }
-  }, [selectedChain, launchpads]);
+  }, [selectedChain]);
 
   useEffect(() => {
     // Detects if there are cards or no

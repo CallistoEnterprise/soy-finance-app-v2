@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import PageCard from "@/components/PageCard";
-import { launchpads } from "@/config/launchpad/launchpads";
+import Image from "next/image";
 import { Launchpad, ChainDetails } from "@/config/types/launchpadTypes";
 import { nativeTokens } from "@/config/token-lists/nativeTokens";
 import { formatFloat } from "@/other/formatFloat";
@@ -66,9 +66,7 @@ interface Props {
 
 function Details({ children, onClick }: Props) {
   // launchpad main vars
-  const [launchpad, setLaunchpad] = useState<Launchpad | null>(
-    children.launchpad
-  );
+  const [launchpad, setLaunchpad] = useState<Launchpad>(children.launchpad);
   const [timer, setTimer] = useState("Loading...");
   const [dialogue, setDialogue] = useState("Starts in");
   const [inputValue, setInputValue] = useState("");
@@ -101,17 +99,18 @@ function Details({ children, onClick }: Props) {
   const [mediasFound, setMedias] = useState("");
   const [progress, setProgress] = useState(0);
   // if the launchpads list are not loaded
-  if (!launchpad) {
-    return <p>Loading...</p>;
-  }
 
   // Gets the infos on the current chain from nativeTokens obj (symbol, chainID, decimals...)
-  const firstSupportedChainIndex = Object.keys(launchpad.chains).length - 1;
-  const firstSupportedChainID = Object.keys(launchpad.chains)[
-    firstSupportedChainIndex
-  ];
-  const firstSupportedChain = launchpad.chains[firstSupportedChainID];
-  const [chainInfo, setChainInfo] = useState(
+  let firstSupportedChainIndex = launchpad
+    ? Object.keys(launchpad.chains).length - 1
+    : 0;
+  let firstSupportedChainID = launchpad
+    ? Object.keys(launchpad.chains)[firstSupportedChainIndex]
+    : 0;
+  let firstSupportedChain = launchpad
+    ? launchpad.chains[firstSupportedChainID]
+    : null;
+  let [chainInfo, setChainInfo] = useState(
     nativeTokens[Number(firstSupportedChainID)]
   );
   // funcs
@@ -257,7 +256,7 @@ function Details({ children, onClick }: Props) {
       // Calculate how many tokens are worth 1 coin
       setCalculatedValue(String(Number(inputValue) * Number(price)));
     }
-  }, [price]);
+  }, [price, inputValue]);
 
   useEffect(() => {
     if (launchpad) {
@@ -272,6 +271,46 @@ function Details({ children, onClick }: Props) {
   }, [launchpad, ICOInfo]);
 
   useEffect(() => {
+    // Updates the timer and defines the state of the sale
+    const timerUpdater = (startTime: number, endTime: number) => () => {
+      let current = Date.now();
+      let timerInMs = startTime - current;
+      if (timerInMs < 0 && dialogue !== "Ended") {
+        timerInMs = endTime - current;
+        setDialogue("Ends in");
+        setLabelState("Live");
+      } else if (timerInMs > 0) {
+        setLabelState("Soon");
+      }
+      let days = String(Math.floor(timerInMs / (1000 * 60 * 60 * 24))).padStart(
+        2,
+        "0"
+      );
+      let hours = String(
+        Math.floor((timerInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+      ).padStart(2, "0");
+      let minutes = String(
+        Math.floor((timerInMs % (1000 * 60 * 60)) / (1000 * 60))
+      ).padStart(2, "0");
+      if (current <= endTime) {
+        if (Number(days) > 0) {
+          setTimer(`${days} Day(s) and ${hours} Hour(s)`);
+        } else if (Number(days) == 0 && Number(hours) > 0) {
+          setTimer(`${hours} Hour(s) and ${minutes} Minute(s)`);
+        } else if (Number(days) == 0 && Number(hours) == 0) {
+          setTimer(`${minutes} Minute(s)`);
+        }
+      } else {
+        setTimer("");
+        setDialogue("Ended");
+        setLabelState("Ended");
+      }
+      if (formatedCurrentSupply === formatedtokensForSale) {
+        setTimer("");
+        setDialogue("Ended");
+        setLabelState("Ended");
+      }
+    };
     if (endDate) {
       // Add startDate
       setTimeout(
@@ -290,7 +329,13 @@ function Details({ children, onClick }: Props) {
       );
       return () => clearInterval(timerInterval);
     }
-  }, [startDate, endDate]);
+  }, [
+    startDate,
+    endDate,
+    dialogue,
+    formatedCurrentSupply,
+    formatedtokensForSale,
+  ]);
 
   // if the chainId has been changed and its not the required one then set the inputs to 0
   useEffect(() => {
@@ -345,7 +390,7 @@ function Details({ children, onClick }: Props) {
           setCalculatedValue(String(tokens[0].price));
         }
         setTokenValues([...tokens]);
-      } else {
+      } else if (firstSupportedChain) {
         let chainInfo = nativeTokens[firstSupportedChainID];
         setCurrentChainID(Number(firstSupportedChainID));
         setCurrentChain(firstSupportedChain);
@@ -404,7 +449,7 @@ function Details({ children, onClick }: Props) {
           setPrice(0);
         }
       }
-    } else if (chainId === undefined && launchpad) {
+    } else if (chainId === undefined && launchpad && firstSupportedChain) {
       setCurrentChainID(Number(firstSupportedChainID));
       setCurrentChain(firstSupportedChain);
       setInputValue("0");
@@ -441,7 +486,15 @@ function Details({ children, onClick }: Props) {
         });
       }
     }
-  }, [launchpad, launchpads, chainId]);
+  }, [
+    launchpad,
+    chainId,
+    chainInfo,
+    chains,
+    firstSupportedChain,
+    firstSupportedChainID,
+    refetch,
+  ]);
 
   // Close the dialog when the chain is changed
   useEffect(() => {
@@ -470,8 +523,10 @@ function Details({ children, onClick }: Props) {
           Math.floor((formatedCurrentSupply * 100) / formatedtokensForSale)
         );
       }
+    } else {
+      setProgress(0);
     }
-  }, [ICOInfo]);
+  }, [ICOInfo, formatedCurrentSupply, formatedtokensForSale]);
 
   // Adds comma to numbers
   const addComma = (originalNum: number) => {
@@ -496,46 +551,6 @@ function Details({ children, onClick }: Props) {
       }
     }
     return num;
-  };
-  // Updates the timer and defines the state of the sale
-  const timerUpdater = (startTime: number, endTime: number) => () => {
-    let current = Date.now();
-    let timerInMs = startTime - current;
-    if (timerInMs < 0 && dialogue !== "Ended") {
-      timerInMs = endTime - current;
-      setDialogue("Ends in");
-      setLabelState("Live");
-    } else if (timerInMs > 0) {
-      setLabelState("Soon");
-    }
-    let days = String(Math.floor(timerInMs / (1000 * 60 * 60 * 24))).padStart(
-      2,
-      "0"
-    );
-    let hours = String(
-      Math.floor((timerInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    ).padStart(2, "0");
-    let minutes = String(
-      Math.floor((timerInMs % (1000 * 60 * 60)) / (1000 * 60))
-    ).padStart(2, "0");
-    if (current <= endTime) {
-      if (Number(days) > 0) {
-        setTimer(`${days} Day(s) and ${hours} Hour(s)`);
-      } else if (Number(days) == 0 && Number(hours) > 0) {
-        setTimer(`${hours} Hour(s) and ${minutes} Minute(s)`);
-      } else if (Number(days) == 0 && Number(hours) == 0) {
-        setTimer(`${minutes} Minute(s)`);
-      }
-    } else {
-      setTimer("");
-      setDialogue("Ended");
-      setLabelState("Ended");
-    }
-    if (formatedCurrentSupply === formatedtokensForSale) {
-      setTimer("");
-      setDialogue("Ended");
-      setLabelState("Ended");
-    }
   };
 
   // The function that handles input's changes
@@ -725,11 +740,15 @@ function Details({ children, onClick }: Props) {
     setClose,
     setOpened,
     setSubmitted,
-    unlockedAmount,
     walletClient,
     inputValue,
     isAllowed,
     writeTokenApprove,
+    lockedAmount,
+    price,
+    chainInfo,
+    currentChain,
+    symbol,
   ]);
 
   // The function that defines the function of the buy / connect wallet / switch network  button
@@ -859,6 +878,9 @@ function Details({ children, onClick }: Props) {
     setSubmitted,
     unlockedAmount,
     walletClient,
+    currentChain,
+    decimals,
+    symbol,
   ]);
 
   const handleSwitchTokens = (token: currentCurrencyData) => {
@@ -884,7 +906,12 @@ function Details({ children, onClick }: Props) {
       case "softCap":
         return (
           <p>
-            <img width={"26px"} src={softCapSVG.src} alt="softCap-icon" />
+            <Image
+              width={26}
+              height={26}
+              src={softCapSVG.src}
+              alt="softCap-icon"
+            />
             <span>SoftCap: </span>
             {addComma(Number(softCap))} USD
           </p>
@@ -892,7 +919,12 @@ function Details({ children, onClick }: Props) {
       case "hardCap":
         return (
           <p>
-            <img width={"26px"} src={hardCapSVG.src} alt="hardCap-icon" />
+            <Image
+              width={26}
+              height={26}
+              src={hardCapSVG.src}
+              alt="hardCap-icon"
+            />
             <span>Hard Cap: </span>
             {addComma(Number(hardCap))} USD
           </p>
@@ -929,7 +961,7 @@ function Details({ children, onClick }: Props) {
 
   const vestingSection = (
     <div className="vestingICO flex flex-col gap-2.5">
-      <h2>{saleType}'s Vesting</h2>
+      <h2>{saleType}&apos;s Vesting</h2>
       <div className="flex items-center border border-l-orange border-active-border border-l-4 px-5 py-2 gap-2 rounded-2 flex-wrap">
         <Svg className="text-orange" iconName="lock" />
         <span className="text-secondary-text">Locked:</span>{" "}
@@ -991,7 +1023,7 @@ function Details({ children, onClick }: Props) {
             Go Back!
           </button>
           <h1>
-            <img src={logo} width="58px" alt="logo" />
+            <img src={logo} width={58} alt="logo" />
             <span>{name}</span>
             <article
               className={`state-label state-label-${getlabelState.toLowerCase()}`}
@@ -1118,7 +1150,7 @@ function Details({ children, onClick }: Props) {
               onClick={() => handleRegister()}
               className="text-12 xl:text-14 leading-[18px] flex justify-between items-center text-secondary-text add-token"
             >
-              <img
+              <Image
                 className="flex-shrink-0"
                 width={24}
                 height={24}
@@ -1149,7 +1181,7 @@ function Details({ children, onClick }: Props) {
                 className="availableChains"
                 key={`AvailableOn${nativeTokens[chain].address}_${nativeTokens[chain].chainId}`}
               >
-                <img src={nativeTokens[chain].logoURI} />
+                <img src={nativeTokens[chain].logoURI} alt="logo" />
                 <span
                   onClick={() => switchNetwork(nativeTokens[chain].chainId)}
                   className="inline-flex items-center gap-1 relative after:absolute after:left-0 after:w-0 after:h-[1px] after:block after:bg-green after:bottom-0 after:duration-300 hover:after:w-full"
@@ -1180,28 +1212,48 @@ function Details({ children, onClick }: Props) {
               <b>Token info</b>
             </p>
             <p>
-              <img width={"26px"} src={nameSVG.src} alt="name-icon" />
+              <Image width={26} height={26} src={nameSVG.src} alt="name-icon" />
               <span>Name: </span>
               {name}
             </p>
             <p>
               {" "}
-              <img width={"26px"} src={symbolSVG.src} alt="name-icon" />
+              <Image
+                width={26}
+                height={26}
+                src={symbolSVG.src}
+                alt="name-icon"
+              />
               <span>Symbol: </span>
               {symbol}
             </p>
             <p>
-              <img width={"26px"} src={totalSupplySVG.src} alt="name-icon" />
+              <Image
+                width={26}
+                height={26}
+                src={totalSupplySVG.src}
+                alt="name-icon"
+              />
               <span>Total Supply: </span>
               {addComma(Number(supply))} {symbol}
             </p>
             <p>
-              <img width={"26px"} src={decimalsSVG.src} alt="name-icon" />
+              <Image
+                width={26}
+                height={26}
+                src={decimalsSVG.src}
+                alt="name-icon"
+              />
               <span>Decimals: </span>
               {decimals}
             </p>
             <p>
-              <img width={"26px"} src={tokenAddressSVG.src} alt="name-icon" />
+              <Image
+                width={26}
+                height={26}
+                src={tokenAddressSVG.src}
+                alt="name-icon"
+              />
               <span>Token Address: </span>
               <a
                 href={`${explorerToken}${currentChain.tokenAddress}`}
@@ -1220,7 +1272,12 @@ function Details({ children, onClick }: Props) {
               <b>{saleType} info</b>
             </p>
             <p>
-              <img width={"26px"} src={startICOSVG.src} alt="name-icon" />
+              <Image
+                width={26}
+                height={26}
+                src={startICOSVG.src}
+                alt="name-icon"
+              />
               <span>Start time: </span>
               {String(
                 `${String(startDateFormat.getUTCMonth() + 1).padStart(
@@ -1241,7 +1298,12 @@ function Details({ children, onClick }: Props) {
             </p>
             <p>
               {" "}
-              <img width={"26px"} src={endICOSVG.src} alt="name-icon" />
+              <Image
+                width={26}
+                height={26}
+                src={endICOSVG.src}
+                alt="name-icon"
+              />
               <span>End time: </span>
               {String(
                 `${String(endDateFormat.getUTCMonth() + 1).padStart(
@@ -1261,14 +1323,15 @@ function Details({ children, onClick }: Props) {
               (UTC)
             </p>
             <p>
-              <img width={"26px"} src={rateSVG.src} alt="name-icon" />
+              <Image width={26} height={26} src={rateSVG.src} alt="name-icon" />
               <span>Rate (price): </span>1{" "}
               {currentCurrency ? currentCurrency.symbol : "Load"} ={" "}
               {addComma(Number(price))} {symbol}
             </p>
             <p>
-              <img
-                width={"26px"}
+              <Image
+                width={26}
+                height={26}
                 src={tokensPresaleSVG.src}
                 alt="tokenPresale-icon"
               />
@@ -1278,7 +1341,12 @@ function Details({ children, onClick }: Props) {
             {softCap ? descSoftCapHardCapHandler("softCap") : null}
             {hardCap ? descSoftCapHardCapHandler("hardCap") : null}
             <p>
-              <img width={"26px"} src={ICOAddressSVG.src} alt="name-icon" />
+              <Image
+                width={26}
+                height={26}
+                src={ICOAddressSVG.src}
+                alt="name-icon"
+              />
               <span>ICO Address: </span>
               <a
                 href={`${explorerContract}${currentChain.icoContract}`}
@@ -1382,7 +1450,7 @@ function Details({ children, onClick }: Props) {
                         <div className="relative w-full">
                           <button className="w-full h-[60px] group flex items-center justify-between pr-2.5 pl-2.5 rounded-2.5 hover:bg-secondary-bg">
                             <div className="flex items-center gap-2">
-                              <img
+                              <Image
                                 height="40"
                                 width="40"
                                 src={chainInfo.logoURI}
@@ -1422,7 +1490,7 @@ function Details({ children, onClick }: Props) {
                         <div className="relative w-full">
                           <button className="w-full h-[60px] group flex items-center justify-between pr-2.5 pl-2.5 rounded-2.5 hover:bg-secondary-bg">
                             <div className="flex items-center gap-2">
-                              <img
+                              <Image
                                 height="40"
                                 width="40"
                                 src={token.token.logoURI}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Launchpad, ChainDetails } from "@/config/types/launchpadTypes";
+import { Launchpad } from "@/config/types/launchpadTypes";
+import Image from "next/image";
 import { nativeTokens } from "@/config/token-lists/nativeTokens";
 import multiChainSVG from "@/../public/images/launchpad-details/multiChain.svg";
 import { useReadContract, useAccount } from "wagmi";
@@ -44,9 +45,8 @@ function Card({ children, onClick, cardState, cardIndex }: Props) {
   const chainInfo = nativeTokens[Number(usedChainId)];
   const [currentCurrency, setCurrentCurrency] = useState("Loading...");
   const [startDate, setStartDate] = useState(0);
-  const [currentSupply, setCurrentSupply] = useState(BigInt(0));
-  const [tokensForSale, setTokensForSale] = useState(BigInt(0));
-  const [endDateFormat, setEndDateFormat] = useState<Date>(new Date());
+  const [currentSupply, setCurrentSupply] = useState(0);
+  const [tokensForSale, setTokensForSale] = useState(0);
 
   const getExplorerTokenLink = () => {
     switch (chainInfo.chainId) {
@@ -98,6 +98,16 @@ function Card({ children, onClick, cardState, cardIndex }: Props) {
   const explorerContract = getExplorerContractLink();
   const explorerToken = getExplorerTokenLink();
 
+  // Calls the function to get the current supply and load the animation of cards
+  useEffect(() => {
+    setTimeout(() => {
+      setTransformState("scale(1)");
+    }, 200);
+    return () => {
+      setTransformState("scale(0)");
+    };
+  }, []);
+
   useEffect(() => {
     if (nameData) {
       setName(nameData);
@@ -119,17 +129,12 @@ function Card({ children, onClick, cardState, cardIndex }: Props) {
         totalSold: bigint;
       };
       setStartDate(Number(info.roundStarts));
-      setCurrentSupply(info.totalSold);
-      setTokensForSale(info.amount);
+      setCurrentSupply(
+        Number(formatFloat(formatUnits(info.totalSold, decimals)))
+      );
+      setTokensForSale(Number(formatFloat(formatUnits(info.amount, decimals))));
     }
-  }, [ICOinfo]);
-
-  const formatedtokensForSale = Number(
-    formatFloat(formatUnits(tokensForSale, decimals))
-  );
-  const formatedCurrentSupply = Number(
-    formatFloat(formatUnits(currentSupply, decimals))
-  );
+  }, [ICOinfo, decimals]);
 
   // Define all the necessary variables from the launchpad object
   const { logo, minDescription, endDate } = children as Launchpad;
@@ -146,37 +151,75 @@ function Card({ children, onClick, cardState, cardIndex }: Props) {
       setCurrentCurrency(String(tokens[0].token.symbol));
       setPrice(tokens[0].price);
     }
-  }, [children, endDate]);
+  }, [
+    children,
+    startDate,
+    endDate,
+    chainInfo.symbol,
+    supportedChain.currencies,
+  ]);
 
   //  Starts the timer
   useEffect(() => {
-    // SHOULD add startTime
-    if (endTime) {
-      setEndDateFormat(new Date(endTime));
+    // The function that updates the timer
+    const timerUpdater = () => {
+      let current = Date.now();
+      let timerInMs = startTime - current;
+      if (timerInMs < 0 && dialogue !== "Ended") {
+        timerInMs = endTime - current;
+        setDialogue("Ends in");
+        setLabelState("Live");
+        cardState({ state: "Live", index: cardIndex });
+      } else if (timerInMs > 0) {
+        setLabelState("Soon");
+        cardState({ state: "Soon", index: cardIndex });
+      }
+      let days = String(Math.floor(timerInMs / (1000 * 60 * 60 * 24))).padStart(
+        2,
+        "0"
+      );
+      let hours = String(
+        Math.floor((timerInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+      ).padStart(2, "0");
+      let minutes = String(
+        Math.floor((timerInMs % (1000 * 60 * 60)) / (1000 * 60))
+      ).padStart(2, "0");
+      if (current <= endTime) {
+        if (Number(days) > 0) {
+          setTimer(`${days} Day(s) and ${hours} Hour(s)`);
+        } else if (Number(days) == 0 && Number(hours) > 0) {
+          setTimer(`${hours} Hour(s) and ${minutes} Minute(s)`);
+        } else if (Number(days) == 0 && Number(hours) == 0) {
+          setTimer(`${minutes} Minute(s)`);
+        }
+      } else {
+        setTimer("");
+        setDialogue("Ended");
+        setLabelState("Ended");
+        cardState({ state: "Ended", index: cardIndex });
+      }
       if (
-        isNaN(Math.floor((formatedCurrentSupply * 100) / formatedtokensForSale))
+        currentSupply === tokensForSale &&
+        currentSupply != 0 &&
+        tokensForSale != 0
       ) {
+        setTimer("");
+        setDialogue("Ended");
+        setLabelState("Ended");
+        cardState({ state: "Ended", index: cardIndex });
+      }
+    };
+    if (endTime) {
+      if (isNaN(Math.floor((currentSupply * 100) / tokensForSale))) {
         setProgress(100);
       } else {
-        setProgress(
-          Math.floor((formatedCurrentSupply * 100) / formatedtokensForSale)
-        );
+        setProgress(Math.floor((currentSupply * 100) / tokensForSale));
       }
       timerUpdater();
       const timerInterval = setInterval(timerUpdater, 60000);
       return () => clearInterval(timerInterval);
     }
-  }, [tokensForSale, currentSupply, startTime, endTime]);
-
-  // Calls the function to get the current supply and load the animation of cards
-  useEffect(() => {
-    setTimeout(() => {
-      setTransformState("scale(1)");
-    }, 200);
-    return () => {
-      setTransformState("scale(0)");
-    };
-  }, []);
+  }, [tokensForSale, currentSupply, startTime, endTime, cardIndex]);
 
   // Adds commas to any number (10000 = 10,000)
   const addComma = (originalNum: number) => {
@@ -223,55 +266,6 @@ function Card({ children, onClick, cardState, cardIndex }: Props) {
     }
   };
 
-  // The function that updates the timer
-  const timerUpdater = () => {
-    let current = Date.now();
-    let timerInMs = startTime - current;
-    if (timerInMs < 0 && dialogue !== "Ended") {
-      timerInMs = endTime - current;
-      setDialogue("Ends in");
-      setLabelState("Live");
-      cardState({ state: "Live", index: cardIndex });
-    } else if (timerInMs > 0) {
-      setLabelState("Soon");
-      cardState({ state: "Soon", index: cardIndex });
-    }
-    let days = String(Math.floor(timerInMs / (1000 * 60 * 60 * 24))).padStart(
-      2,
-      "0"
-    );
-    let hours = String(
-      Math.floor((timerInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    ).padStart(2, "0");
-    let minutes = String(
-      Math.floor((timerInMs % (1000 * 60 * 60)) / (1000 * 60))
-    ).padStart(2, "0");
-    if (current <= endTime) {
-      if (Number(days) > 0) {
-        setTimer(`${days} Day(s) and ${hours} Hour(s)`);
-      } else if (Number(days) == 0 && Number(hours) > 0) {
-        setTimer(`${hours} Hour(s) and ${minutes} Minute(s)`);
-      } else if (Number(days) == 0 && Number(hours) == 0) {
-        setTimer(`${minutes} Minute(s)`);
-      }
-    } else {
-      setTimer("");
-      setDialogue("Ended");
-      setLabelState("Ended");
-      cardState({ state: "Ended", index: cardIndex });
-    }
-    if (
-      formatedCurrentSupply === formatedtokensForSale &&
-      formatedCurrentSupply != 0 &&
-      formatedtokensForSale != 0
-    ) {
-      setTimer("");
-      setDialogue("Ended");
-      setLabelState("Ended");
-      cardState({ state: "Ended", index: cardIndex });
-    }
-  };
-
   // Used to determine the class of the timer based on its state (ended or not)
   const timerStylesCondition = () => {
     return dialogue === "Ended" ? "ended" : "";
@@ -290,22 +284,24 @@ function Card({ children, onClick, cardState, cardIndex }: Props) {
       <h3
         className={Object.keys(children.chains).length == 2 ? "two-chains" : ""}
       >
-        <img width="61px" src={logo} alt="logo" />
-        <img
+        <img width={"61px"} src={logo} alt="logo" />
+        <Image
           className="chainLogo"
           src={
             Object.keys(children.chains).length > 2
               ? multiChainSVG.src
               : nativeTokens[Number(Object.keys(children.chains)[0])].logoURI
           }
-          width="26px"
+          width={26}
+          height={26}
           alt="chain"
         />
         {Object.keys(children.chains).length == 2 ? (
-          <img
+          <Image
             className="chainLogo second-chain"
             src={nativeTokens[Number(Object.keys(children.chains)[1])].logoURI}
-            width="26px"
+            width={26}
+            height={26}
             alt="chain"
           />
         ) : null}

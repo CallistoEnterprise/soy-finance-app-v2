@@ -1,8 +1,9 @@
 import { useSwitchChain, useAccount } from "wagmi";
 import { WrappedToken } from "@/config/types/WrappedToken";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { launchpads } from "@/config/launchpad/launchpads";
 import { Launchpad } from "@/config/types/launchpadTypes";
+import Image from "next/image";
 import addToast from "@/other/toast";
 import { useAwaitingDialogStore } from "@/stores/useAwaitingDialogStore";
 import {
@@ -37,6 +38,23 @@ function SelectChain({ supportedChains, setChain }: Props) {
   const [opacityState, setOpacityState] = useState("0");
   const [chainsAnimations, setChainsAnimations] = useState({});
 
+  const chainCounter = useCallback((chainId: number) => {
+    let counter = 0;
+    let launchpadsList = launchpads as launchpadsObj;
+    let launchpadsArray = Object.keys(launchpads);
+    for (const launchpad of launchpadsArray) {
+      const endTime = convertDateTimeStringToMilliseconds(
+        launchpadsList[launchpad].endDate
+      );
+      if (launchpadsList[launchpad].chains[String(chainId)] && endTime) {
+        if (Date.now() < endTime + 60 * 24 * 60 * 60 * 1000) {
+          counter++;
+        }
+      }
+    }
+    return counter;
+  }, []);
+
   useEffect(() => {
     setTimeout(() => {
       setOpacityState("1");
@@ -60,7 +78,7 @@ function SelectChain({ supportedChains, setChain }: Props) {
         .sort((a, b) => b.launchpads - a.launchpads);
       setChainsList(sortedArray);
     }
-  }, [supportedChains]);
+  }, [supportedChains, chainCounter]);
 
   const clickHandler = async (chainID: chainID) => {
     if (isConnected) {
@@ -95,23 +113,6 @@ function SelectChain({ supportedChains, setChain }: Props) {
       const date = Date.UTC(year, month - 1, day, hours, minutes);
       return date;
     }
-  };
-
-  const chainCounter = (chainId: number) => {
-    let counter = 0;
-    let launchpadsList = launchpads as launchpadsObj;
-    let launchpadsArray = Object.keys(launchpads);
-    for (const launchpad of launchpadsArray) {
-      const endTime = convertDateTimeStringToMilliseconds(
-        launchpadsList[launchpad].endDate
-      );
-      if (launchpadsList[launchpad].chains[String(chainId)] && endTime) {
-        if (Date.now() < endTime + 60 * 24 * 60 * 60 * 1000) {
-          counter++;
-        }
-      }
-    }
-    return counter;
   };
 
   const launchpadCounter = () => {
@@ -156,11 +157,15 @@ function SelectChain({ supportedChains, setChain }: Props) {
                     <div className="relative w-full">
                       <button className="w-full h-[60px] group flex items-center justify-between pr-2.5 pl-2.5 rounded-2.5 hover:bg-secondary-bg">
                         <div className="flex items-center gap-2">
-                          <img
-                            height="40"
-                            width="40"
+                          <Image
+                            height={40}
+                            width={40}
                             src={data.chainData.logoURI}
-                            alt="CLO"
+                            alt={
+                              data.chainData.symbol
+                                ? data.chainData.symbol
+                                : "symbol"
+                            }
                             style={{ marginRight: "5px" }}
                           />
                           <div className="flex flex-col justify-start items-start">
