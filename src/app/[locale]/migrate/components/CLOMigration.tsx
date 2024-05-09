@@ -89,7 +89,17 @@ export default function IDOMigration() {
   return <div className="p-5">
     <h2 className="mb-2.5 text-24 font-bold">Migration to Callisto Evolution token (CE)</h2>
     <p className="text-secondary-text mb-5">
-      You can migrate CLO and CLOE tokens to Callisto Evolution token (CE).
+    Migrate CLO and CLOE tokens to Callisto Evolution token (CE), and be ready for Fushuma! Your migration date determines when you can access your tokens:<br/>
+    <br/>
+    <b>- Before Apr 2, 2024:</b> 1-month cliff, 6-month vesting.<br/>
+    <b>- Apr 2 - Apr 30, 2024:</b> 3-month cliff, 12-month vesting.<br/>
+    <b>- May 1 - Jun 30, 2024:</b> 6-month cliff, 15-month vesting.<br/>
+    <b>- Jul 1 - Sep 1, 2024:</b> 6-month cliff, 18-month vesting.<br/>
+    <br/>
+    <b>Cliff:</b> The time before your tokens become accessible.<br/>
+    <b>Vesting:</b> The time over which your tokens are released.<br/>
+    <br/>
+    Start your migration to join Callisto&#39;s evolution!
     </p>
 
     <h3 className="font-bold mb-2.5">Asset to migrate</h3>
@@ -130,6 +140,6 @@ export default function IDOMigration() {
     <div className="mb-5"/>
     <CLOActionButton/>
     <br/>
-    <RegisterTokenButton token = {tokensInClo.ce}/>
+    <RegisterTokenButton token = {tokensInClo.ce2}/>
   </div>
 }
