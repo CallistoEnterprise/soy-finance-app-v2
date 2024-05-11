@@ -6,10 +6,7 @@ import { nativeTokens } from "@/config/token-lists/nativeTokens";
 import { formatFloat } from "@/other/formatFloat";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import Svg from "@/components/atoms/Svg";
-import {
-  useConnectWalletDialogStateStore,
-  useConnectWalletStore,
-} from "@/components/dialogs/stores/useConnectWalletStore";
+import { useConnectWalletDialogStateStore } from "@/components/dialogs/stores/useConnectWalletStore";
 import nameSVG from "@/../public/images/launchpad-details/Name.svg";
 import symbolSVG from "@/../public/images/launchpad-details/Symbol.svg";
 import totalSupplySVG from "@/../public/images/launchpad-details/Total-Supply.svg";
@@ -32,7 +29,7 @@ import {
 } from "wagmi";
 import { useRecentTransactionsStore } from "@/stores/useRecentTransactions";
 import { useAwaitingDialogStore } from "@/stores/useAwaitingDialogStore";
-import { Address, formatUnits, Abi } from "viem";
+import { Address, formatUnits, Abi, parseUnits } from "viem";
 import { isNativeToken } from "@/other/isNativeToken";
 import { ICOcontract_ABI } from "@/config/abis/IcoContract";
 import addToast from "@/other/toast";
@@ -229,7 +226,7 @@ function Details({ children, onClick }: Props) {
     contractAddress: currentChain.icoContract
       ? currentChain.icoContract
       : undefined,
-    amountToCheck: BigInt(Number(inputValue) * price * 1e18),
+    amountToCheck: BigInt(Number(inputValue) * 1e18),
     token: currentCurrency ? currentCurrency : null,
   });
 
@@ -256,7 +253,7 @@ function Details({ children, onClick }: Props) {
       // Calculate how many tokens are worth 1 coin
       setCalculatedValue(String(Number(inputValue) * Number(price)));
     }
-  }, [price, inputValue]);
+  }, [price]);
 
   useEffect(() => {
     if (launchpad) {
@@ -553,12 +550,14 @@ function Details({ children, onClick }: Props) {
     return num;
   };
 
-  // The function that handles input's changes
+  // The function that handles input changes
   const inputValueChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
+    const stringValue = e.target.value;
+    const value = Number(stringValue);
     if (
       value > 0 &&
-      value * Number(price) <= formatedtokensForSale - formatedCurrentSupply
+      value * Number(price) <= formatedtokensForSale - formatedCurrentSupply &&
+      !stringValue.endsWith(".")
     ) {
       setInputValue(String(value));
       setCalculatedValue(String(value * Number(price)));
@@ -569,14 +568,19 @@ function Details({ children, onClick }: Props) {
       setInputValue(
         String((formatedtokensForSale - formatedCurrentSupply) / Number(price))
       );
-      setCalculatedValue(String(formatedtokensForSale - formatedCurrentSupply));
+      setCalculatedValue(
+        String((formatedtokensForSale - formatedCurrentSupply).toFixed(5))
+      );
       addToast("Can't buy more than available tokens on contract.", "warning");
-    } else if (e.target.value == "") {
+    } else if (stringValue == "") {
       setInputValue("0");
       setCalculatedValue("0");
     } else if (value == 0) {
-      setInputValue(String(value).split("0")[1]);
+      setInputValue("0");
       setCalculatedValue("0");
+    } else if (stringValue.endsWith(".")) {
+      setInputValue(stringValue);
+      setCalculatedValue(String(value * Number(price)));
     }
   };
 
@@ -595,13 +599,9 @@ function Details({ children, onClick }: Props) {
           parseFloat(formatedBigInt) * Number(price) <
           formatedtokensForSale - formatedCurrentSupply
         ) {
-          setInputValue(Number(formatedBigInt).toFixed(3));
+          setInputValue(Number(formatedBigInt).toFixed(5));
           setCalculatedValue(
-            String(
-              (
-                Number(parseFloat(formatedBigInt).toFixed(3)) * Number(price)
-              ).toFixed(3)
-            )
+            String(Number(parseFloat(formatedBigInt)) * Number(price))
           );
         } else {
           setInputValue(
@@ -627,15 +627,12 @@ function Details({ children, onClick }: Props) {
             formatedtokensForSale - formatedCurrentSupply
           ) {
             setInputValue(
-              (Number(formatedBigInt) - amountToBeDeducted).toFixed(3)
+              (Number(formatedBigInt) - amountToBeDeducted).toFixed(5)
             );
             setCalculatedValue(
               String(
-                (
-                  (Number(parseFloat(formatedBigInt).toFixed(3)) -
-                    amountToBeDeducted) *
+                (Number(parseFloat(formatedBigInt)) - amountToBeDeducted) *
                   Number(price)
-                ).toFixed(3)
               )
             );
           } else {
@@ -680,9 +677,9 @@ function Details({ children, onClick }: Props) {
       return;
     }
 
-    const amountToBuy = Number(inputValue);
+    const amountToPay = Number(inputValue);
 
-    if (isNaN(amountToBuy) || !amountToBuy) {
+    if (isNaN(amountToPay) || !amountToPay) {
       return;
     }
 
@@ -690,7 +687,7 @@ function Details({ children, onClick }: Props) {
       await writeTokenApprove();
     }
 
-    setOpened(`Buy ${amountToBuy * price} ${symbol}`);
+    setOpened(`Buy ${amountToPay * price} ${symbol}`);
 
     const params: {
       account: Address;
@@ -703,7 +700,13 @@ function Details({ children, onClick }: Props) {
       account: address,
       abi: ICOcontract_ABI,
       functionName: "buyToken",
-      args: [BigInt(amountToBuy * 1e18).toString(), address],
+      args: [
+        parseUnits(
+          calculatedValue,
+          currentCurrency?.decimals ? currentCurrency?.decimals : 18
+        ).toString(),
+        address,
+      ],
     };
     try {
       const estimatedGas = await publicClient.estimateContractGas(params);
@@ -718,9 +721,7 @@ function Details({ children, onClick }: Props) {
             account: address,
             hash,
             chainId,
-            title: `Bought ${formatFloat(
-              formatUnits(lockedAmount, chainInfo.decimals)
-            )} ${symbol}`,
+            title: `Bought ${amountToPay * price} ${symbol}`,
           },
           address
         );
@@ -737,6 +738,7 @@ function Details({ children, onClick }: Props) {
     address,
     chainId,
     publicClient,
+    currentCurrency?.decimals,
     setClose,
     setOpened,
     setSubmitted,
@@ -749,6 +751,7 @@ function Details({ children, onClick }: Props) {
     chainInfo,
     currentChain,
     symbol,
+    calculatedValue,
   ]);
 
   // The function that defines the function of the buy / connect wallet / switch network  button
@@ -1042,22 +1045,10 @@ function Details({ children, onClick }: Props) {
           </h2>
           <div className={`ico ${dialogue === "Ended" ? "ico-ended" : ""}`}>
             <h3>
-              {dialogue === "Ended" ? dialogue + " on:" : dialogue + ":"}
+              {dialogue === "Ended" ? null : dialogue + ":"}
               <span>
                 {" "}
-                {dialogue === "Ended"
-                  ? `${String(endDateFormat.getMonth() + 1).padStart(
-                      2,
-                      "0"
-                    )}/${String(endDateFormat.getDate()).padStart(
-                      2,
-                      "0"
-                    )}/${String(endDateFormat.getFullYear())} ${String(
-                      endDateFormat.getHours()
-                    ).padStart(2, "0")}:${String(
-                      endDateFormat.getMinutes()
-                    ).padStart(2, "0")} (UTC)`
-                  : timer}
+                {dialogue === "Ended" ? `${saleType} Completed.` : timer}
               </span>
             </h3>
             <p className="completion">Completion: {progress}%</p>
