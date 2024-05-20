@@ -37,7 +37,7 @@ export const launchpads = {
     saleType: "ICO",
     softCap: "",
     hardCap: "7200000",
-    endDate: "17/05/2024 12:00", // DD/MM/YY
+    endDate: "24/05/2024 12:00", // DD/MM/YY
     // Media info
     website: "https://www.livediff.com/en",
     twitter: "https://twitter.com/Livediffer",

@@ -626,9 +626,7 @@ function Details({ children, onClick }: Props) {
             parseFloat(formatedBigInt) * Number(price) <
             formatedtokensForSale - formatedCurrentSupply
           ) {
-            setInputValue(
-              (Number(formatedBigInt) - amountToBeDeducted).toFixed(5)
-            );
+            setInputValue(String(Number(formatedBigInt) - amountToBeDeducted));
             setCalculatedValue(
               String(
                 (Number(parseFloat(formatedBigInt)) - amountToBeDeducted) *
@@ -673,13 +671,21 @@ function Details({ children, onClick }: Props) {
 
   // The click event of "Buy" btn (place the integration here)
   const buyTokens = useCallback(async () => {
-    if (!walletClient || !address || !chainId) {
+    if (!walletClient || !address || !chainId || !balanceValue?.value) {
       return;
     }
 
     const amountToPay = Number(inputValue);
 
     if (isNaN(amountToPay) || !amountToPay) {
+      return;
+    }
+
+    if (
+      amountToPay >
+      Number(formatUnits(balanceValue.value, balanceValue.decimals))
+    ) {
+      addToast("Insufficient balance.", "warning");
       return;
     }
 
@@ -739,6 +745,8 @@ function Details({ children, onClick }: Props) {
     chainId,
     publicClient,
     currentCurrency?.decimals,
+    balanceValue?.value,
+    balanceValue?.decimals,
     setClose,
     setOpened,
     setSubmitted,
