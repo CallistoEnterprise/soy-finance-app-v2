@@ -670,6 +670,8 @@ p, h1, h2, h3, span {
 }
 
 .launchpad button {
+    background: rgb(var(--green));
+    border: none;
     padding: 7px 21px;
     float: right;
     margin-top: 19px;
@@ -677,6 +679,7 @@ p, h1, h2, h3, span {
 
 .launchpad button:hover {
     transition: all ease .1s;
+    background: rgb(var(--green-saturated));
 }
 
 .launchpad-details a {

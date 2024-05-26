@@ -60,28 +60,6 @@ export default function MobileMenu() {
                 <Svg iconName="farm" />
                 Farms
               </Link>
-              <a
-                onClick={() => {
-                  setMobileMenuOpened(false);
-                  addToast("Coming soon...", "info");
-                }}
-                className="flex items-center gap-2 text-secondary-text w-full pl-2 h-10"
-                href="#"
-              >
-                <Svg iconName="boost" />
-                Boost token
-              </a>
-              <a
-                onClick={() => {
-                  setMobileMenuOpened(false);
-                  addToast("Coming soon...", "info");
-                }}
-                className="flex items-center gap-2 text-secondary-text w-full pl-2 h-10"
-                href="#"
-              >
-                <Svg iconName="burn" />
-                Burn & Boost
-              </a>
             </div>
           </div>
           <div>
@@ -148,6 +126,7 @@ export default function MobileMenu() {
                 className="flex items-center gap-2 text-secondary-text w-full pl-2 h-10"
                 href="/launchpads"
               >
+                <Svg iconName="boost" />
                 Launchpads
               </Link>
             </div>

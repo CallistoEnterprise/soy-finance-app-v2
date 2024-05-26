@@ -32,23 +32,8 @@ const menuItems: {
     ],
   },
   {
-    title: "farming",
-    url: "#",
-    menu: [
-      {
-        title: "farms",
-        icon: "farm",
-        href: "/farms",
-      },
-      {
-        title: "boost_token",
-        icon: "boost",
-      },
-      {
-        title: "burn_and_boost",
-        icon: "burn",
-      },
-    ],
+    title: "farms",
+    url: "/farms",
   },
   {
     title: "bridge",
@@ -190,11 +175,11 @@ export default function HeaderNav() {
 
                   e.preventDefault();
 
-                  if (link.title === "migrate") {
-                    router.push(link.url);
-                  }
-
-                  if (link.title === "launchpads") {
+                  if (
+                    link.title === "migrate" ||
+                    link.title === "launchpads" ||
+                    link.title === "farms"
+                  ) {
                     router.push(link.url);
                   }
 

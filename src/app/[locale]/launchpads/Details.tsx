@@ -626,7 +626,9 @@ function Details({ children, onClick }: Props) {
             parseFloat(formatedBigInt) * Number(price) <
             formatedtokensForSale - formatedCurrentSupply
           ) {
-            setInputValue(String(Number(formatedBigInt) - amountToBeDeducted));
+            setInputValue(
+              (Number(formatedBigInt) - amountToBeDeducted).toFixed(4)
+            );
             setCalculatedValue(
               String(
                 (Number(parseFloat(formatedBigInt)) - amountToBeDeducted) *
@@ -693,7 +695,7 @@ function Details({ children, onClick }: Props) {
       await writeTokenApprove();
     }
 
-    setOpened(`Buy ${amountToPay * price} ${symbol}`);
+    setOpened(`Buy ${calculatedValue} ${symbol}`);
 
     const params: {
       account: Address;
@@ -708,7 +710,7 @@ function Details({ children, onClick }: Props) {
       functionName: "buyToken",
       args: [
         parseUnits(
-          calculatedValue,
+          Number(calculatedValue).toFixed(3),
           currentCurrency?.decimals ? currentCurrency?.decimals : 18
         ).toString(),
         address,
