@@ -226,7 +226,7 @@ function Details({ children, onClick }: Props) {
     contractAddress: currentChain.icoContract
       ? currentChain.icoContract
       : undefined,
-    amountToCheck: BigInt(Number(inputValue) * 1e18),
+    amountToCheck: BigInt(Math.floor(Number(inputValue) * 1e18)),
     token: currentCurrency ? currentCurrency : null,
   });
 
@@ -595,13 +595,24 @@ function Details({ children, onClick }: Props) {
           calculatedBigInt,
           Number(balanceValue.decimals)
         );
+        console.log(formatedBigInt);
+        if (Number(formatedBigInt) < 0.001) {
+          addToast("Amount is less than 0.001", "warning");
+          setInputValue("0");
+          setCalculatedValue("0");
+          return;
+        }
         if (
           parseFloat(formatedBigInt) * Number(price) <
           formatedtokensForSale - formatedCurrentSupply
         ) {
-          setInputValue(Number(formatedBigInt).toFixed(5));
+          setInputValue(Number(formatedBigInt).toFixed(3));
           setCalculatedValue(
-            String(Number(parseFloat(formatedBigInt)) * Number(price))
+            String(
+              (
+                Number(parseFloat(formatedBigInt).toFixed(3)) * Number(price)
+              ).toFixed(3)
+            )
           );
         } else {
           setInputValue(
@@ -627,12 +638,15 @@ function Details({ children, onClick }: Props) {
             formatedtokensForSale - formatedCurrentSupply
           ) {
             setInputValue(
-              (Number(formatedBigInt) - amountToBeDeducted).toFixed(4)
+              (Number(formatedBigInt) - amountToBeDeducted).toFixed(3)
             );
             setCalculatedValue(
               String(
-                (Number(parseFloat(formatedBigInt)) - amountToBeDeducted) *
+                (
+                  (Number(parseFloat(formatedBigInt).toFixed(3)) -
+                    amountToBeDeducted) *
                   Number(price)
+                ).toFixed(3)
               )
             );
           } else {
@@ -710,7 +724,7 @@ function Details({ children, onClick }: Props) {
       functionName: "buyToken",
       args: [
         parseUnits(
-          Number(calculatedValue).toFixed(3),
+          calculatedValue,
           currentCurrency?.decimals ? currentCurrency?.decimals : 18
         ).toString(),
         address,
@@ -729,7 +743,7 @@ function Details({ children, onClick }: Props) {
             account: address,
             hash,
             chainId,
-            title: `Bought ${amountToPay * price} ${symbol}`,
+            title: `Bought ${calculatedValue} ${symbol}`,
           },
           address
         );
@@ -785,7 +799,7 @@ function Details({ children, onClick }: Props) {
           {buyBtnTextHandler()}
         </button>
       );
-    } else if (inputValue === "0" || inputValue === "") {
+    } else if (Number(inputValue) < 0.001) {
       return (
         <button
           className="buy-btn"
