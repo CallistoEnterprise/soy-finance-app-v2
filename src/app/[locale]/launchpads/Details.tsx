@@ -226,7 +226,9 @@ function Details({ children, onClick }: Props) {
     contractAddress: currentChain.icoContract
       ? currentChain.icoContract
       : undefined,
-    amountToCheck: BigInt(Math.floor(Number(inputValue) * 1e18)),
+    amountToCheck: currentCurrency?.decimals
+      ? parseUnits(inputValue, currentCurrency.decimals)
+      : parseUnits(inputValue, 18),
     token: currentCurrency ? currentCurrency : null,
   });
 
@@ -595,7 +597,6 @@ function Details({ children, onClick }: Props) {
           calculatedBigInt,
           Number(balanceValue.decimals)
         );
-        console.log(formatedBigInt);
         if (Number(formatedBigInt) < 0.001) {
           addToast("Amount is less than 0.001", "warning");
           setInputValue("0");
@@ -770,9 +771,6 @@ function Details({ children, onClick }: Props) {
     inputValue,
     isAllowed,
     writeTokenApprove,
-    lockedAmount,
-    price,
-    chainInfo,
     currentChain,
     symbol,
     calculatedValue,
