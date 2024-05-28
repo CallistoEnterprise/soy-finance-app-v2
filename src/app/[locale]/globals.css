@@ -1141,16 +1141,23 @@ p, h1, h2, h3, span {
         top: 21px;
     }
     .ICO-launchpad .go-back-btn {
-        margin-top: 55px;
+        margin-top: 63px;
+        font-size: 14px;
+        margin-right: 5px;
+        padding: 3px 10px;
+    }
+    .launchpads-list-return {
+        font-size: 14px;
+        padding: 4px 14px;
     }
     .ICO-launchpad h2 {
         margin-top: 32px;
     }
     .ICO-launchpad .ico {
-        height: 590px;
+        height: 600px;
     }
     .ICO-launchpad .ico-ended {
-        height: 585px;
+        height: 590px;
     }
     .ICO-launchpad .ico .completion {
         font-weight: 600;

@@ -806,7 +806,7 @@ function Details({ children, onClick }: Props) {
           {buyBtnTextHandler()}
         </button>
       );
-    } else if (Number(inputValue) < 0.001) {
+    } else if (Number(inputValue) < 0.001 || isNaN(Number(inputValue))) {
       return (
         <button
           className="buy-btn"
