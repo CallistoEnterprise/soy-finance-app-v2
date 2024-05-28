@@ -386,21 +386,25 @@ p, h1, h2, h3, span {
 }
 
 .launchpads-list-return {
+    display: inline-block;
+    color: rgb(var(--primary-text));
+    border: 1px solid rgb(var(--green));
     transition: all ease .3s;
     margin-top: 25px;
-    color: rgb(var(--green-saturated));
+    padding: 7px 21px;
     cursor: pointer;
+    border-radius: 37px;
 }
 
 .launchpads-list-return:hover {
     transition: all ease .3s;
-    color: rgb(var(--secondary-hover));
+    background: rgb(var(--green-saturated) / 0.3);
 }
 
 .launchpad-list-heading {
     text-align: center;
     margin-bottom: 45px;
-    margin-top: -28px;
+    margin-top: -36px;
     font-size: 21px;
     color: #7bb719;
     font-weight: 600;
@@ -709,16 +713,21 @@ p, h1, h2, h3, span {
 }
 
 .ICO-launchpad .go-back-btn {
+    display: inline-block;
     position: relative;
     z-index: 2;
-    color: #7cb819;
-    margin-top: 37px;
+    color: rgb(var(--primary-text));
+    border: 1px solid rgb(var(--green));
     transition: all ease .3s;
+    margin-top: 37px;
+    padding: 7px 21px;
+    cursor: pointer;
+    border-radius: 37px;
 }
 
 .ICO-launchpad .go-back-btn:hover {
     transition: all ease .3s;
-    color: #908d8d;
+    background: rgb(var(--green) / 0.3);
 }
 
 .ICO-launchpad-no-media button {

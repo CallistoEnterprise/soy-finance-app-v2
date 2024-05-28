@@ -552,6 +552,11 @@ function Details({ children, onClick }: Props) {
     return num;
   };
 
+  function toFixedTrunc(value: number, decimals: number) {
+    const factor = Math.pow(10, decimals);
+    return Math.floor(value * factor) / factor;
+  }
+
   // The function that handles input changes
   const inputValueChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     const stringValue = e.target.value;
@@ -571,7 +576,7 @@ function Details({ children, onClick }: Props) {
         String((formatedtokensForSale - formatedCurrentSupply) / Number(price))
       );
       setCalculatedValue(
-        String((formatedtokensForSale - formatedCurrentSupply).toFixed(5))
+        String(toFixedTrunc(formatedtokensForSale - formatedCurrentSupply, 3))
       );
       addToast("Can't buy more than available tokens on contract.", "warning");
     } else if (stringValue == "") {
@@ -607,12 +612,13 @@ function Details({ children, onClick }: Props) {
           parseFloat(formatedBigInt) * Number(price) <
           formatedtokensForSale - formatedCurrentSupply
         ) {
-          setInputValue(Number(formatedBigInt).toFixed(3));
+          setInputValue(String(toFixedTrunc(Number(formatedBigInt), 3)));
           setCalculatedValue(
             String(
-              (
-                Number(parseFloat(formatedBigInt).toFixed(3)) * Number(price)
-              ).toFixed(3)
+              toFixedTrunc(
+                Number(toFixedTrunc(Number(formatedBigInt), 3)) * Number(price),
+                3
+              )
             )
           );
         } else {
@@ -635,19 +641,22 @@ function Details({ children, onClick }: Props) {
             amountToBeDeducted = Number(formatedBigInt) * 0.0005; // deduct 0.05% from the balance
           }
           if (
-            parseFloat(formatedBigInt) * Number(price) <
+            Number(formatedBigInt) * Number(price) <
             formatedtokensForSale - formatedCurrentSupply
           ) {
             setInputValue(
-              (Number(formatedBigInt) - amountToBeDeducted).toFixed(3)
+              String(
+                toFixedTrunc(Number(formatedBigInt) - amountToBeDeducted, 3)
+              )
             );
             setCalculatedValue(
               String(
-                (
-                  (Number(parseFloat(formatedBigInt).toFixed(3)) -
+                toFixedTrunc(
+                  (toFixedTrunc(Number(formatedBigInt), 3) -
                     amountToBeDeducted) *
-                  Number(price)
-                ).toFixed(3)
+                    Number(price),
+                  3
+                )
               )
             );
           } else {
