@@ -561,7 +561,9 @@ function Details({ children, onClick }: Props) {
   const inputValueChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     const stringValue = e.target.value;
     const value = Number(stringValue);
-    if (
+    if (stringValue.includes(".") && stringValue.endsWith("0")) {
+      setInputValue(stringValue);
+    } else if (
       value > 0 &&
       value * Number(price) <= formatedtokensForSale - formatedCurrentSupply &&
       !stringValue.endsWith(".")
@@ -582,12 +584,12 @@ function Details({ children, onClick }: Props) {
     } else if (stringValue == "") {
       setInputValue("0");
       setCalculatedValue("0");
-    } else if (value == 0) {
-      setInputValue("0");
-      setCalculatedValue("0");
     } else if (stringValue.endsWith(".")) {
       setInputValue(stringValue);
       setCalculatedValue(String(value * Number(price)));
+    } else if (value == 0) {
+      setInputValue("0");
+      setCalculatedValue("0");
     }
   };
 
