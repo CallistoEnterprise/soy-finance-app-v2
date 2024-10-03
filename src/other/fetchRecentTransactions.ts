@@ -99,8 +99,8 @@ interface Duration {
   seconds?: number;
 }
 
-const infoClient = 'https://03.callisto.network/subgraphs/name/soyswap';
-const blocksClient = 'https://03.callisto.network/subgraphs/name/blocks';
+const infoClient = 'https://explorer.callistodao.org/subgraphs/name/soyswap';
+const blocksClient = 'https://explorer.callistodao.org/subgraphs/name/blocks';
 
 export const getBlocksFromTimestamps = async (
   timestamps: number[],
