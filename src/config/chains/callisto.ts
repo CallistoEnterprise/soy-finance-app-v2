@@ -10,8 +10,8 @@ export const callisto = defineChain({
     symbol: 'CLO',
   },
   rpcUrls: {
-    public: { http: ['https://rpc.callisto.network/'] },
-    default: { http: ['https://rpc.callisto.network/'] },
+    public: { http: ['https://rpc.callistodao.org'] },
+    default: { http: ['https://rpc.callistodao.org'] },
   },
   blockExplorers: {
     default: { name: 'CallistoScan', url: 'https://explorer.callisto.network' },
