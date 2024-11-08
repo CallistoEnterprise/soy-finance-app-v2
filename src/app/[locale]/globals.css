@@ -333,3 +333,898 @@ p, h1, h2, h3, span {
     scrollbar-width: none;
     -ms-overflow-style: none
 }
+
+.launchpad-chain-selector {
+    transition: all ease .3s;
+    opacity: 0;
+    width: 60% !important;
+    opacity: 1;
+    height: 80% !important;
+    margin: 0px auto;
+    display: block !important;
+}
+
+.launchpad-chain-selector ul {
+    opacity: 0;
+    margin: 20px 3%;
+    transition: all ease .3s;
+}
+
+.launchpad-chain-selector li {
+    transition: all ease .3s;
+    border: 1px solid rgb(var(--secondary-bg));
+    border-radius: 13px;
+    margin-bottom: 10px;
+    height: 80px;
+}
+
+.no-launchpads {
+    margin-bottom: 315px;
+    margin-top: 20px;
+}
+
+.no-launchpads, .no-launchpads .w-full {
+    height: 100%;
+}
+
+.no-launchpads .bg-primary-bg {
+    height: 90%;
+    display: flex;
+    align-items: center;
+}
+
+.no-launchpads p {
+    margin: 0 auto;
+    font-size: 18px;
+}
+
+.launchpads-list {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    margin-bottom: 15px !important;
+}
+
+.launchpads-list-return {
+    display: inline-block;
+    color: rgb(var(--primary-text));
+    border: 1px solid rgb(var(--green));
+    transition: all ease .3s;
+    margin-top: 25px;
+    padding: 7px 21px;
+    cursor: pointer;
+    border-radius: 37px;
+}
+
+.launchpads-list-return:hover {
+    transition: all ease .3s;
+    background: rgb(var(--green-saturated) / 0.3);
+}
+
+.launchpad-list-heading {
+    text-align: center;
+    margin-bottom: 45px;
+    margin-top: -36px;
+    font-size: 21px;
+    color: #7bb719;
+    font-weight: 600;
+}
+
+.launchpad {
+    background: rgb(var(--secondary-bg));
+    padding: 20px;
+    border-radius: 15px;
+    width: 435px;
+    height: 544px;
+    position: relative;
+    border: rgb(var(--active-border)) 1px solid;
+    transform: scale(0);
+    transition: all ease .3s;
+}
+
+.state-label {
+    width: fit-content;
+    padding: 2px 5px;
+    font-size: 14px;
+    border-radius: 5px;
+    float: right;
+    margin-top: 9px;
+    position: relative;
+    padding-left: 6px;
+}
+
+.state-label .marker {
+    width: 10px;
+    height: 10px;
+    background: #5f931a;
+    border-radius: 50%;
+    position: absolute;
+    top: 7px;
+}
+
+.state-label p {
+    letter-spacing: .7px;
+    margin-left: 18px;
+    color: black;
+}
+
+.state-label-live {
+    background: #9ed740;
+    box-shadow: 0 0 3px #9ed740;
+}
+
+.state-label-live .marker {
+    background: #5f931a;
+}
+
+.state-label-live .marker::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1px solid #5d872fcf;
+    animation: state-label-marker-anim 1.25s infinite;
+    opacity: 0;
+}
+
+.state-label-ended {
+    background: #8f8585eb;
+    box-shadow: 0 0 3px #8f8585eb;
+}
+
+.state-label-ended .marker {
+    background: #413f3fe8;
+}
+
+.state-label-soon {
+    background: #ecc38de6;
+    box-shadow: 0 0 3px #ecc38de6;
+}
+
+.state-label-soon .marker {
+    background: #634b28;
+}
+
+.state-label-soon .marker::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1px solid #634b28db;
+    animation: state-label-marker-anim 2s infinite;
+    opacity: 0;
+}
+
+.launchpad .state-label-responsive {
+    display: none;
+    margin-top: -1px;
+}
+
+@keyframes state-label-marker-anim {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    } 25% {
+        transform: scale(2);
+    } 50% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+.launchpad h3 {
+    margin-top: -19px;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.launchpad h3 span {
+    color: #7cb819;
+}
+
+.launchpad h3 img {
+    display: inline-block;
+    margin-top: 19px;
+    margin-right: 16px;
+    border-radius: 50%;
+    padding: 3px;
+}
+
+.launchpad h3 .chainLogo {
+    width: 26px;
+    box-shadow: 0 0 3px #c0c0c0;
+    margin-left: -32px;
+    margin-top: 50px;
+    background: #7e7e7e8a;
+    position: relative;
+    padding: 0px;
+    border: none;
+    margin-right: 9px;
+}
+
+.launchpad-live img {
+    border: 1px solid #7cb819;
+    box-shadow: 0 0 5px #7cb819;
+}
+
+.launchpad-soon img {
+    border: 1px solid #dab584;
+    box-shadow: 0 0 5px #dab584;
+}
+
+.launchpad-ended img {
+    box-shadow: 0 0 5px #887f7f;
+    border: 1px solid #887f7f;
+}
+
+.launchpad h3 p {
+    font-weight: 300;
+    color: rgb(var(--secondary-text));
+    font-size: 14px;
+    margin-left: 82px;
+    margin-top: -26px;
+}
+
+.launchpad .two-chains {
+    margin-top: -32px;
+}
+
+.launchpad .two-chains .second-chain {
+    margin-right: 27px;
+    margin-top: 79px;
+    margin-left: -53px;
+}
+
+.launchpad .two-chains p {
+    margin-top: -41px;
+}
+
+.progress-bar {
+    height: 15px;
+    width: 100%;
+    background: gray;
+    margin-top: 14px;
+    border-radius: 5px;
+}
+
+.progress-bar .colored-part {
+    overflow: hidden;
+    height: 100%;
+    background: #7cb819;
+    margin-top: 14px;
+    border-radius: 5px;
+    box-shadow: 0 0 4px #7cb819;
+    position: relative;
+    max-width: 100%;
+}
+
+.progress-bar .white-flash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 35%;
+    height: 100%;
+    min-width: 40px;
+    background-color: #b0e36469;
+    animation: progressAnimation 3s linear infinite;
+    border-radius: 5px;
+    opacity: 0;
+}
+
+@keyframes progressAnimation {
+    0% {
+      opacity: 0;
+    }
+    5% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    25% {
+      transform: translateX(500%);
+    }
+    50% {
+        transform: translateX(1000%);
+        opacity: 0;
+    }
+    1000% {
+        opacity: 0;
+    }
+}
+
+.launchpad em {
+    color: rgb(var(--secondary-text));
+    font-size: 14px;
+}
+
+.launchpad b {
+    color: rgb(var(--primary-text));
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.launchpad a {
+    transition: all ease .3s;
+    font-weight: 400;
+    font-size: 15px;
+    color: #7cb819;
+}
+
+.launchpad a svg {
+    display: inline;
+}
+
+.launchpad .timer {
+    margin-top: 7px;
+    color: rgb(var(--secondary-text));
+    font-size: 14px;
+}
+
+.launchpad .timer b {
+    margin-left: 0px;
+    font-size: 14px;
+    letter-spacing: .6px;
+    font-weight: 600;
+    color: rgb(var(--primary-text));
+}
+
+.launchpad .ended b {
+    letter-spacing: .6px;
+}
+
+.launchpad button {
+    background: rgb(var(--green));
+    border: none;
+    padding: 7px 21px;
+    float: right;
+    margin-top: 19px;
+}
+
+.launchpad button:hover {
+    transition: all ease .1s;
+    background: rgb(var(--green-saturated));
+}
+
+.launchpad-details a {
+    color: rgb(var(--secondary-text));
+    transition: all ease .3s;
+}
+
+.launchpad-details a svg {
+    display: inline;
+    margin-bottom: 4px;
+}
+
+.launchpad-details p img {
+    display: inline;
+    margin-right: 10px;
+    margin-top: -2px;
+}
+
+.ICO-launchpad {
+    margin-bottom: 30px;
+}
+
+.ICO-launchpad .ico button, .ICO-launchpad .go-back-btn {
+    float: right;
+    padding: 6px 16px;
+    border-radius: 5px;
+}
+
+.ICO-launchpad .go-back-btn {
+    display: inline-block;
+    position: relative;
+    z-index: 2;
+    color: rgb(var(--primary-text));
+    border: 1px solid rgb(var(--green));
+    transition: all ease .3s;
+    margin-top: 37px;
+    padding: 7px 21px;
+    cursor: pointer;
+    border-radius: 37px;
+}
+
+.ICO-launchpad .go-back-btn:hover {
+    transition: all ease .3s;
+    background: rgb(var(--green) / 0.3);
+}
+
+.ICO-launchpad-no-media button {
+    margin-top: 12px;
+}
+
+.ICO-launchpad h1 {
+    position: relative;
+    font-size: 20px;
+    margin-top: -22px;
+    font-weight: 600;
+    margin-bottom: 22px;
+    border-bottom: 1px solid rgb(var(--primary-border));
+    padding-bottom: 23px;
+}
+
+.ICO-launchpad h1 .state-label {
+    top: -2px;
+}
+
+.ICO-launchpad h1 img {
+    border-radius: 50%;
+    border: 1px solid #7cb819;
+    padding: 5px;
+    display: inline-block;
+    margin-right: 22px;
+    margin-top: 26px;
+}
+
+.ICO-launchpad-live h1 img {
+    border: 1px solid #7cb819;
+    box-shadow: 0 0 5px #7cb819;
+}
+
+.ICO-launchpad-soon h1 img {
+    border: 1px solid #dab584;
+    box-shadow: 0 0 5px #dab584;
+}
+
+.ICO-launchpad-ended h1 img {
+    box-shadow: 0 0 5px #887f7f;
+    border: 1px solid #887f7f;
+}
+
+.ICO-launchpad-no-media h1 {
+    position: relative;
+    margin-top: 0px;
+    padding-bottom: 44px;
+}
+
+.ICO-launchpad-no-media h1 img {
+    margin-top: 0px;
+}
+
+.ICO-launchpad h1 div {
+    display: flex;
+    margin-top: -30px;
+    margin-left: 74px;
+    gap: 4px;
+}
+
+.ICO-launchpad h1 a:hover {
+    color: #7cb819;
+}
+
+.ICO-launchpad h1 div svg {
+    width: 31px;
+    height: 26px;
+}
+
+.ICO-launchpad .state-label {
+    display: inline-block;
+    margin-left: 18px;
+    float: none;
+}
+
+.ICO-launchpad h2 {
+    text-align: center;
+    margin-bottom: 35px;
+    color: #7cb819;
+    font-size: 23px;
+    font-weight: bolder;
+}
+
+.ICO-launchpad .ico {
+    position: relative;
+    width: 540px;
+    margin: 0 auto;
+    background: rgb(var(--secondary-bg));
+    border-radius: 10px;
+    padding: 20px;
+    border: rgb(var(--active-border)) 1px solid;
+    height: 560px;
+}
+
+.ICO-launchpad .ico h3 {
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 26px;
+}
+
+.ICO-launchpad .ico h3 span {
+    font-weight: 600;
+    margin-left: 5px;
+    letter-spacing: .6px;
+}
+
+.ICO-launchpad .ico .progress-container, .ICO-launchpad .ico .progress-bar {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.ICO-launchpad .ico .completion {
+    width: fit-content;
+    margin: 0 auto;
+    color: #7cb819;
+}
+
+.ICO-launchpad .ico .start-progress-bar {
+    margin-top: 14px;
+    color: rgb(var(--secondary-text));
+    font-weight: 400;
+}
+
+.ICO-launchpad .ico .maxAmount {
+    float: right;
+    margin-top: -24px;
+    color: rgb(var(--secondary-text));
+    font-weight: 400;
+}
+
+.ICO-launchpad .ico .separator {
+    width: 100%;
+    border-bottom: 2px solid rgb(var(--primary-border));
+    margin-top: 21px;
+}
+
+.ICO-launchpad .ico .pay-amount-p {
+    margin-top: 30px;
+    display: inline-block;
+}
+
+.ICO-launchpad .ico .amount-selector { 
+    display: inline;
+    margin-left: 10px;
+    color: rgb(var(--primary-text));
+    padding: 3px 6px;
+    cursor: pointer;
+}
+
+.ICO-launchpad .ico .first-selector-25 {
+    margin-left: 13px;
+}
+
+.ICO-launchpad .ico input {
+    transition: all ease .3s;
+    margin-top: 11px;
+    background-color: #8080809c;
+    border-radius: 9px;
+    padding: 10px 11px;
+    width: 64%;
+    padding-right: 80px;
+    border: 1px solid rgb(var(--grey-light));
+}
+
+.ICO-launchpad .ico input:enabled:hover {
+    transition: all ease .3s;
+    border-color: rgb(var(--green));
+}
+
+.ICO-launchpad .ico input:focus {
+    outline: none;
+    border-color: rgb(var(--green));
+}
+
+.ICO-launchpad .ico input::-webkit-outer-spin-button, .ICO-launchpad .ico input::-webkit-inner-spin-button  {
+    -webkit-appearance: none;
+}
+
+.ICO-launchpad .ico input[type=number] {
+    appearance: none;
+    -moz-appearance: textfield;
+}
+
+.ICO-launchpad .ico .currencySymbol {
+    display: ruby;
+    margin-left: -71px;
+    border-left: rgb(var(--grey-light)) 1px solid;
+    padding: 13px 7px;
+    text-align: left;
+    width: 75px;
+    padding-bottom: 13px;
+}
+
+.ICO-launchpad .ico .currencySymbol .logo {
+    width: 31px;
+    height: 31px;
+    margin-bottom: 4px;
+    margin-left: 3px;
+    border: 1px solid rgb(var(--primary-border));
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgb(var(--primary-border));
+}
+
+.ICO-launchpad .ico .currencySymbol span {
+    margin-left: 2px;
+}
+
+.ICO-launchpad .ico .currencySymbol span svg {
+    width: 24px;
+    height: 24px;
+}
+
+.ICO-launchpad .ico .buy-btn {
+    color: rbg(var(--primary-text));
+    background-color: #78b019;
+    transition: all ease .3s;
+    width: -webkit-fill-available;
+    width: -moz-available;
+    margin: 30px 85px;
+    border-radius: 37px;
+}
+
+.ICO-launchpad .ico .buy-btn:hover {
+    transition: all ease .3s;
+    background-color: rgb(var(--primary-hover));
+}
+
+.ICO-launchpad .ico .add-token {
+    position: absolute;
+    bottom: -11px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: max-content;
+}
+
+.ICO-launchpad .ico .btn-disabled {
+    background-color: rgb(var(--grey-light));
+    color: rbg(var(--primary-text));
+    width: -webkit-fill-available;
+    width: -moz-available;
+    margin: 30px 85px;
+    border-radius: 37px;
+}
+
+.ICO-launchpad .ico .rate {
+    font-size: 13px;
+    color: #7cb819;
+    font-weight: 600;
+    margin-top: 15px;
+    margin-left: 2px;
+}
+
+.ICO-launchpad .vestingICO {
+    width: 540px;
+    margin: 0 auto;
+    margin-top: 60px;
+    background: rgb(var(--secondary-bg));
+    padding: 20px;
+    border: 1px solid rgb(var(--active-border));
+    border-radius: 10px;
+}
+
+.ICO-launchpad .vestingICO .border-active-border {
+    --tw-border-opacity: .4;
+    background-color: rgb(var(--primary-bg) / .4);
+}
+
+.ICO-launchpad .vestingICO .border-active-border {
+    --tw-border-opacity: .4;
+    background-color: rgb(var(--primary-bg) / .4);
+}
+
+.ICO-launchpad .vestingICO h2 {
+    margin-bottom: 20px;
+}
+
+.selectTokenLaunchpad .price {
+    font-size: 10.5px;
+}
+
+.launchpad-desc b {
+    font-size: 18px;
+    color: #7cb819;
+}
+
+.launchpad-desc p {
+    font-weight: 400;
+    margin-bottom: 18px;
+}
+
+.launchpad-desc p span {
+    color: rgb(var(--secondary-text));
+    font-weight: 500;
+}
+
+.launchpad-desc .availableChains {
+    margin-bottom: 15px;
+}
+
+.launchpad-desc .availableChains img {
+    display: inline;
+    width: 33px;
+}
+
+.launchpad-desc .availableChains span {
+    margin-left: 12px;
+    font-weight: 600;
+    transition: all ease .3s;
+    cursor: pointer;
+    color: rgb(var(--secondary-text));
+}
+
+.launchpad-desc .availableChains span:hover {
+    color: rgb(var(--green));
+    transition: all ease .3s;
+}
+
+.launchpad-desc .availableChains span svg {
+    width: 20px;
+    height: 20px;
+    display: inline;
+    margin-left: 3px;
+    margin-bottom: 1px;
+    color: rgb(var(--green));
+}
+
+.launchpad-desc p a {
+    color: #7cb819;
+}
+
+@media (min-height: 1000px) {
+    .no-launchpads .bg-primary-bg {
+        height: 94%;
+    }
+}
+
+@media (max-width: 520px) {
+    .ICO-launchpad .ico {
+        width: 90%;
+    }
+    .ICO-launchpad .vestingICO {
+        width: 90%;
+    }
+}
+
+@media (max-width: 470px) {
+    .no-launchpads p {
+        font-size: 16px;
+    }
+    .launchpad-chain-selector {
+        width: 90% !important;
+    }
+    .launchpad-chain-selector li .text-16 {
+        font-size: 14px;
+    }
+    .launchpad-chain-selector li .text-12 {
+        font-size: 11px;
+    }
+    .launchpad-list-heading {
+        margin-top: 30px;
+    }
+    .launchpad {
+        width: 90vw;
+        height: 555px;
+    }
+    .launchpad h3 {
+        font-size: 17px;
+    }
+    .launchpad h3 p {
+        margin-left: 77px;
+        font-size: 13.5px;
+    }
+    .launchpad h3 img {
+        width: 54px;
+        margin-right: 12px;
+    }
+    .launchpad h3 .chainLogo {
+        width: 25px;
+        margin-left: -27px;
+        margin-right: 11px;
+    }
+    .launchpad em {
+        font-size: 14px;
+    }
+    .launchpad-link-title {
+        font-size: 14px !important;
+    }
+    .launchpad a {
+        font-size: 13px;
+    }
+    .launchpad .state-label {
+        display: none;
+    }
+    .launchpad .state-label-responsive {
+        display: block;
+    }
+    .launchpad .timer b {
+        font-size: 14px;
+    }
+    .launchpad button {
+        margin-top: 18px;
+        padding: 4px 15px;
+    }
+    .progress-bar {
+        height: 9px;
+    }
+    .ICO-launchpad h1 .state-label {
+        position: absolute;
+        right: 16px;
+        top: 21px;
+    }
+    .ICO-launchpad .go-back-btn {
+        margin-top: 63px;
+        font-size: 14px;
+        margin-right: 5px;
+        padding: 3px 10px;
+    }
+    .launchpads-list-return {
+        font-size: 14px;
+        padding: 4px 14px;
+    }
+    .ICO-launchpad h2 {
+        margin-top: 32px;
+    }
+    .ICO-launchpad .ico {
+        height: 600px;
+    }
+    .ICO-launchpad .ico-ended {
+        height: 590px;
+    }
+    .ICO-launchpad .ico .completion {
+        font-weight: 600;
+    }
+    .ICO-launchpad .ico .progress-bar {
+        width: 95%;
+    }
+    .ICO-launchpad .ico .first-selector-25 {
+        margin-left: 15px;
+    }
+    .ICO-launchpad .ico input {
+        margin-left: 2px;
+        width: 98%;
+    }
+    .ICO-launchpad .ico .pay-amount-p {
+        margin-left: 3px;
+    }
+    .ICO-launchpad .ico .buy-btn {
+        margin: 30px 45px;
+    }
+    .ICO-launchpad .vestingICO h2 {
+        margin-top: 10px;
+    }
+    .ICO-launchpad .vestingICO .unlockedText {
+        margin-top: 10px;
+    }
+    .selectTokenLaunchpad .price {
+        font-size: 12.5px;
+    }
+    .launchpad-desc p a {
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 390px) {
+    .launchpad em {
+        font-size: 13px;
+    }
+    .launchpad-link-title {
+        font-size: 14px !important;
+    }
+    .launchpad a {
+        font-size: 12px;
+    }
+    .launchpad b {
+        font-size: 15px;
+    }
+    .launchpad button {
+        padding: 0px 12px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 340px) {
+    .launchpad a {
+        font-size: 10px;
+    }
+    .launchpad .timer {
+        margin-top: -10px;
+    }
+    .launchpad button {
+        margin-top: -5px;
+    }
+    .launchpad-chain-selector li .text-12 {
+        font-size: 9px;
+    }
+    .launchpad-chain-selector li .text-16 {
+        font-size: 10px;
+    }
+}
